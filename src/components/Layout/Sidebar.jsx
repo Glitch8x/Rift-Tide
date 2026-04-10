@@ -37,7 +37,7 @@ const Sidebar = () => {
     <>
       {/* Mobile Header Bar */}
       <div className="mobile-header mobile-only">
-        <h1 className="logo-text">LOFI <span className="logo-accent">QUEST</span></h1>
+        <h1 className="logo-text">Sui-<span className="logo-accent">gig</span></h1>
         <button className="menu-toggle" onClick={() => setIsOpen(!isOpen)}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             {isOpen ? <path d="M18 6L6 18M6 6l12 12" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
@@ -48,7 +48,7 @@ const Sidebar = () => {
       <aside className={`sidebar-container ${isOpen ? 'show' : ''}`}>
         <div className="sidebar-inner">
           <div className="sidebar-header">
-            <h1 className="logo-text">LOFI <span className="logo-accent">QUEST</span></h1>
+            <h1 className="logo-text">Sui-<span className="logo-accent">gig</span></h1>
           </div>
 
           <nav className="sidebar-nav">

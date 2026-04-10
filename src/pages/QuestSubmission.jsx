@@ -134,7 +134,7 @@ const QuestSubmission = () => {
                                 )}
                             </button>
                             <p className="terms-text">
-                                By submitting, you agree to the LOFI-QUEST contribution guidelines and authorize the network to verify your work.
+                                By submitting, you agree to the Sui-gig contribution guidelines and authorize the network to verify your work.
                             </p>
                         </div>
                     </form>

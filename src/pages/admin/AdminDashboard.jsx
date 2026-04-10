@@ -35,7 +35,7 @@ const AdminDashboard = () => {
             <header className="admin-top-bar">
                 <div className="admin-intro">
                     <h1 className="admin-title">Network Command</h1>
-                    <p className="admin-subtitle">Managing the LOFI-QUEST contribution engine.</p>
+                    <p className="admin-subtitle">Managing the Sui-gig contribution engine.</p>
                 </div>
                 <div className="admin-actions">
                     <button className="btn btn-outline" onClick={handleSync} disabled={isSyncing}>

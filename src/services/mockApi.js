@@ -72,7 +72,7 @@ const initialBounties = [
     },
     {
         id: 7,
-        title: 'Write a Blog Post about Lofi Quests',
+        title: 'Write a Blog Post about Sui Gigs',
         community: 'Lofi Media',
         communityImg: 'https://ui-avatars.com/api/?name=Media&background=F6AD55&color=fff',
         reward: 300,

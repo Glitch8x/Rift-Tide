@@ -28,7 +28,7 @@ const Leaderboard = () => {
             <header className="page-header">
                 <div className="header-info">
                     <h1 className="header-title">Network Rankings</h1>
-                    <p className="header-subtitle">Recognizing the most active contributors across the LOFI-QUEST network.</p>
+                    <p className="header-subtitle">Recognizing the most active contributors across the Sui-gig network.</p>
                 </div>
                 <div className="tab-switcher">
                     <button 

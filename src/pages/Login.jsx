@@ -34,7 +34,7 @@ const Login = () => {
           <div className="logo-badge">
              <Sparkles size={24} color="white" />
           </div>
-          <h1 className="branding-title">LOFI QUEST</h1>
+          <h1 className="branding-title">Sui-gig</h1>
           <p className="branding-tagline">The premium contribution network for the Sui ecosystem.</p>
         </div>
 
@@ -69,7 +69,7 @@ const Login = () => {
         </div>
 
         <div className="login-footer-text">
-          © 2026 LOFI QUEST. All rights reserved.
+          © 2026 Sui-gig. All rights reserved.
         </div>
       </div>
 

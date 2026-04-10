@@ -116,7 +116,7 @@ const QuestDetail = () => {
                 <aside className="content-side-col">
                     <SharpCard className="side-card-sharp">
                         <h3 className="side-h">About Organization</h3>
-                        <p className="side-p">A verified contributor to the LOFI-QUEST network specializing in {quest.category.toLowerCase()} initiatives.</p>
+                        <p className="side-p">A verified contributor to the Sui-gig network specializing in {quest.category.toLowerCase()} initiatives.</p>
                         <button className="btn btn-outline full-width">View Organization</button>
                     </SharpCard>
 

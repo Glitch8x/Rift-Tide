@@ -60,7 +60,7 @@ const AdminLogin = () => {
                 </form>
 
                 <div className="auth-footer">
-                    <p>© 2026 SUI Network Management Console</p>
+                    <p>© 2026 Sui-gig Management Console</p>
                 </div>
             </SharpCard>
 
