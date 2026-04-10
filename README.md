@@ -1,16 +1,15 @@
-# React + Vite
+LOFI-QUEST
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+LOFI-QUEST is a decentralized bounty and quest platform designed to bridge the gap between Web3 projects and active contributors. It provides a streamlined interface for organizations to post tasks and for users to earn rewards, ensuring transparency and trust through blockchain technology.
 
-Currently, two official plugins are available:
+Live Demo Check out the platform here: lofi-quest.vercel.app
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Features
 
-## React Compiler
+Dynamic Quest Board: A centralized hub to browse, filter, and apply for active bounties. Proof of Contribution: A secure submission system for linking GitHub PRs, social proofs, or wallet addresses. Transparent Rewards: Integrated logic to facilitate reward distribution to contributors upon task approval. User Dashboard: Personal tracking for ongoing quests, total earnings, and reputation. Responsive UI: A modern, "Lofi-inspired" aesthetic built for a seamless user experience across devices.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Tech Stack
 
-## Expanding the ESLint configuration
+Frontend: React.js + Vite Styling: Tailwind CSS Web3: Support for ecosystems like Base and Sui. Deployment: Vercel
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Getting Started
