@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Lock, ArrowRight } from 'lucide-react';
-import GlassCard from '../../components/UI/GlassCard';
+import { Shield, Lock, ArrowRight, ShieldCheck } from 'lucide-react';
+import SharpCard from '../../components/UI/GlassCard'; // Now SharpCard
 
+/**
+ * AdminLogin Page - Redesigned for a high-security, professional entry.
+ * Follows the "First Dollar" style with sharp borders and clean typography.
+ */
 const AdminLogin = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -11,114 +15,167 @@ const AdminLogin = () => {
     const handleLogin = (e) => {
         e.preventDefault();
         if (password === 'Daniel@2007') {
-            // In a real app, use a secure token. For mock, localStorage is fine.
             localStorage.setItem('isAdmin', 'true');
             navigate('/admin/dashboard');
         } else {
-            setError('Invalid credentials');
+            setError('The password you entered is incorrect. Access denied.');
         }
     };
 
     return (
-        <div className="admin-login-page animate-fade-in">
-            <GlassCard className="login-card">
-                <div className="header">
-                    <Shield size={48} className="icon-shield" />
-                    <h1>Admin Access</h1>
-                    <p>Restricted Area</p>
-                </div>
-
-                <form onSubmit={handleLogin}>
-                    <div className="input-group">
-                        <Lock size={18} className="input-icon" />
-                        <input
-                            type="password"
-                            placeholder="Enter Admin Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="input-field"
-                        />
+        <div className="admin-login-container animate-fade-in">
+            <SharpCard className="admin-auth-card">
+                <header className="auth-header">
+                    <div className="auth-lock-icon">
+                        <Lock size={24} />
                     </div>
-                    {error && <div className="error-msg">{error}</div>}
+                    <h1 className="auth-title">Administrator Terminal</h1>
+                    <p className="auth-subtitle">Unauthorized access is strictly prohibited and logged.</p>
+                </header>
 
-                    <button type="submit" className="btn-access">
-                        Access Dashboard <ArrowRight size={16} />
+                <form onSubmit={handleLogin} className="auth-form">
+                    <div className="field-group">
+                        <label className="field-label">Access Password</label>
+                        <div className={`input-wrapper-sharp ${error ? 'error' : ''}`}>
+                             <input
+                                type="password"
+                                placeholder="••••••••••••"
+                                value={password}
+                                onChange={(e) => {setPassword(e.target.value); setError('');}}
+                                className="sharp-input-field"
+                                required
+                            />
+                        </div>
+                    </div>
+                    
+                    {error && (
+                        <div className="error-alert">
+                            <ShieldCheck size={16} /> {error}
+                        </div>
+                    )}
+
+                    <button type="submit" className="btn btn-primary full-width large-btn">
+                        Enter Secure Dashboard <ArrowRight size={18} />
                     </button>
                 </form>
-            </GlassCard>
+
+                <div className="auth-footer">
+                    <p>© 2026 SUI Network Management Console</p>
+                </div>
+            </SharpCard>
 
             <style>{`
-                .admin-login-page {
-                    min-height: 80vh;
+                .admin-login-container {
+                    min-height: calc(100vh - 200px);
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    padding: 40px 20px;
                 }
-                .login-card {
+
+                .admin-auth-card {
                     width: 100%;
-                    max-width: 400px;
-                    padding: 40px;
+                    max-width: 440px;
+                    padding: 48px !important;
+                }
+
+                .auth-header {
                     text-align: center;
+                    margin-bottom: 40px;
                 }
-                .icon-shield {
-                    color: var(--color-primary);
-                    margin-bottom: 16px;
+
+                .auth-lock-icon {
+                    width: 56px;
+                    height: 56px;
+                    background: #f8fafc;
+                    border: 1px solid var(--color-border);
+                    border-radius: 16px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 24px;
+                    color: var(--color-text-muted);
                 }
-                .header h1 {
-                    font-size: 1.8rem;
+
+                .auth-title {
+                    font-size: 1.5rem;
+                    font-weight: 800;
+                    letter-spacing: -0.02em;
                     margin-bottom: 8px;
                 }
-                .header p {
-                    color: var(--color-text-secondary);
-                    margin-bottom: 32px;
+
+                .auth-subtitle {
+                    color: var(--color-text-muted);
+                    font-size: 0.85rem;
+                    line-height: 1.5;
                 }
-                .input-group {
-                    position: relative;
-                    margin-bottom: 16px;
+
+                .field-group { margin-bottom: 24px; }
+
+                .field-label {
+                    display: block;
+                    font-size: 0.75rem;
+                    font-weight: 800;
+                    color: var(--color-text-muted);
+                    margin-bottom: 8px;
+                    letter-spacing: 0.05em;
                 }
-                .input-icon {
-                    position: absolute;
-                    left: 12px;
-                    top: 50%;
-                    transform: translateY(-50%);
-                    color: var(--color-text-secondary);
+
+                .input-wrapper-sharp {
+                    background: #f8fafc;
+                    border: 1px solid var(--color-border);
+                    border-radius: var(--radius-sm);
+                    padding: 2px;
+                    transition: border-color 0.2s, box-shadow 0.2s;
                 }
-                .input-field {
-                    width: 100%;
-                    padding: 12px 12px 12px 40px;
-                    background: rgba(255,255,255,0.05);
-                    border: 1px solid var(--color-glass-border);
-                    border-radius: var(--radius-md);
-                    color: white;
-                    outline: none;
-                    transition: border-color 0.2s;
+
+                .input-wrapper-sharp.error {
+                    border-color: #ef4444;
+                    background: #fef2f2;
                 }
-                .input-field:focus {
+
+                .input-wrapper-sharp:focus-within {
                     border-color: var(--color-primary);
+                    box-shadow: 0 0 0 4px var(--color-primary-soft);
+                    background: white;
                 }
-                .error-msg {
-                    color: #ff4d4f;
-                    font-size: 0.9rem;
-                    margin-bottom: 16px;
-                }
-                .btn-access {
+
+                .sharp-input-field {
                     width: 100%;
-                    padding: 12px;
-                    background: var(--color-primary);
-                    color: white;
+                    padding: 12px 14px;
+                    background: transparent;
                     border: none;
-                    cursor: pointer;
-                    border-radius: var(--radius-md);
-                    font-weight: 600;
+                    outline: none;
+                    font-size: 1rem;
+                    color: var(--color-text);
+                    text-align: center;
+                    letter-spacing: 0.2rem;
+                }
+
+                .error-alert {
                     display: flex;
                     align-items: center;
-                    justify-content: center;
                     gap: 8px;
-                    transition: background 0.2s;
+                    background: #fef2f2;
+                    color: #ef4444;
+                    padding: 12px;
+                    border-radius: var(--radius-sm);
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    margin-bottom: 24px;
+                    border: 1px solid #fee2e2;
                 }
-                .btn-access:hover {
-                    background: var(--color-primary-hover);
+
+                .large-btn { padding: 14px !important; font-size: 1rem !important; }
+
+                .auth-footer {
+                    margin-top: 40px;
+                    text-align: center;
+                    font-size: 0.75rem;
+                    color: var(--color-text-muted);
                 }
+
+                .full-width { width: 100%; }
             `}</style>
         </div>
     );

@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
-import GlassCard from '../components/UI/GlassCard';
-import { ExternalLink, Wallet, FileText, CheckCircle, Clock, Trophy, ChevronRight, Gift } from 'lucide-react';
+import SharpCard from '../components/UI/GlassCard'; // Now SharpCard
+import { ExternalLink, Wallet, FileText, CheckCircle, Clock, Trophy, ChevronRight, Gift, Layers, Inbox, ArrowUpRight } from 'lucide-react';
 
+/**
+ * CreatorDashboard - Redesigned for a professional SUI Project Owner view.
+ * Follows the First Dollar style with sharp layouts and clear submission management.
+ */
 const CreatorDashboard = () => {
     const { bounties, submissions, selectWinner } = useData();
     const [selectedBountyId, setSelectedBountyId] = useState(null);
 
-    if (!bounties) return <div style={{ padding: 40, color: 'white' }}>Loading Bounties...</div>;
+    if (!bounties) return <div className="loading-state">Syncing project data...</div>;
 
-    // Group submissions by Bounty ID for easy lookup
+    // Group submissions by Bounty ID
     const submissionsByBounty = (submissions || []).reduce((acc, sub) => {
         if (!acc[sub.itemId]) acc[sub.itemId] = [];
         acc[sub.itemId].push(sub);
@@ -20,362 +24,230 @@ const CreatorDashboard = () => {
     const selectedSubmissions = selectedBountyId ? (submissionsByBounty[selectedBountyId] || []) : [];
 
     const handleSelectWinner = (wallet) => {
-        if (!window.confirm("Are you sure you want to select this submission as the winner? This action is irreversible.")) return;
+        if (!window.confirm("Acknowledge: Selecting this submission as the primary winner will initiate the payout process. Proceed?")) return;
         selectWinner(selectedBountyId, wallet);
-        alert(`Winner Selected! ${wallet}`);
     };
 
     return (
-        <div className="creator-dashboard animate-fade-in">
-            <header className="dashboard-header">
-                <h1>Creator <span className="highlight">Platform</span></h1>
-                <p className="subtitle">Manage quests, review work, and distribute tokens.</p>
+        <div className="creator-container animate-fade-in">
+            <header className="page-header">
+                <div className="header-info">
+                    <h1 className="header-title">Creator Console</h1>
+                    <p className="header-subtitle">Review contributions and manage distributions for your SUI projects.</p>
+                </div>
             </header>
 
-            <div className="dashboard-layout">
-                {/* LEFT SIDEBAR: Quest List */}
-                <div className="quest-sidebar">
-                    <h3 className="section-title">My Quests</h3>
-                    <div className="quest-list">
+            <div className="creator-split-layout">
+                {/* Side Navigation: Active and Past Quests */}
+                <aside className="creator-sidebar">
+                    <h3 className="sidebar-h">Your Pipeline</h3>
+                    <div className="sidebar-list">
                         {bounties.filter(b => b.type === 'bounty' || b.type === 'project').map(bounty => (
                             <div
                                 key={bounty.id}
-                                className={`quest-item ${selectedBountyId === bounty.id ? 'active' : ''} ${bounty.status === 'completed' ? 'completed' : ''}`}
+                                className={`sidebar-item ${selectedBountyId === bounty.id ? 'active' : ''}`}
                                 onClick={() => setSelectedBountyId(bounty.id)}
                             >
-                                <div className="quest-info">
-                                    <h4>{bounty.title}</h4>
-                                    <span className="quest-meta">
-                                        {bounty.status === 'completed' ? (
-                                            <span className="badge-complete"><CheckCircle size={10} /> Finished</span>
-                                        ) : (
-                                            <span className="badge-active">Active</span>
-                                        )}
-                                        • {submissionsByBounty[bounty.id]?.length || 0} Subs
-                                    </span>
+                                <div className="item-txt">
+                                    <h4 className="item-title">{bounty.title}</h4>
+                                    <div className="item-meta-row">
+                                        <span className={`status-pill-small ${bounty.status}`}>
+                                            {bounty.status.toUpperCase()}
+                                        </span>
+                                        <span className="sub-count">{submissionsByBounty[bounty.id]?.length || 0} Submissions</span>
+                                    </div>
                                 </div>
-                                <ChevronRight size={16} className="chevron" />
+                                <ChevronRight size={16} className="item-chev" />
                             </div>
                         ))}
                     </div>
-                </div>
+                </aside>
 
-                {/* MAIN CONTENT: Detail View */}
-                <div className="dashboard-main">
+                {/* Main Action Area: Detail and Submission Review */}
+                <main className="creator-main-view">
                     {selectedBounty ? (
-                        <div className="bounty-detail-view animate-fade-in">
-                            <GlassCard className="bounty-header-card">
-                                <div className="bounty-top">
-                                    <h2>{selectedBounty.title}</h2>
-                                    <span className="reward-tag">{selectedBounty.reward} LOFI</span>
+                        <div className="bounty-management-view animate-fade-in">
+                            <SharpCard className="management-header-card">
+                                <div className="header-row">
+                                    <h2 className="header-h-text">{selectedBounty.title}</h2>
+                                    <div className="header-reward">{selectedBounty.reward} SUI</div>
                                 </div>
-                                <p className="bounty-status-desc">
+                                <div className="header-status-msg">
                                     {selectedBounty.status === 'completed'
-                                        ? `Winner selected: ${selectedBounty.winner}`
-                                        : "Reviewing submissions. Select a winner to close this quest."
+                                        ? <div className="msg-box success"><CheckCircle size={14} /> Winner assigned: {selectedBounty.winner}</div>
+                                        : <div className="msg-box pending"><Clock size={14} /> Reviewing {selectedSubmissions.length} active contributions</div>
                                     }
-                                </p>
-                            </GlassCard>
-
-                            <h3 className="section-title">Submissions ({selectedSubmissions.length})</h3>
-
-                            {selectedSubmissions.length === 0 ? (
-                                <div className="empty-subs">
-                                    <p>No submissions received yet for this quest.</p>
                                 </div>
-                            ) : (
-                                <div className="subs-list">
-                                    {selectedSubmissions.map((sub, idx) => {
-                                        const isWinner = selectedBounty.winner === sub.walletAddress;
-                                        return (
-                                            <GlassCard key={idx} className={`sub-card ${isWinner ? 'winner-card' : ''}`}>
-                                                <div className="sub-header">
-                                                    <div className="sub-user">
-                                                        <Wallet size={16} className="icon" />
-                                                        <span className="wallet">{sub.walletAddress}</span>
-                                                    </div>
-                                                    <span className="sub-date">
-                                                        {new Date(sub.submittedAt).toLocaleDateString()}
-                                                    </span>
-                                                </div>
+                            </SharpCard>
 
-                                                <div className="sub-content">
-                                                    <div className="link-row">
-                                                        <ExternalLink size={16} />
-                                                        <a href={sub.submissionLink} target="_blank" rel="noopener noreferrer">
-                                                            {sub.submissionLink}
+                            <div className="submissions-section">
+                                <h3 className="section-h-label">SUBMISSION QUEUE</h3>
+
+                                {selectedSubmissions.length === 0 ? (
+                                    <div className="empty-submissions-box">
+                                        <Inbox size={32} />
+                                        <p>No contributions received for this quest yet.</p>
+                                    </div>
+                                ) : (
+                                    <div className="submissions-grid-sharp">
+                                        {selectedSubmissions.map((sub, idx) => {
+                                            const isWinner = selectedBounty.winner === sub.walletAddress;
+                                            return (
+                                                <SharpCard key={idx} className={`submission-row-card ${isWinner ? 'winner' : ''}`}>
+                                                    <div className="sub-header-row">
+                                                        <div className="sub-identity">
+                                                            <div className="sub-avatar-circle">
+                                                                <Wallet size={16} />
+                                                            </div>
+                                                            <div className="sub-identity-txt">
+                                                                <span className="sub-wallet-addr monospaced">{sub.walletAddress}</span>
+                                                                <span className="sub-date-txt">{new Date(sub.submittedAt).toLocaleDateString()}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className="sub-action-btn">
+                                                          {isWinner ? (
+                                                              <div className="winner-pill">
+                                                                  <Trophy size={14} /> WINNER
+                                                              </div>
+                                                          ) : (
+                                                              selectedBounty.status !== 'completed' && (
+                                                                  <button
+                                                                      className="btn btn-outline small-btn"
+                                                                      onClick={() => handleSelectWinner(sub.walletAddress)}
+                                                                  >
+                                                                      Select Winner
+                                                                  </button>
+                                                              )
+                                                          )}
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="sub-asset-preview">
+                                                        <a href={sub.submissionLink} target="_blank" rel="noopener noreferrer" className="asset-link-box">
+                                                            <ExternalLink size={16} />
+                                                            <span>View Submitted Assets</span>
+                                                            <ArrowUpRight size={14} className="jump-icon" />
                                                         </a>
                                                     </div>
-                                                </div>
-
-                                                <div className="sub-actions">
-                                                    {isWinner ? (
-                                                        <div className="winner-badge">
-                                                            <Trophy size={16} /> WINNER
-                                                        </div>
-                                                    ) : (
-                                                        selectedBounty.status !== 'completed' && (
-                                                            <button
-                                                                className="btn-select-winner"
-                                                                onClick={() => handleSelectWinner(sub.walletAddress)}
-                                                            >
-                                                                <Gift size={16} /> Select as Winner
-                                                            </button>
-                                                        )
-                                                    )}
-                                                </div>
-                                            </GlassCard>
-                                        )
-                                    })}
-                                </div>
-                            )}
+                                                </SharpCard>
+                                            )
+                                        })}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     ) : (
-                        <div className="empty-selection">
-                            <Trophy size={48} className="empty-icon" />
-                            <h3>Select a Quest</h3>
-                            <p>Choose a quest from the sidebar to manage submissions.</p>
+                        <div className="empty-dashboard-state">
+                            <Layers size={48} className="empty-icon-main" />
+                            <h3 className="empty-dash-h">Project Overview</h3>
+                            <p className="empty-dash-p">Select an active quest from the left pipeline to manage submissions and verify work.</p>
                         </div>
                     )}
-                </div>
+                </main>
             </div>
 
             <style>{`
-                .creator-dashboard {
-                    padding: 40px 0;
-                    height: calc(100vh - 80px); /* Fill screen minus header roughly */
-                    display: flex;
-                    flex-direction: column;
+                .creator-container {
+                    max-width: 1200px;
+                    margin: 0 auto;
                 }
 
-                .dashboard-header {
-                    margin-bottom: 24px;
-                    flex-shrink: 0;
-                }
-
-                .dashboard-header h1 {
-                    font-size: 2rem;
-                    font-weight: 700;
-                }
-                
-                .dashboard-layout {
+                .creator-split-layout {
                     display: grid;
-                    grid-template-columns: 300px 1fr;
-                    gap: 24px;
-                    flex: 1;
-                    min-height: 0; /* Enable scrolling within grid items */
+                    grid-template-columns: 320px 1fr;
+                    gap: 32px;
+                    height: calc(100vh - 200px);
                 }
 
-                /* Sidebar */
-                .quest-sidebar {
-                    background: rgba(255,255,255,0.03);
-                    border: 1px solid var(--color-glass-border);
+                .creator-sidebar {
+                    background: white;
+                    border: 1px solid var(--color-border);
                     border-radius: var(--radius-lg);
                     display: flex;
                     flex-direction: column;
                     overflow: hidden;
-                }
-                
-                .section-title {
-                    padding: 16px;
-                    font-size: 0.9rem;
-                    text-transform: uppercase;
-                    letter-spacing: 1px;
-                    color: var(--color-text-secondary);
-                    background: rgba(255,255,255,0.02);
-                    border-bottom: 1px solid var(--color-glass-border);
-                    margin: 0;
+                    box-shadow: var(--shadow-sm);
                 }
 
-                .quest-list {
-                    flex: 1;
-                    overflow-y: auto;
-                }
-
-                .quest-item {
-                    padding: 16px;
-                    border-bottom: 1px solid var(--color-glass-border);
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    transition: background 0.2s;
-                }
-
-                .quest-item:hover {
-                    background: rgba(255,255,255,0.05);
-                }
-
-                .quest-item.active {
-                    background: rgba(255, 137, 6, 0.1);
-                    border-left: 3px solid var(--color-primary);
-                }
-
-                .quest-info h4 {
-                    font-size: 0.95rem;
-                    margin-bottom: 4px;
-                    color: var(--color-text);
-                }
-
-                .quest-meta {
-                    font-size: 0.8rem;
-                    color: var(--color-text-secondary);
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
-                }
-
-                .badge-active { color: #10b981; }
-                .badge-complete { color: var(--color-text-secondary); display: flex; align-items: center; gap: 4px; }
-                
-                .quest-item.completed {
-                    opacity: 0.7;
-                }
-                
-                .chevron {
-                    color: var(--color-text-secondary);
-                    opacity: 0;
-                    transition: opacity 0.2s;
-                }
-                .quest-item.active .chevron { opacity: 1; }
-
-                /* Main Content */
-                .dashboard-main {
-                    flex: 1;
-                    overflow-y: auto;
-                    padding-right: 8px; /* Scrollbar space */
-                }
-
-                .empty-selection {
-                    height: 100%;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    color: var(--color-text-secondary);
-                    background: rgba(255,255,255,0.02);
-                    border-radius: var(--radius-lg);
-                    border: 2px dashed var(--color-glass-border);
-                }
-                
-                .empty-icon {
-                    margin-bottom: 16px;
-                    opacity: 0.5;
-                }
-
-                /* Bounty Detail */
-                .bounty-header-card {
-                    padding: 24px;
-                    margin-bottom: 24px;
-                }
-
-                .bounty-top {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 8px;
-                }
-
-                .bounty-top h2 {
-                    font-size: 1.5rem;
-                }
-
-                .reward-tag {
-                    font-size: 1.1rem;
-                    font-weight: 700;
-                    color: var(--color-primary);
-                }
-                
-                .bounty-status-desc {
-                    color: var(--color-text-secondary);
-                }
-
-                .subs-list {
-                    display: grid;
-                    gap: 16px;
-                }
-
-                .sub-card {
+                .sidebar-h {
                     padding: 20px;
-                    border-left: 3px solid transparent;
-                }
-                
-                .sub-card.winner-card {
-                    border-color: var(--color-primary);
-                    background: rgba(255, 137, 6, 0.05);
-                }
-
-                .sub-header {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-bottom: 12px;
-                    font-size: 0.9rem;
-                    color: var(--color-text-secondary);
+                    font-size: 0.75rem;
+                    font-weight: 800;
+                    color: var(--color-text-muted);
+                    background: #f8fafc;
+                    border-bottom: 1px solid var(--color-border);
+                    letter-spacing: 0.05em;
                 }
 
-                .sub-user {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                }
-                
-                .wallet {
-                    font-family: monospace;
-                    color: var(--color-text);
-                }
+                .sidebar-list { flex: 1; overflow-y: auto; }
 
-                .link-row {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    background: rgba(255,255,255,0.03);
-                    padding: 10px;
-                    border-radius: var(--radius-sm);
-                    margin-bottom: 16px;
-                }
-                
-                .link-row a {
-                    color: var(--color-primary);
-                    text-decoration: underline;
-                }
-
-                .btn-select-winner {
-                    background: var(--color-primary);
-                    color: white;
-                    border: none;
-                    padding: 8px 16px;
-                    border-radius: var(--radius-sm);
-                    font-weight: 600;
+                .sidebar-item {
+                    padding: 20px;
+                    border-bottom: 1px solid #f1f5f9;
                     cursor: pointer;
                     display: flex;
                     align-items: center;
-                    gap: 8px;
-                    margin-left: auto;
-                    transition: background 0.2s;
-                }
-                
-                .btn-select-winner:hover {
-                    background: var(--color-primary-hover);
+                    justify-content: space-between;
+                    transition: all 0.2s;
                 }
 
-                .winner-badge {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    color: var(--color-primary);
-                    font-weight: 700;
-                    background: rgba(255, 137, 6, 0.1);
-                    padding: 8px 16px;
-                    border-radius: var(--radius-sm);
-                    width: fit-content;
-                    margin-left: auto;
-                }
-                
-                .empty-subs {
-                    text-align: center;
-                    padding: 40px;
-                    color: var(--color-text-secondary);
-                    font-style: italic;
+                .sidebar-item:hover { background: #f8fafc; }
+                .sidebar-item.active { background: #eff6ff; border-right: 3px solid var(--color-primary); }
+
+                .item-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; color: var(--color-text); }
+                .item-meta-row { display: flex; align-items: center; gap: 10px; }
+                .status-pill-small { font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 4px; }
+                .status-pill-small.active { color: #16a34a; background: #f0fdf4; }
+                .status-pill-small.completed { color: #64748b; background: #f1f5f9; }
+                .sub-count { font-size: 0.75rem; color: var(--color-text-secondary); font-weight: 600; }
+                .item-chev { color: #cbd5e1; opacity: 0; }
+                .sidebar-item.active .item-chev { opacity: 1; color: var(--color-primary); }
+
+                .creator-main-view { flex: 1; overflow-y: auto; padding-right: 4px; }
+
+                .management-header-card { padding: 32px !important; margin-bottom: 32px; }
+                .header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+                .header-h-text { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
+                .header-reward { font-size: 1.25rem; font-weight: 800; color: var(--color-primary); }
+
+                .msg-box { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; }
+                .msg-box.success { color: #16a34a; }
+                .msg-box.pending { color: var(--color-primary); }
+
+                .section-h-label { font-size: 0.75rem; font-weight: 800; color: var(--color-text-muted); letter-spacing: 0.05em; margin-bottom: 16px; }
+
+                .empty-submissions-box { text-align: center; padding: 60px; background: #f8fafc; border-radius: var(--radius-lg); border: 1px dashed var(--color-border); color: var(--color-text-muted); }
+
+                .submissions-grid-sharp { display: flex; flex-direction: column; gap: 16px; }
+                .submission-row-card { padding: 24px !important; }
+                .submission-row-card.winner { border-color: #bbf7d0 !important; background: #f0fdf4 !important; }
+
+                .sub-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+                .sub-identity { display: flex; align-items: center; gap: 12px; }
+                .sub-avatar-circle { width: 36px; height: 36px; border-radius: 50%; background: white; border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); }
+                .sub-identity-txt { display: flex; flex-direction: column; }
+                .sub-wallet-addr { font-size: 0.9rem; font-weight: 700; color: var(--color-text); }
+                .sub-date-txt { font-size: 0.75rem; color: var(--color-text-muted); }
+                .monospaced { font-family: monospace; }
+
+                .winner-pill { display: flex; align-items: center; gap: 6px; background: #16a34a; color: white; padding: 4px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; }
+
+                .asset-link-box { display: flex; align-items: center; gap: 10px; background: white; border: 1px solid var(--color-border); padding: 12px 16px; border-radius: var(--radius-sm); color: var(--color-text); font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
+                .asset-link-box:hover { border-color: var(--color-primary); color: var(--color-primary); }
+                .jump-icon { margin-left: auto; opacity: 0.5; }
+
+                .empty-dashboard-state { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; border: 1px dashed var(--color-border); border-radius: var(--radius-lg); text-align: center; padding: 40px; }
+                .empty-icon-main { color: var(--color-text-muted); margin-bottom: 24px; }
+                .empty-dash-h { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
+                .empty-dash-p { color: var(--color-text-muted); max-width: 320px; line-height: 1.5; }
+
+                .loading-state { padding: 100px; text-align: center; color: var(--color-text-muted); font-weight: 600; }
+
+                .small-btn { padding: 6px 12px !important; font-size: 0.8rem !important; }
+
+                @media (max-width: 1024px) {
+                    .creator-split-layout { grid-template-columns: 1fr; height: auto; }
+                    .creator-sidebar { max-height: 300px; }
                 }
             `}</style>
         </div>

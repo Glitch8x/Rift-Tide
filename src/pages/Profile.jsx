@@ -1,239 +1,283 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
-import GlassCard from '../components/UI/GlassCard';
-import { User, Mail, Award, LogOut, Shield, DollarSign } from 'lucide-react';
+import SharpCard from '../components/UI/GlassCard'; // Now SharpCard
+import { User, Mail, Award, LogOut, Shield, DollarSign, Wallet, CheckCircle, ExternalLink } from 'lucide-react';
 
+/**
+ * Profile Page - Redesigned for a professional contributor account view.
+ * inspired by First Dollar's personal account dashboard.
+ */
 const Profile = () => {
   const { user, logout } = useAuth();
   const { stats } = useData();
 
-  if (!user) return null; // Should be handled by ProtectedRoute, but safe check
+  if (!user) return null;
 
   return (
-    <div className="profile-page animate-fade-in">
-      <div className="profile-header">
-        <h1 className="page-title">My Profile</h1>
-      </div>
-
-      <div className="profile-grid">
-        {/* Main Info Card */}
-        <GlassCard className="profile-card main-info">
-          <div className="profile-cover"></div>
-          <div className="profile-content">
-            <div className="avatar-wrapper">
-              <img src={user.avatar} alt={user.name} className="profile-avatar" />
-            </div>
-
-            <div className="user-details">
-              <h2 className="user-name">{user.name}</h2>
-              <div className="user-id">
-                <Shield size={14} className="icon-small" />
-                <span>Level 42 Yeti</span>
-              </div>
-            </div>
-
-            <div className="contact-info">
-              <div className="info-row">
-                <Mail size={16} className="text-secondary" />
-                <span>{user.email}</span>
-              </div>
-            </div>
-
-            <button onClick={logout} className="btn-logout">
-              <LogOut size={16} />
+    <div className="profile-container animate-fade-in">
+      <header className="page-header">
+        <div className="header-info">
+          <h1 className="header-title">Account Settings</h1>
+          <p className="header-subtitle">Manage your contributor profile and view your network impact.</p>
+        </div>
+        <div className="header-actions">
+           <button onClick={logout} className="btn btn-outline text-danger">
+              <LogOut size={18} />
               Sign Out
-            </button>
-          </div>
-        </GlassCard>
+           </button>
+        </div>
+      </header>
 
-        {/* Stats Column */}
-        <div className="stats-column">
-          <GlassCard className="stat-card">
-            <div className="stat-icon bg-primary">
-              <DollarSign size={24} color="white" />
+      <div className="profile-main-grid">
+        <div className="profile-details-column">
+          <SharpCard className="account-card">
+            <div className="account-card-header">
+              <div className="account-avatar-large">
+                <img src={user.avatar} alt="" />
+              </div>
+              <div className="account-identity">
+                <h2 className="identity-name">{user.name}</h2>
+                <div className="identity-status">
+                  <Shield size={14} /> <span>Verified Contributor</span>
+                </div>
+              </div>
             </div>
-            <div>
-              <h3>${(user.earnings || 0).toLocaleString()} <span className="text-sm">USD</span></h3>
-              <p className="text-secondary">Total Earned</p>
-            </div>
-          </GlassCard>
 
-          <GlassCard className="stat-card">
-            <div className="stat-icon bg-accent">
-              <Award size={24} color="white" />
+            <div className="account-info-list">
+               <div className="info-item">
+                  <span className="info-label">EMAIL ADDRESS</span>
+                  <div className="info-value-row">
+                    <span className="info-value">{user.email || 'Not provided'}</span>
+                    <button className="text-btn">Change</button>
+                  </div>
+               </div>
+               <div className="info-item">
+                  <span className="info-label">CONNECTED WALLET</span>
+                  <div className="info-value-row">
+                    <span className="info-value monospaced">
+                       {user.walletAddress 
+                         ? `${user.walletAddress.substring(0, 12)}...${user.walletAddress.substring(user.walletAddress.length - 8)}`
+                         : 'No wallet connected'}
+                    </span>
+                    <button className="text-btn"><ExternalLink size={14} /></button>
+                  </div>
+               </div>
             </div>
-            <div>
-              <h3>{user.completedQuests || 0}</h3>
-              <p className="text-secondary">Quests Completed</p>
+          </SharpCard>
+
+          <h3 className="section-title-small">ACTIVE CONTRIBUTIONS</h3>
+          <SharpCard className="empty-activity-card">
+             <div className="empty-state-content">
+                <p className="empty-text">You don't have any active quest submissions currently under review.</p>
+                <button className="btn btn-primary">Browse Marketplace</button>
+             </div>
+          </SharpCard>
+        </div>
+
+        <div className="profile-stats-column">
+          <SharpCard className="impact-card">
+            <h3 className="impact-title">Your Network Impact</h3>
+            <div className="impact-stats-list">
+              <div className="impact-stat">
+                <div className="impact-icon-circle blue">
+                  <DollarSign size={20} />
+                </div>
+                <div className="impact-text">
+                  <p className="impact-val">${(user.earnings || 0).toLocaleString()}</p>
+                  <p className="impact-lab">Total Earned</p>
+                </div>
+              </div>
+              <div className="impact-stat">
+                <div className="impact-icon-circle green">
+                  <CheckCircle size={20} />
+                </div>
+                <div className="impact-text">
+                  <p className="impact-val">{user.completedQuests || 0}</p>
+                  <p className="impact-lab">Quests Completed</p>
+                </div>
+              </div>
+              <div className="impact-stat">
+                <div className="impact-icon-circle purple">
+                  <Award size={20} />
+                </div>
+                <div className="impact-text">
+                  <p className="impact-val">4.9 / 5.0</p>
+                  <p className="impact-lab">Contributor Rating</p>
+                </div>
+              </div>
             </div>
-          </GlassCard>
+          </SharpCard>
+
+          <SharpCard className="security-card">
+             <h3 className="security-title">Security & Privacy</h3>
+             <p className="security-text">Two-factor authentication is active for your account.</p>
+             <button className="btn btn-outline full-width">Security Settings</button>
+          </SharpCard>
         </div>
       </div>
-
-      {/* Recent Activity / "My Bounties" Section */}
-      <h2 className="section-title">My Active Quests</h2>
-      <GlassCard className="activity-section">
-        <div className="empty-state">
-          <p>You haven't joined any active quests yet.</p>
-          <button className="btn-link">Explore Opportunities &rarr;</button>
-        </div>
-      </GlassCard>
 
       <style>{`
-        .profile-page {
-          padding-top: 20px;
+        .profile-container {
+          max-width: 1100px;
+          margin: 0 auto;
         }
 
-        .page-title {
-          font-size: 1.8rem;
-          font-weight: 700;
-          margin-bottom: 24px;
+        .text-danger {
+          color: #ef4444 !important;
+          border-color: #fecaca !important;
         }
 
-        .profile-grid {
+        .text-danger:hover {
+          background: #fef2f2 !important;
+        }
+
+        .profile-main-grid {
           display: grid;
-          grid-template-columns: 2fr 1fr;
-          gap: 24px;
+          grid-template-columns: 1.5fr 1fr;
+          gap: 32px;
+        }
+
+        .account-card {
+          padding: 32px !important;
           margin-bottom: 32px;
         }
 
-        .profile-card {
-          padding: 0;
+        .account-card-header {
+          display: flex;
+          align-items: center;
+          gap: 24px;
+          margin-bottom: 40px;
+          padding-bottom: 32px;
+          border-bottom: 1px solid var(--color-border);
+        }
+
+        .account-avatar-large {
+          width: 80px;
+          height: 80px;
+          border-radius: 20px;
+          background: var(--color-primary);
           overflow: hidden;
-          position: relative;
         }
 
-        .profile-cover {
-          height: 120px;
-          background: linear-gradient(to right, var(--color-primary), var(--color-accent));
-          opacity: 0.8;
-        }
+        .account-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
 
-        .profile-content {
-          padding: 24px;
-          padding-top: 0;
-          position: relative;
-        }
-
-        .avatar-wrapper {
-          margin-top: -50px;
-          margin-bottom: 16px;
-        }
-
-        .profile-avatar {
-          width: 100px;
-          height: 100px;
-          border-radius: 50%;
-          border: 4px solid var(--color-bg);
-          background: #2a2a2a;
-          object-fit: cover;
-        }
-
-        .user-name {
+        .identity-name {
           font-size: 1.5rem;
           font-weight: 700;
           margin-bottom: 4px;
         }
 
-        .user-id {
+        .identity-status {
           display: flex;
           align-items: center;
           gap: 6px;
+          font-size: 0.85rem;
+          font-weight: 600;
           color: var(--color-primary);
-          font-weight: 500;
-          font-size: 0.9rem;
+        }
+
+        .info-item {
+          margin-bottom: 24px;
+        }
+
+        .info-label {
+          display: block;
+          font-size: 0.7rem;
+          font-weight: 700;
+          color: var(--color-text-muted);
+          letter-spacing: 0.05em;
+          margin-bottom: 8px;
+        }
+
+        .info-value-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .info-value {
+          font-size: 1rem;
+          font-weight: 600;
+          color: var(--color-text);
+        }
+
+        .monospaced { font-family: monospace; font-size: 0.9rem; }
+
+        .text-btn {
+          background: none;
+          border: none;
+          color: var(--color-primary);
+          font-weight: 700;
+          font-size: 0.85rem;
+          cursor: pointer;
+        }
+
+        .section-title-small {
+          font-size: 0.75rem;
+          font-weight: 700;
+          color: var(--color-text-muted);
+          letter-spacing: 0.05em;
           margin-bottom: 16px;
         }
 
-        .contact-info {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-          margin-bottom: 24px;
-          padding-bottom: 24px;
-          border-bottom: 1px solid var(--color-glass-border);
+        .empty-activity-card {
+          padding: 60px 40px !important;
+          text-align: center;
         }
 
-        .info-row {
-          display: flex;
-          align-items: center;
-          gap: 10px;
+        .empty-text {
           color: var(--color-text-secondary);
+          margin-bottom: 20px;
+          max-width: 320px;
+          margin-left: auto;
+          margin-right: auto;
         }
 
-        .btn-logout {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          padding: 10px 16px;
-          border: 1px solid var(--color-glass-border);
-          background: rgba(255, 77, 79, 0.1);
-          color: #ff4d4f;
-          border-radius: var(--radius-sm);
-          cursor: pointer;
-          font-weight: 500;
-          transition: all 0.2s;
+        .impact-card {
+           padding: 24px !important;
+           margin-bottom: 24px;
         }
 
-        .btn-logout:hover {
-          background: rgba(255, 77, 79, 0.2);
-        }
+        .impact-title { font-size: 1.1rem; margin-bottom: 24px; }
 
-        /* Stats Column */
-        .stats-column {
+        .impact-stats-list {
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: 20px;
         }
 
-        .stat-card {
-          padding: 24px;
+        .impact-stat {
           display: flex;
           align-items: center;
           gap: 16px;
         }
 
-        .stat-icon {
-          width: 48px;
-          height: 48px;
-          border-radius: 12px;
+        .impact-icon-circle {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
         }
 
-        .bg-primary { background: var(--color-primary); }
-        .bg-accent { background: var(--color-accent, #7f5af0); }
+        .impact-icon-circle.blue { background: #eff6ff; color: #2563eb; }
+        .impact-icon-circle.green { background: #f0fdf4; color: #16a34a; }
+        .impact-icon-circle.purple { background: #f3e8ff; color: #9333ea; }
 
-        .text-sm { font-size: 0.8rem; font-weight: 400; color: var(--color-text-secondary); }
+        .impact-val { font-size: 1.15rem; font-weight: 700; }
+        .impact-lab { font-size: 0.85rem; color: var(--color-text-muted); }
 
-        .section-title {
-          font-size: 1.2rem;
-          font-weight: 600;
-          margin-bottom: 16px;
+        .security-card {
+          padding: 24px !important;
         }
 
-        .activity-section {
-          padding: 40px;
-          text-align: center;
-        }
+        .security-title { font-size: 1.1rem; margin-bottom: 12px; }
+        .security-text { font-size: 0.9rem; color: var(--color-text-secondary); margin-bottom: 20px; }
 
-        .empty-state {
-          color: var(--color-text-secondary);
-        }
-
-        .btn-link {
-          background: none;
-          border: none;
-          color: var(--color-primary);
-          font-weight: 500;
-          margin-top: 8px;
-          cursor: pointer;
-        }
-
-        @media (max-width: 768px) {
-          .profile-grid {
+        @media (max-width: 1024px) {
+          .profile-main-grid {
             grid-template-columns: 1fr;
           }
         }

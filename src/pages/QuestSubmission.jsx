@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { useCurrentAccount } from '@mysten/dapp-kit';
-import GlassCard from '../components/UI/GlassCard';
-import { ArrowLeft, Link as LinkIcon, Send, Wallet, AlertCircle } from 'lucide-react';
+import SharpCard from '../components/UI/GlassCard'; // Now SharpCard
+import { ArrowLeft, Link as LinkIcon, Send, Wallet, AlertCircle, FileText, CheckCircle2 } from 'lucide-react';
 
+/**
+ * QuestSubmission Page - Redesigned for a formal, professional FinTech entry.
+ * Follows the First Dollar style with sharp layouts and clear verification steps.
+ */
 const QuestSubmission = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -14,20 +18,15 @@ const QuestSubmission = () => {
     const isConnected = !!currentAccount;
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submissionLink, setSubmissionLink] = useState('');
+    const [summary, setSummary] = useState('');
 
-    const quest = bounties.find(b => b.id.toString() === id);
-
-    useEffect(() => {
-        if (!quest) {
-            // detailed handling could go here
-        }
-    }, [quest]);
+    const quest = bounties?.find(b => b.id.toString() === id);
 
     if (!quest) {
         return (
-            <div className="app-container" style={{ padding: '40px', textAlign: 'center' }}>
-                <h2>Quest not found</h2>
-                <button className="btn-back" onClick={() => navigate(-1)}>Go Back</button>
+            <div className="container" style={{ padding: '80px 20px', textAlign: 'center' }}>
+                <h2 style={{ marginBottom: '16px' }}>Quest not found</h2>
+                <button className="btn btn-outline" onClick={() => navigate(-1)}>Return to Gallery</button>
             </div>
         );
     }
@@ -36,248 +35,242 @@ const QuestSubmission = () => {
         e.preventDefault();
 
         if (!isConnected) {
-            alert("Please connect your wallet first!");
+            alert("Please connect your Sui wallet (Slush) to proceed with submission.");
             return;
         }
 
         setIsSubmitting(true);
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
-        // Simulate network request
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
-        // Call context action (joinBounty simulates "submission" in our mock)
         joinBounty(quest.id, {
             submissionLink,
-            walletAddress: walletAddress || 'Not Connected',
+            summary,
+            walletAddress: walletAddress || '0x...',
             submittedAt: new Date().toISOString()
         });
 
-        // Navigate back to quest detail (it will show as "submitted" if we tracked state properly, 
-        // but for now we just redirect to home or show success)
         navigate('/quest/' + id);
     };
 
     return (
-        <div className="quest-submission-page animate-fade-in">
-            <button className="btn-back" onClick={() => navigate(-1)}>
-                <ArrowLeft size={18} /> Back to Quest
+        <div className="submission-wrapper animate-fade-in">
+            <button className="breadcrumb-back" onClick={() => navigate(-1)} style={{ marginBottom: '32px' }}>
+                <ArrowLeft size={16} /> Back to Asset Details
             </button>
 
-            <div className="submission-container">
-                <header className="submission-header">
-                    <h1>Submit Work for <span className="highlight">{quest.title}</span></h1>
-                    <p className="subtitle">{quest.reward} LOFI • {quest.deadline}</p>
+            <div className="submission-content">
+                <header className="submission-header-sharp">
+                    <span className="submission-badge">FORMAL SUBMISSION</span>
+                    <h1 className="submission-title">Submit Contribution</h1>
+                    <p className="submission-subtitle">Project: <strong>{quest.title}</strong></p>
                 </header>
 
-                <GlassCard className="submission-form-card">
+                <SharpCard className="submission-form-sharp">
                     <form onSubmit={handleSubmit}>
-
-                        {/* 1. Wallet Connection Check */}
-                        <div className="form-group">
-                            <label className="form-label">Connected Wallet</label>
-                            {isConnected ? (
-                                <div className="wallet-display connected">
-                                    <Wallet size={18} className="text-primary" />
-                                    <span className="wallet-address">{walletAddress}</span>
-                                    <span className="status-badge">Connected</span>
+                        {/* 1. Network Identity */}
+                        <div className="form-section">
+                            <h3 className="section-h-small">1. VERIFY IDENTITY</h3>
+                            <div className={`identity-display-box ${isConnected ? 'verified' : 'unverified'}`}>
+                                <div className="identity-icon">
+                                    {isConnected ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
                                 </div>
-                            ) : (
-                                <div className="wallet-display disconnected">
-                                    <AlertCircle size={18} className="text-error" />
-                                    <span>Wallet not connected. Please log out and connect your wallet.</span>
+                                <div className="identity-text">
+                                    <p className="id-label">{isConnected ? 'SUI WALLET CONNECTED' : 'WALLET DISCONNECTED'}</p>
+                                    <p className="id-val monospaced">
+                                        {isConnected 
+                                            ? `${walletAddress.substring(0, 16)}...${walletAddress.substring(walletAddress.length - 12)}`
+                                            : 'Please connect via Slush Wallet'}
+                                    </p>
                                 </div>
-                            )}
-                            <p className="helper-text">Rewards will be sent to this address upon approval.</p>
-                        </div>
-
-                        {/* 2. Submission Link */}
-                        <div className="form-group">
-                            <label className="form-label">Proof of Work (Link)</label>
-                            <div className="input-wrapper">
-                                <LinkIcon size={18} className="input-icon" />
-                                <input
-                                    type="url"
-                                    placeholder="https://github.com/..."
-                                    className="form-input"
-                                    required
-                                    value={submissionLink}
-                                    onChange={(e) => setSubmissionLink(e.target.value)}
-                                />
                             </div>
-                            <p className="helper-text">Link to your Github PR, Google Doc, or Design File.</p>
+                            <p className="form-help">Your wallet address will be used for reward distribution upon approval.</p>
                         </div>
 
-                        {/* 3. Submit Button */}
-                        <button
-                            type="submit"
-                            className="btn-submit-quest"
-                            disabled={isSubmitting || !isConnected}
-                        >
-                            {isSubmitting ? 'Submitting...' : (
-                                <>Submit Work <Send size={16} /></>
-                            )}
-                        </button>
+                        {/* 2. Asset Link */}
+                        <div className="form-section">
+                            <h3 className="section-h-small">2. CONTRIBUTION ASSETS</h3>
+                            <div className="field-group">
+                                <label className="field-label">Reference URL (GitHub, Doc, Design)</label>
+                                <div className="input-with-icon">
+                                    <LinkIcon size={18} className="field-icon" />
+                                    <input
+                                        type="url"
+                                        placeholder="https://github.com/org/repo/pull/1"
+                                        className="sharp-input"
+                                        required
+                                        value={submissionLink}
+                                        onChange={(e) => setSubmissionLink(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="field-group">
+                                <label className="field-label">Executive Summary</label>
+                                <div className="input-with-icon top">
+                                    <FileText size={18} className="field-icon" />
+                                    <textarea
+                                        placeholder="Briefly describe your contribution and key outcomes..."
+                                        className="sharp-textarea"
+                                        rows={4}
+                                        value={summary}
+                                        onChange={(e) => setSummary(e.target.value)}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* 3. Execution */}
+                        <div className="form-action-area">
+                            <button
+                                type="submit"
+                                className="btn btn-primary full-width large-btn"
+                                disabled={isSubmitting || !isConnected}
+                            >
+                                {isSubmitting ? (
+                                    <>Processing Submission...</>
+                                ) : (
+                                    <>Finalize Submission <Send size={16} /></>
+                                )}
+                            </button>
+                            <p className="terms-text">
+                                By submitting, you agree to the LOFI-QUEST contribution guidelines and authorize the network to verify your work.
+                            </p>
+                        </div>
                     </form>
-                </GlassCard>
+                </SharpCard>
             </div>
 
             <style>{`
-                .quest-submission-page {
-                    max-width: 700px;
+                .submission-wrapper {
+                    max-width: 800px;
                     margin: 0 auto;
-                    padding-bottom: 40px;
                 }
 
-                .btn-back {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    background: none;
-                    border: none;
-                    color: var(--color-text-secondary);
-                    cursor: pointer;
-                    margin-bottom: 24px;
-                    font-size: 0.9rem;
-                    transition: color 0.2s;
-                }
-                .btn-back:hover { color: var(--color-text); }
-
-                .submission-header {
-                    margin-bottom: 32px;
+                .submission-header-sharp {
                     text-align: center;
+                    margin-bottom: 40px;
                 }
 
-                .submission-header h1 {
-                    font-size: 1.8rem;
-                    font-weight: 700;
-                    margin-bottom: 8px;
-                    line-height: 1.3;
-                }
-
-                .subtitle {
-                    color: var(--color-text-secondary);
-                    font-size: 1.1rem;
-                }
-
-                .submission-form-card {
-                    padding: 32px;
-                }
-
-                .form-group {
-                    margin-bottom: 24px;
-                }
-
-                .form-label {
-                    display: block;
-                    font-size: 0.9rem;
-                    font-weight: 600;
-                    margin-bottom: 12px;
-                    color: var(--color-text);
-                }
-
-                /* Wallet Display Styles */
-                .wallet-display {
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    padding: 12px 16px;
-                    border-radius: var(--radius-md);
-                    border: 1px solid var(--color-glass-border);
-                    background: rgba(255,255,255,0.03);
-                }
-
-                .wallet-display.connected {
-                    border-color: rgba(16, 185, 129, 0.3);
-                    background: rgba(16, 185, 129, 0.05);
-                }
-
-                .wallet-address {
-                    font-family: monospace;
-                    font-size: 0.95rem;
-                    color: var(--color-text);
-                    flex: 1;
-                }
-
-                .status-badge {
-                    font-size: 0.75rem;
-                    background: rgba(16, 185, 129, 0.2);
-                    color: #10b981;
-                    padding: 2px 8px;
+                .submission-badge {
+                    font-size: 0.7rem;
+                    font-weight: 800;
+                    letter-spacing: 0.1em;
+                    color: var(--color-primary);
+                    background: var(--color-primary-soft);
+                    padding: 4px 12px;
                     border-radius: 4px;
-                }
-                
-                .btn-connect-small {
-                    margin-left: auto;
-                    background: var(--color-primary);
-                    border: none;
-                    color: white;
-                    padding: 6px 12px;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-size: 0.8rem;
+                    border: 1px solid rgba(37, 99, 235, 0.1);
                 }
 
-                .input-wrapper {
-                    display: flex;
-                    align-items: center;
-                    background: rgba(255,255,255,0.03);
-                    border: 1px solid var(--color-glass-border);
-                    border-radius: var(--radius-md);
-                    padding: 0 12px;
-                    transition: border-color 0.2s;
+                .submission-title {
+                    font-size: 2.25rem;
+                    font-weight: 800;
+                    margin: 16px 0 8px;
+                    letter-spacing: -0.02em;
                 }
 
-                .input-wrapper:focus-within {
-                    border-color: var(--color-primary);
-                }
-
-                .input-icon {
+                .submission-subtitle {
                     color: var(--color-text-secondary);
-                    margin-right: 8px;
-                }
-
-                .form-input {
-                    flex: 1;
-                    background: transparent;
-                    border: none;
-                    padding: 14px 0;
-                    color: var(--color-text);
-                    outline: none;
                     font-size: 1rem;
                 }
 
-                .helper-text {
-                    font-size: 0.8rem;
-                    color: var(--color-text-secondary);
-                    margin-top: 8px;
+                .submission-form-sharp {
+                    padding: 48px !important;
                 }
 
-                .btn-submit-quest {
-                    width: 100%;
-                    padding: 16px;
-                    background: var(--color-primary);
-                    color: white;
-                    border: none;
-                    border-radius: var(--radius-md);
-                    font-size: 1.1rem;
-                    font-weight: 600;
-                    cursor: pointer;
+                .form-section {
+                    margin-bottom: 40px;
+                }
+
+                .section-h-small {
+                    font-size: 0.75rem;
+                    font-weight: 800;
+                    color: var(--color-text-muted);
+                    margin-bottom: 16px;
+                    letter-spacing: 0.05em;
+                }
+
+                .identity-display-box {
                     display: flex;
                     align-items: center;
-                    justify-content: center;
-                    gap: 10px;
-                    margin-top: 8px;
+                    gap: 16px;
+                    padding: 16px 20px;
+                    border-radius: var(--radius-md);
+                    border: 1px solid var(--color-border);
+                    background: #f8fafc;
+                }
+
+                .identity-display-box.verified {
+                    border-color: #bbf7d0;
+                    background: #f0fdf4;
+                }
+
+                .identity-display-box.verified .identity-icon { color: #16a34a; }
+                .identity-display-box.unverified .identity-icon { color: #ef4444; }
+
+                .id-label { font-size: 0.7rem; font-weight: 800; color: var(--color-text-muted); margin-bottom: 4px; }
+                .id-val { font-size: 0.9rem; font-weight: 700; color: var(--color-text); }
+                .monospaced { font-family: monospace; }
+
+                .form-help { font-size: 0.8rem; color: var(--color-text-muted); margin-top: 12px; }
+
+                .field-group { margin-bottom: 24px; }
+
+                .field-label {
+                    display: block;
+                    font-size: 0.85rem;
+                    font-weight: 700;
+                    color: var(--color-text-secondary);
+                    margin-bottom: 10px;
+                }
+
+                .input-with-icon {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    background: white;
+                    border: 1px solid var(--color-border);
+                    border-radius: var(--radius-md);
+                    padding: 0 16px;
                     transition: all 0.2s;
                 }
 
-                .btn-submit-quest:hover:not(:disabled) {
-                    background: var(--color-primary-hover);
-                    transform: translateY(-2px);
+                .input-with-icon.top { align-items: flex-start; padding-top: 14px; }
+
+                .input-with-icon:focus-within {
+                    border-color: var(--color-primary);
+                    box-shadow: 0 0 0 4px var(--color-primary-soft);
                 }
-                
-                .btn-submit-quest:disabled {
-                    opacity: 0.5;
-                    cursor: not-allowed;
+
+                .field-icon { color: var(--color-text-muted); }
+
+                .sharp-input, .sharp-textarea {
+                    flex: 1;
+                    background: transparent;
+                    border: none;
+                    outline: none;
+                    padding: 14px 0;
+                    font-size: 1rem;
+                    color: var(--color-text);
+                    font-family: inherit;
+                }
+
+                .large-btn { padding: 18px !important; font-size: 1.1rem !important; }
+
+                .terms-text {
+                    text-align: center;
+                    font-size: 0.75rem;
+                    line-height: 1.5;
+                    color: var(--color-text-muted);
+                    margin-top: 24px;
+                    max-width: 480px;
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+
+                @media (max-width: 640px) {
+                    .submission-form-sharp { padding: 32px 24px !important; }
                 }
             `}</style>
         </div>

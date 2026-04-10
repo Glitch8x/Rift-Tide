@@ -1,150 +1,91 @@
 import React, { useState } from 'react';
-import { Home, Compass, Banknote, PlusCircle, Settings, LogOut, User, Trophy } from 'lucide-react';
+import { Home, Compass, Banknote, PlusCircle, Settings, LogOut, User, Trophy, LayoutDashboard } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
 import PostBountyModal from '../Modals/PostBountyModal';
 
+/**
+ * Sidebar component - Redesigned for a professional FinTech aesthetic
+ * inspired by First Dollar.
+ */
 const Sidebar = () => {
   const dataContext = useData();
   const { postBounty, notifications } = dataContext || { postBounty: () => { }, notifications: [] };
   const auth = useAuth();
   const user = auth?.user;
-  // const user = { name: 'Yeti Believer', level: 1 };
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // Debug log
-  // if (!auth) console.error("Sidebar: AuthContext is missing!");
+  const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
-    { icon: Home, label: 'Home', path: '/' },
-    { icon: Compass, label: 'Explore', path: '/explore' },
-    { icon: Banknote, label: 'Grants', path: '/grants' },
+    { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+    { icon: Compass, label: 'Marketplace', path: '/explore' },
+    { icon: Banknote, label: 'Staking & Grants', path: '/grants' },
     { icon: Trophy, label: 'Leaderboard', path: '/leaderboard' },
-    { icon: User, label: 'Profile', path: '/profile' },
+    { icon: User, label: 'My Profile', path: '/profile' },
   ];
 
   const handlePostBounty = (newBounty) => {
     postBounty(newBounty);
   };
 
-  // Mobile Toggle state
-  const [isOpen, setIsOpen] = useState(false);
-
-  // Close sidebar when clicking a link on mobile
   const handleNavClick = () => {
-    if (window.innerWidth < 768) setIsOpen(false);
+    if (window.innerWidth < 1024) setIsOpen(false);
   };
 
   return (
     <>
-      {/* Mobile Hamburger Button */}
-      <button
-        className="mobile-menu-toggle mobile-only"
-        onClick={() => setIsOpen(!isOpen)}
-        style={{
-          position: 'fixed',
-          top: '16px',
-          left: '16px',
-          zIndex: 200,
-          background: 'var(--color-bg-card)',
-          border: '1px solid var(--color-glass-border)',
-          borderRadius: '8px',
-          padding: '8px',
-          color: 'var(--color-text)'
-        }}
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          {isOpen ? <path d="M18 6L6 18M6 6l12 12" /> : <path d="M3 12h18M3 6h18M3 18h18" />}
-        </svg>
-      </button>
+      {/* Mobile Header Bar */}
+      <div className="mobile-header mobile-only">
+        <h1 className="logo-text">LOFI <span className="logo-accent">QUEST</span></h1>
+        <button className="menu-toggle" onClick={() => setIsOpen(!isOpen)}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            {isOpen ? <path d="M18 6L6 18M6 6l12 12" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
+          </svg>
+        </button>
+      </div>
 
-      {/* Sidebar Overlay for Mobile */}
-      {isOpen && (
-        <div
-          className="sidebar-overlay mobile-only"
-          onClick={() => setIsOpen(false)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.5)',
-            zIndex: 90,
-            backdropFilter: 'blur(2px)'
-          }}
-        />
-      )}
+      <aside className={`sidebar-container ${isOpen ? 'show' : ''}`}>
+        <div className="sidebar-inner">
+          <div className="sidebar-header">
+            <h1 className="logo-text">LOFI <span className="logo-accent">QUEST</span></h1>
+          </div>
 
-      <aside className={`sidebar glass-panel ${isOpen ? 'open' : ''}`}>
-        <div className="logo-container">
-          <h1 className="logo">Lofi <span className="highlight">Quests</span></h1>
-        </div>
-
-        <div className="sidebar-scroll">
-          <nav className="nav-menu">
+          <nav className="sidebar-nav">
+            <p className="nav-group-title">MAIN MENU</p>
             {navItems.map((item) => (
               <NavLink
                 key={item.label}
                 to={item.path}
-                className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
                 onClick={handleNavClick}
               >
-                <item.icon size={20} />
+                <item.icon size={20} className="link-icon" />
                 <span>{item.label}</span>
               </NavLink>
             ))}
           </nav>
 
-          <div className="sidebar-action">
-            <button className="btn-primary full-width" onClick={() => setIsModalOpen(true)}>
-              <PlusCircle size={18} style={{ marginRight: '8px' }} />
-              Post Bounty
-            </button>
-          </div>
-
-          <div className="user-section">
-            <div className="user-avatar" />
-            <div className="user-info">
-              <p className="username">{user?.name || user?.walletAddress || 'Yeti Believer'}</p>
-              <p className="user-level">Lvl {user?.level || 1}</p>
+          <div className="sidebar-footer">
+            <div className="user-card">
+              <div className="user-avatar-small">
+                 {user?.name?.charAt(0) || 'Y'}
+              </div>
+              <div className="user-details">
+                <p className="user-name-text">{user?.name || 'Yeti'}</p>
+                <p className="user-wallet-text">
+                  {user?.walletAddress 
+                    ? `${user.walletAddress.substring(0, 6)}...${user.walletAddress.substring(user.walletAddress.length - 4)}`
+                    : 'Not Connected'
+                  }
+                </p>
+              </div>
+              <button className="settings-btn" onClick={() => auth.logout()} title="Sign Out">
+                <LogOut size={16} />
+              </button>
             </div>
-            <NavLink to="/admin" className="user-action" title="Admin Access">
-              <Settings size={18} />
-            </NavLink>
-            <button className="user-action" onClick={auth.logout} title="Logout" style={{ background: 'none', border: 'none', padding: 4 }}>
-              <LogOut size={18} />
-            </button>
           </div>
         </div>
-
-
-        {/* Simple Notification Toast/Badge Area (Mock) */}
-        {notifications && notifications.length > 0 && !notifications[0].read && (
-          <div className="notification-toast animate-fade-in">
-            <p className="notif-text">🎉 1 New Payout!</p>
-          </div>
-        )}
-
-        <style>{`
-            .notification-toast {
-                position: absolute;
-                bottom: 90px;
-                left: 20px;
-                right: 20px;
-                background: linear-gradient(135deg, #10b981, #059669);
-                padding: 10px;
-                border-radius: 8px;
-                color: white;
-                font-size: 0.85rem;
-                font-weight: 600;
-                text-align: center;
-                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-                animation: slideUp 0.3s ease-out;
-            }
-            @keyframes slideUp {
-                from { transform: translateY(10px); opacity: 0; }
-                to { transform: translateY(0); opacity: 1; }
-            }
-        `}</style>
 
         <PostBountyModal
           isOpen={isModalOpen}
@@ -153,210 +94,181 @@ const Sidebar = () => {
         />
 
         <style>{`
-        .sidebar {
-          width: 260px;
-          height: calc(100vh - 32px);
-          position: fixed;
-          left: 16px;
-          top: 16px;
-          padding: 24px;
-          display: flex;
-          flex-direction: column;
-          z-index: 100;
-          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          justify-content: flex-start; /* Force content to top */
-        }
+          .sidebar-container {
+            width: 280px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: var(--color-surface);
+            border-right: 1px solid var(--color-border);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+          }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-110%);
-                left: 0;
-                top: 0;
-                height: 100vh;
-                width: 280px;
-                border-radius: 0;
-                border-right: 1px solid var(--color-glass-border);
-                background: var(--color-bg-card); /* Less transparent on mobile for legibility */
-            }
-            .sidebar.open {
-                transform: translateX(0);
-            }
-            .mobile-only {
-                display: block;
-            }
-            .mobile-menu-toggle {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .mobile-only {
-                display: none;
-            }
-        }
-
-        .logo {
-          font-size: 1.5rem;
-          font-weight: 700;
-          margin-bottom: 20px;
-          letter-spacing: -0.5px;
-        }
-
-        .sidebar-scroll {
-            flex: 1;
-            overflow-y: auto;
+          .sidebar-inner {
+            height: 100%;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            padding-right: 4px; /* Space for scrollbar if visible */
-        }
+            padding: 32px 20px;
+          }
 
-        /* Hide scrollbar for Chrome, Safari and Opera */
-        .sidebar-scroll::-webkit-scrollbar {
+          .sidebar-header {
+            margin-bottom: 48px;
+            padding-left: 12px;
+          }
+
+          .logo-text {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--color-text);
+          }
+
+          .logo-accent {
+            color: var(--color-primary);
+          }
+
+          .nav-group-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--color-text-muted);
+            letter-spacing: 0.05em;
+            margin-bottom: 16px;
+            padding-left: 12px;
+          }
+
+          .sidebar-nav {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+          }
+
+          .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            color: var(--color-text-secondary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+          }
+
+          .sidebar-link:hover {
+            background: var(--color-bg);
+            color: var(--color-text);
+          }
+
+          .sidebar-link.active {
+            background: var(--color-primary-soft);
+            color: var(--color-primary);
+          }
+
+          .link-icon {
+            transition: transform 0.2s;
+          }
+
+          .sidebar-link.active .link-icon {
+            transform: scale(1.1);
+          }
+
+          .sidebar-footer {
+            margin-top: auto;
+            padding-top: 24px;
+            border-top: 1px solid var(--color-border);
+          }
+
+          .user-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--color-bg);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+          }
+
+          .user-avatar-small {
+            width: 32px;
+            height: 32px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+          }
+
+          .user-details {
+            flex: 1;
+            min-width: 0;
+          }
+
+          .user-name-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .user-wallet-text {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            font-family: monospace;
+          }
+
+          .settings-btn {
+            background: none;
+            border: none;
+            color: var(--color-text-muted);
+            padding: 4px;
+            transition: color 0.2s;
+          }
+
+          .settings-btn:hover {
+            color: #ef4444;
+          }
+
+          /* Mobile Styles */
+          .mobile-header {
             display: none;
-        }
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: var(--color-surface);
+            border-bottom: 1px solid var(--color-border);
+            padding: 0 20px;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 900;
+          }
 
-        /* Hide scrollbar for IE, Edge and Firefox */
-        .sidebar-scroll {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
-        }
+          .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--color-text);
+          }
 
-        .highlight {
-          color: var(--color-primary);
-        }
-
-        .nav-menu {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-          flex: 0 0 auto !important; /* Force no growth */
-          margin-bottom: 20px;
-        }
-
-        .nav-item {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          padding: 12px 16px;
-          border-radius: var(--radius-md);
-          color: var(--color-text-secondary);
-          font-weight: 500;
-          transition: all 0.2s ease;
-        }
-
-        .nav-item:hover, .nav-item.active {
-          background: rgba(255, 255, 255, 0.05);
-          color: var(--color-text);
-        }
-
-        .nav-item.active {
-          background: rgba(59, 130, 246, 0.1); 
-          color: var(--color-primary);
-          box-shadow: 0 0 15px rgba(59, 130, 246, 0.15); /* Soft glow */
-        }
-
-        .sidebar-action {
-          margin-bottom: 24px;
-        }
-
-        .full-width {
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .user-section {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          margin-top: 20px; /* Separate from content above */
-          padding: 12px 16px; /* Inner padding for the bar look */
-          background: rgba(0, 0, 0, 0.2); /* Darker background for contrast */
-          border-radius: 16px;
-          border: 1px solid var(--color-glass-border);
-        }
-
-        .user-avatar {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-        }
-
-        .user-info {
-          flex: 1;
-        }
-
-        .username {
-          font-size: 0.9rem;
-          font-weight: 600;
-        }
-
-        .user-level {
-          font-size: 0.75rem;
-          color: var(--color-text-secondary);
-        }
-
-        .user-action {
-          cursor: pointer;
-          color: var(--color-text-secondary);
-          transition: color 0.2s;
-          margin-left: auto; /* Push to the right edge of the bar */
-          display: flex;
-          align-items: center;
-          padding: 4px;
-        }
-
-        .user-action:hover {
-          color: var(--color-text);
-        }
-
-        .wallet-section {
-          margin-bottom: 16px;
-          padding-top: 16px;
-          border-top: 1px solid var(--color-glass-border);
-        }
-
-        .btn-wallet {
-          width: 100%;
-          padding: 10px;
-          border-radius: var(--radius-md);
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid var(--color-glass-border);
-          color: var(--color-text);
-          font-weight: 500;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 10px;
-          transition: all 0.2s;
-        }
-
-        .btn-wallet:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: var(--color-primary);
-        }
-
-        .btn-wallet.connected {
-          background: rgba(59, 130, 246, 0.1);
-          border-color: var(--color-primary);
-          color: var(--color-primary);
-        }
-
-        .wallet-indicator {
-          width: 8px;
-          height: 8px;
-          border-radius: 50%;
-          background: #10b981; /* Green */
-          box-shadow: 0 0 8px #10b981;
-        }
-      `}</style>
-      </aside >
+          @media (max-width: 1024px) {
+            .mobile-header { display: flex; }
+            .sidebar-container {
+              transform: translateX(-100%);
+            }
+            .sidebar-container.show {
+              transform: translateX(0);
+            }
+          }
+        `}</style>
+      </aside>
     </>
   );
 };

@@ -1,73 +1,73 @@
-/* Global Animations & Utilities */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
+/* Sharp & Clean Layout Styles (First Dollar Aesthetic) */
 
-  to {
-    opacity: 1;
-  }
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-bg);
 }
 
+.main-content {
+  flex: 1;
+  padding: 40px;
+  margin-left: 280px; /* Sidebar width */
+  max-width: 1400px;
+  width: 100%;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Transitions */
+.fade-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.fade-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Utility Animations */
 @keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    transform: translateX(-100%);
-  }
-
-  to {
-    transform: translateX(0);
-  }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.6s ease-out forwards;
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-slide-up {
-  animation: slideUp 0.6s ease-out forwards;
+  animation: slideUp 0.5s ease-out forwards;
 }
 
-/* Glass Panel Enhancements */
-.glass-panel {
-  transition: all 0.3s ease;
-}
-
-.glass-panel[hoverEffect]:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-}
-
-/* Responsive Utilities */
-@media (max-width: 768px) {
-  .desktop-only {
-    display: none !important;
-  }
-
-  .mobile-only {
-    display: block !important;
-  }
-
-  #root {
-    padding: 1rem;
+/* Responsiveness */
+@media (max-width: 1024px) {
+  .main-content {
+    margin-left: 0;
+    padding: 24px;
+    padding-top: 80px; /* Adjust for mobile menu toggle */
   }
 }
 
-@media (min-width: 769px) {
-  .mobile-only {
-    display: none !important;
-  }
+/* Global Card Enhancements */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.section-header {
+  margin-bottom: 32px;
+}
+
+.section-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.section-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 1rem;
 }

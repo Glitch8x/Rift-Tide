@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, Sparkles, Briefcase, Zap, DollarSign, CheckCircle } from 'lucide-react';
+import { Search, Filter, Sparkles, Briefcase, Zap, DollarSign, CheckCircle, ArrowUpRight, TrendingUp, Clock } from 'lucide-react';
 import BountyCard from '../components/Bounties/BountyCard';
-import GlassCard from '../components/UI/GlassCard';
+import SharpCard from '../components/UI/GlassCard'; // Now SharpCard
 import CreateBountyModal from '../components/Modals/CreateBountyModal';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
@@ -15,457 +15,409 @@ const Home = () => {
   const { bounties, stats } = dataContext || { bounties: [], stats: { totalValueEarned: 0, opportunitiesListed: 0 } };
   const auth = useAuth();
   const user = auth?.user;
-  // const user = { name: 'Yeti Believer' };
 
-  // if (!auth) console.error("Home: AuthContext is missing!");
-
-  // Use user data if available, otherwise fallback (though protected route ensures user exists)
-  const displayName = user?.name || user?.walletAddress || 'Yeti Believer';
-  const displayAvatar = user?.avatar || "/welcome-logo-v4.png";
+  const displayName = user?.name || user?.walletAddress?.substring(0, 10) || 'Explorer';
 
   // Filter logic
   const filteredBounties = bounties.filter(bounty => {
-    // Tab filter (all, design/bounties, projects)
     if (activeTab === 'design' && bounty.type !== 'bounty') return false;
     if (activeTab === 'projects' && bounty.type !== 'project') return false;
-
-    // Category filter
     if (activeFilter === 'All' || activeFilter === 'For You') return true;
     return bounty.category === activeFilter;
   });
 
   return (
-    <div className="home-dashboard animate-fade-in">
-      <div className="main-column">
-        <div className="welcome-banner">
-          <div className="banner-content">
-            <div className="user-greeting">
-              <img src={displayAvatar} alt="Logo" className="avatar-large" onError={(e) => e.target.src = "/welcome-logo-v4.png"} />
-              <div>
-                <h1 className="welcome-title">Welcome back, {displayName}</h1>
-                <p className="welcome-subtitle">We're so glad to have you on Lofi Quests.</p>
-              </div>
-            </div>
-          </div>
+    <div className="home-container animate-fade-in">
+      <header className="page-header">
+        <div className="header-greeting">
+          <h1 className="header-title">Good evening, {displayName}</h1>
+          <p className="header-subtitle">Here is what's happening in your quest network today.</p>
         </div>
+        <div className="header-actions">
+          <button className="btn btn-outline">
+             <Clock size={18} />
+             Recently Viewed
+          </button>
+          <button className="btn btn-primary" onClick={() => setIsModalOpen(true)}>
+             <PlusCircle size={18} />
+             New Opportunity
+          </button>
+        </div>
+      </header>
 
-        {/* Browse Section */}
-        <div className="browse-section">
-          <div className="section-header">
-            <h2 className="section-title">Browse Opportunities</h2>
-            <div className="tabs">
-              <button className={`tab ${activeTab === 'all' ? 'active' : ''}`} onClick={() => setActiveTab('all')}>All</button>
-              <button className={`tab ${activeTab === 'design' ? 'active' : ''}`} onClick={() => setActiveTab('design')}>Bounties</button>
-              <button className={`tab ${activeTab === 'projects' ? 'active' : ''}`} onClick={() => setActiveTab('projects')}>Projects</button>
+      {/* Stats Overview Grid */}
+      <div className="stats-grid">
+        <SharpCard className="stat-card">
+          <div className="stat-card-header">
+            <span className="stat-label">Total Earnings</span>
+            <div className="stat-icon-circle blue">
+              <DollarSign size={18} />
             </div>
-            <div className="action-buttons" style={{ display: 'flex', gap: '10px' }}>
-              <button className="btn-filter-icon"><Filter size={16} /> Filter</button>
-              <button
-                className="btn-primary-small"
-                onClick={() => setIsModalOpen(true)}
-              >
-                + Post Opportunity
-              </button>
+          </div>
+          <div className="stat-value-large">
+            ${stats.totalValueEarned.toLocaleString()} <span className="stat-unit">USD</span>
+          </div>
+          <div className="stat-footer">
+            <TrendingUp size={14} className="text-success" />
+            <span className="stat-trend text-success">+12.5%</span>
+            <span className="stat-period">vs last month</span>
+          </div>
+        </SharpCard>
+
+        <SharpCard className="stat-card">
+          <div className="stat-card-header">
+            <span className="stat-label">Active Quests</span>
+            <div className="stat-icon-circle green">
+              <Zap size={18} />
+            </div>
+          </div>
+          <div className="stat-value-large">
+            {stats.opportunitiesListed}
+          </div>
+          <div className="stat-footer">
+            <span className="stat-period">8 awaiting review</span>
+          </div>
+        </SharpCard>
+
+        <SharpCard className="stat-card">
+          <div className="stat-card-header">
+            <span className="stat-label">Reputation Score</span>
+            <div className="stat-icon-circle purple">
+              <Sparkles size={18} />
+            </div>
+          </div>
+          <div className="stat-value-large">
+            2,450 <span className="stat-unit">EXP</span>
+          </div>
+          <div className="stat-footer">
+            <span className="stat-period">Top 5% of contributors</span>
+          </div>
+        </SharpCard>
+      </div>
+
+      <div className="dashboard-content">
+        <div className="main-feed">
+          <div className="feed-header">
+            <h2 className="feed-title">Available Marketplace</h2>
+            <div className="feed-tabs">
+               {['all', 'design', 'projects'].map(tab => (
+                 <button 
+                  key={tab}
+                  className={`feed-tab ${activeTab === tab ? 'active' : ''}`}
+                  onClick={() => setActiveTab(tab)}
+                 >
+                   {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                 </button>
+               ))}
             </div>
           </div>
 
-          <div className="filter-pills">
+          <div className="filter-scroll">
             {['For You', 'All', 'Content', 'Design', 'Development', 'Green Impact'].map(filter => (
               <button
                 key={filter}
-                className={`pill ${activeFilter === filter ? 'active' : ''}`}
+                className={`filter-pill ${activeFilter === filter ? 'active' : ''}`}
                 onClick={() => setActiveFilter(filter)}
-                style={{ position: 'relative' }}
               >
-                {activeFilter === filter && (
-                  <motion.div
-                    layoutId="activePill"
-                    className="active-pill-bg"
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
-                )}
-                <span style={{
-                  position: 'relative',
-                  zIndex: 1,
-                  color: activeFilter === filter ? '#ffffff' : 'var(--color-text-secondary)',
-                  fontWeight: activeFilter === filter ? 600 : 500,
-                  transition: 'color 0.2s'
-                }}>{filter}</span>
+                {filter}
               </button>
             ))}
           </div>
 
-          <motion.div layout className="bounty-list">
+          <div className="bounty-grid">
             <AnimatePresence mode="popLayout">
-              {filteredBounties.length > 0 ? (
-                filteredBounties.map(bounty => (
-                  <motion.div
-                    key={bounty.id}
-                    layout // Animate layout changes when list reorders
-                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <BountyCard {...bounty} />
-                  </motion.div>
-                ))
-              ) : (
+              {filteredBounties.map(bounty => (
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  style={{ padding: '40px', textAlign: 'center', color: 'var(--color-text-secondary)' }}
+                  key={bounty.id}
+                  layout
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <p>No active bounties in this category yet.</p>
+                  <BountyCard {...bounty} />
                 </motion.div>
-              )}
+              ))}
             </AnimatePresence>
-          </motion.div>
+          </div>
         </div>
+
+        <aside className="secondary-feed">
+          <SharpCard className="promo-card">
+            <h3 className="promo-title">Slush Wallet</h3>
+            <p className="promo-text">Enjoy the sharpest SUI experience with Slush wallet integration.</p>
+            <button className="btn btn-outline full-width">Learn More</button>
+          </SharpCard>
+
+          <div className="activity-section">
+             <h3 className="section-small-title">RECENT ACTIVITY</h3>
+             <div className="activity-list">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="activity-item">
+                    <div className="activity-indicator" />
+                    <div className="activity-details">
+                      <p className="activity-text"><strong>Payout received</strong> for "UI Design Quest"</p>
+                      <p className="activity-time">2 hours ago</p>
+                    </div>
+                  </div>
+                ))}
+             </div>
+          </div>
+        </aside>
       </div>
 
       <CreateBountyModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 
-      {/* Right Column: Sidebar Widgets */}
-      <div className="right-sidebar">
-        {/* Stats Widget */}
-        <GlassCard className="stats-widget">
-          <div className="stat-item">
-            <div className="stat-icon-wrapper">
-              <DollarSign size={20} className="text-primary" />
-            </div>
-            <div>
-              <h3 className="stat-value">${stats.totalValueEarned.toLocaleString()} <span className="currency">USD</span></h3>
-              <p className="stat-label">Total Value Earned</p>
-            </div>
-          </div>
-          <div className="divider"></div>
-          <div className="stat-item">
-            <div className="stat-icon-wrapper">
-              <Briefcase size={20} className="text-secondary" />
-            </div>
-            <div>
-              <h3 className="stat-value">{stats.opportunitiesListed.toLocaleString()}</h3>
-              <p className="stat-label">Opportunities Listed</p>
-            </div>
-          </div>
-        </GlassCard>
-
-        {/* How it works */}
-        <div className="widget">
-          <h3 className="widget-title">HOW IT WORKS</h3>
-          <div className="steps-list">
-            <div className="step-item">
-              <div className="step-check"><CheckCircle size={16} /></div>
-              <div>
-                <h4 className="step-title">Create your Profile</h4>
-                <p className="step-desc">by telling us about yourself</p>
-              </div>
-            </div>
-            <div className="step-line"></div>
-            <div className="step-item">
-              <div className="step-icon"><Zap size={16} /></div>
-              <div>
-                <h4 className="step-title">Participate in Bounties</h4>
-                <p className="step-desc">to build proof of work</p>
-              </div>
-            </div>
-            <div className="step-line"></div>
-            <div className="step-item">
-              <div className="step-icon"><DollarSign size={16} /></div>
-              <div>
-                <h4 className="step-title">Get Paid for Your Work</h4>
-                <p className="step-desc">in global standards</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-      </div>
-
       <style>{`
-        .home-dashboard {
-          display: grid;
-          grid-template-columns: 1fr 340px;
-          gap: 24px;
-          padding-top: 24px;
+        .home-container {
+          max-width: 1200px;
+          margin: 0 auto;
         }
 
-        /* Welcome Banner */
-        .welcome-banner {
-          background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-          border-radius: var(--radius-lg);
-          padding: 32px;
-          color: white;
-          margin-bottom: 32px;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .welcome-banner::after {
-          content: '';
-          position: absolute;
-          top: 0; right: 0; bottom: 0; left: 0;
-          background: linear-gradient(to right, rgba(0,0,0,0.2), transparent);
-          pointer-events: none;
-        }
-        
-        .user-greeting {
+        .page-header {
           display: flex;
-          align-items: center;
-          gap: 20px;
-          position: relative;
-          z-index: 1;
+          justify-content: space-between;
+          align-items: flex-end;
+          margin-bottom: 40px;
         }
 
-        .avatar-large {
-          width: 64px;
-          height: 64px;
-          border-radius: 50%;
-          background: #fff;
-          /* Removed border and padding to make image full */
-          object-fit: cover; 
-          transform: scale(1.2); /* Enlarge to force fit */
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .welcome-title {
-          font-size: 1.8rem;
+        .header-title {
+          font-size: 1.85rem;
           font-weight: 700;
-          margin-bottom: 4px;
+          letter-spacing: -0.02em;
+          margin-bottom: 8px;
         }
 
-        .welcome-subtitle {
-          opacity: 0.9;
-          font-size: 1.1rem;
-        }
-
-        /* Browse Section */
-        .section-header {
-          display: flex;
-          align-items: center;
-          gap: 24px;
-          margin-bottom: 20px;
-          flex-wrap: wrap;
-        }
-
-        .section-title {
-          font-size: 1.4rem;
-          font-weight: 700;
-          margin-right: auto;
-        }
-
-        .tabs {
-          display: flex;
-          gap: 16px;
-        }
-
-        .tab {
-          font-size: 1rem;
-          font-weight: 500;
+        .header-subtitle {
           color: var(--color-text-secondary);
-          background: transparent;
-          padding-bottom: 8px;
-          border-bottom: 2px solid transparent;
+          font-size: 1.05rem;
         }
 
-        .tab.active {
-          color: var(--color-text);
-          border-bottom-color: var(--color-primary);
+        .header-actions {
+          display: flex;
+          gap: 12px;
         }
 
-        .btn-filter-icon {
+        .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 24px;
+          margin-bottom: 48px;
+        }
+
+        .stat-card {
+          padding: 24px;
+        }
+
+        .stat-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 16px;
+        }
+
+        .stat-label {
+          color: var(--color-text-secondary);
+          font-weight: 600;
+          font-size: 0.85rem;
+          text-transform: uppercase;
+          letter-spacing: 0.02em;
+        }
+
+        .stat-icon-circle {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .stat-icon-circle.blue { background: #dbeafe; color: #2563eb; }
+        .stat-icon-circle.green { background: #dcfce7; color: #16a34a; }
+        .stat-icon-circle.purple { background: #f3e8ff; color: #9333ea; }
+
+        .stat-value-large {
+          font-size: 2rem;
+          font-weight: 700;
+          margin-bottom: 12px;
+        }
+
+        .stat-unit {
+          font-size: 0.9rem;
+          color: var(--color-text-muted);
+          font-weight: 500;
+        }
+
+        .stat-footer {
           display: flex;
           align-items: center;
           gap: 6px;
-          color: var(--color-text-secondary);
-          font-weight: 500;
+          font-size: 0.85rem;
         }
 
-        .filter-pills {
+        .text-success { color: #16a34a; }
+
+        .stat-trend {
+          font-weight: 600;
+        }
+
+        .stat-period {
+          color: var(--color-text-muted);
+        }
+
+        .dashboard-content {
+          display: grid;
+          grid-template-columns: 1fr 320px;
+          gap: 40px;
+        }
+
+        .feed-header {
           display: flex;
-          gap: 10px;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 24px;
+        }
+
+        .feed-title {
+          font-size: 1.25rem;
+          font-weight: 700;
+        }
+
+        .feed-tabs {
+          display: flex;
+          background: #f3f4f6;
+          padding: 4px;
+          border-radius: var(--radius-sm);
+        }
+
+        .feed-tab {
+          padding: 6px 16px;
+          border-radius: calc(var(--radius-sm) - 2px);
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: var(--color-text-secondary);
+          background: transparent;
+          border: none;
+          transition: all 0.2s;
+        }
+
+        .feed-tab.active {
+          background: white;
+          color: var(--color-text);
+          box-shadow: var(--shadow-sm);
+        }
+
+        .filter-scroll {
+          display: flex;
+          gap: 12px;
           margin-bottom: 24px;
           overflow-x: auto;
           padding-bottom: 4px;
         }
 
-        .pill {
-          padding: 6px 16px;
+        .filter-pill {
+          padding: 8px 16px;
           border-radius: var(--radius-full);
-          background: var(--color-bg-secondary);
+          background: white;
+          border: 1px solid var(--color-border);
           color: var(--color-text-secondary);
-          border: 1px solid var(--color-glass-border);
-          font-size: 0.9rem;
+          font-size: 0.85rem;
+          font-weight: 600;
           white-space: nowrap;
+          transition: all 0.2s;
         }
 
-        .pill.active {
-          background: rgba(59, 130, 246, 0.15);
-          color: var(--color-primary);
-          border-color: var(--color-primary);
+        .filter-pill:hover {
+          border-color: var(--color-text-muted);
         }
 
-        .bounty-list {
-          display: grid;
-          gap: 16px;
+        .filter-pill.active {
+          background: var(--color-text);
+          color: white;
+          border-color: var(--color-text);
         }
 
-        /* Sidebar Widgets */
-        .right-sidebar {
+        .bounty-grid {
           display: flex;
           flex-direction: column;
-          gap: 24px;
+          gap: 16px;
         }
 
-        .stats-widget {
+        .promo-card {
+          background: linear-gradient(135deg, white, #eff6ff);
+          border-color: #bfdbfe;
           padding: 24px;
-          /* Inherits glass style from GlassCard */
-        }
-        
-        .stat-item {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          padding: 8px 0;
+          margin-bottom: 32px;
         }
 
-        .divider {
-          height: 1px;
-          background: var(--color-glass-border);
-          margin: 16px 0;
+        .promo-title {
+          font-size: 1.1rem;
+          margin-bottom: 8px;
         }
 
-        .stat-icon-wrapper {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          background: rgba(59, 130, 246, 0.1);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .text-primary { color: var(--color-primary); }
-        .text-secondary { color: var(--color-secondary); }
-
-        .stat-value {
-          font-size: 1.2rem;
-          font-weight: 700;
-          transition: color 0.3s;
-        }
-        
-        .currency {
-          font-size: 0.8rem;
+        .promo-text {
+          font-size: 0.9rem;
           color: var(--color-text-secondary);
-          font-weight: 400;
+          margin-bottom: 20px;
+          line-height: 1.6;
         }
 
-        .stat-label {
-          font-size: 0.8rem;
-          color: var(--color-text-secondary);
-        }
-
-        /* Widget Steps */
-        .widget-title {
+        .section-small-title {
           font-size: 0.75rem;
-          color: var(--color-text-secondary);
-          letter-spacing: 1px;
+          font-weight: 700;
+          color: var(--color-text-muted);
+          letter-spacing: 0.05em;
           margin-bottom: 16px;
-          font-weight: 600;
         }
 
-        .steps-list {
-          padding-left: 10px;
-        }
-
-        .step-item {
+        .activity-item {
           display: flex;
-          gap: 16px;
-          align-items: flex-start;
+          gap: 12px;
+          margin-bottom: 16px;
         }
 
-        .step-icon, .step-check {
-          width: 24px;
-          height: 24px;
+        .activity-indicator {
+          width: 8px;
+          height: 8px;
           border-radius: 50%;
-          background: var(--color-bg-secondary);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--color-primary);
-          flex-shrink: 0;
-          z-index: 2;
-        }
-        
-        .step-check {
           background: var(--color-primary);
-          color: white;
+          margin-top: 6px;
+          flex-shrink: 0;
         }
 
-        .step-line {
-          width: 1px;
-          height: 30px;
-          background: var(--color-glass-border);
-          margin-left: 12px;
-          margin-top: -4px;
-          margin-bottom: -4px;
+        .activity-text {
+          font-size: 0.9rem;
+          margin-bottom: 4px;
+          line-height: 1.4;
         }
 
-        .step-title {
-          font-size: 0.95rem;
-          font-weight: 600;
-          margin-bottom: 2px;
+        .activity-time {
+          font-size: 0.8rem;
+          color: var(--color-text-muted);
         }
 
-        .step-desc {
-          font-size: 0.85rem;
-          color: var(--color-text-secondary);
-        }
+        .full-width { width: 100%; }
 
-
-        @media (max-width: 1024px) {
-          .home-dashboard {
+        @media (max-width: 1280px) {
+          .dashboard-content {
             grid-template-columns: 1fr;
           }
-          .right-sidebar {
-            display: none; /* Hide sidebar on small screens for now, or move bottom */
+          .secondary-feed { display: none; }
+        }
+
+        @media (max-width: 768px) {
+          .stats-grid {
+            grid-template-columns: 1fr;
+          }
+          .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 20px;
           }
         }
-          .btn-primary-small {
-            background: var(--color-primary);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: var(--radius-sm);
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-          }
-          .btn-primary-small:hover {
-            background: var(--color-primary-hover);
-          }
-          
-          .active-pill-bg {
-            position: absolute;
-            inset: -4px; /* Make it larger than the container */
-            background: var(--color-primary);
-            border-radius: var(--radius-full);
-            z-index: 0;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); /* Enhanced glow */
-          }
-
-          /* Override active state since we use the motion div now */
-          .pill.active {
-            background: transparent;
-            border-color: transparent;
-            /* Text color is handled inline */
-          }
       `}</style>
-    </div >
+    </div>
   );
 };
 

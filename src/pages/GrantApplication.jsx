@@ -1,29 +1,32 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
-import GlassCard from '../components/UI/GlassCard';
-import { ArrowLeft, UploadCloud, Link as LinkIcon, Send } from 'lucide-react';
+import SharpCard from '../components/UI/GlassCard'; // Now SharpCard
+import { ArrowLeft, UploadCloud, Link as LinkIcon, Send, FileText, Globe } from 'lucide-react';
 
+/**
+ * GrantApplication Page - Redesigned for a formal, high-stakes funding entry.
+ * Follows the First Dollar style with sharp layouts and clear verification steps.
+ */
 const GrantApplication = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { grants, applyGrant } = useData();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Form State
     const [formData, setFormData] = useState({
         projectLink: '',
         details: '',
         cvFile: null
     });
 
-    const grant = grants.find(g => g.id.toString() === id);
+    const grant = grants?.find(g => g.id.toString() === id);
 
     if (!grant) {
         return (
-            <div className="app-container" style={{ padding: '40px', textAlign: 'center' }}>
-                <h2>Grant not found</h2>
-                <button className="btn-back" onClick={() => navigate(-1)}>Go Back</button>
+            <div className="container" style={{ padding: '80px 20px', textAlign: 'center' }}>
+                <h2 style={{ marginBottom: '16px' }}>Funding program not found</h2>
+                <button className="btn btn-outline" onClick={() => navigate(-1)}>Return to Programs</button>
             </div>
         );
     }
@@ -41,242 +44,237 @@ const GrantApplication = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
+        await new Promise(resolve => setTimeout(resolve, 2000));
 
-        // Simulate upload delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
-
-        // Call context action
         applyGrant(grant.id, {
             ...formData,
             submittedAt: new Date().toISOString()
         });
 
-        // Show success and redirect
-        // For now, we utilize the previous logic but maybe we want a success screen?
-        // Let's just go back to Grants page which will now show "Applied" (based on previous logic if we kept state there? 
-        // Actually the previous state was local to Grants.jsx. 
-        // Ideally DataContext should track applied grants if we want persistence across pages.
-        // For this task, I'll navigate back and rely on the user seeing the flow completed.
-
         navigate('/grants');
     };
 
     return (
-        <div className="grant-application-page animate-fade-in">
-            <button className="btn-back" onClick={() => navigate(-1)}>
-                <ArrowLeft size={18} /> Back to Grants
+        <div className="application-wrapper animate-fade-in">
+            <button className="breadcrumb-back" onClick={() => navigate(-1)} style={{ marginBottom: '32px' }}>
+                <ArrowLeft size={16} /> Back to Funding Programs
             </button>
 
-            <div className="application-container">
-                <header className="app-header">
-                    <h1>Apply for <span className="highlight">{grant.title}</span></h1>
-                    <p className="subtitle">{grant.amount} • {grant.tags.join(', ')}</p>
+            <div className="application-content">
+                <header className="application-header-sharp">
+                    <span className="application-badge">GRANT APPLICATION</span>
+                    <h1 className="application-title">Apply for Funding</h1>
+                    <p className="application-subtitle">Program: <strong>{grant.title}</strong> • {grant.amount}</p>
                 </header>
 
-                <GlassCard className="application-form-card">
+                <SharpCard className="application-form-sharp">
                     <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label className="form-label">Project / Portfolio Link</label>
-                            <div className="input-wrapper">
-                                <LinkIcon size={18} className="input-icon" />
-                                <input
-                                    type="url"
-                                    name="projectLink"
-                                    placeholder="https://"
-                                    className="form-input"
-                                    required
-                                    value={formData.projectLink}
-                                    onChange={handleChange}
-                                />
+                        {/* 1. Project Links */}
+                        <div className="form-section">
+                            <h3 className="section-h-small">1. PROJECT RESOURCES</h3>
+                            <div className="field-group">
+                                <label className="field-label">Portfolio or Project Repository</label>
+                                <div className="input-with-icon">
+                                    <Globe size={18} className="field-icon" />
+                                    <input
+                                        type="url"
+                                        name="projectLink"
+                                        placeholder="https://github.com/org/project"
+                                        className="sharp-input"
+                                        required
+                                        value={formData.projectLink}
+                                        onChange={handleChange}
+                                    />
+                                </div>
                             </div>
                         </div>
 
-                        <div className="form-group">
-                            <label className="form-label">Upload CV / Pitch Deck (PDF)</label>
-                            <div className="file-upload-wrapper">
+                        {/* 2. Documentation */}
+                        <div className="form-section">
+                            <h3 className="section-h-small">2. SUPPORTING DOCUMENTATION</h3>
+                            <div className="field-group">
+                                <label className="field-label">CV or Pitch Deck (PDF)</label>
                                 <input
                                     type="file"
-                                    id="cv-upload"
+                                    id="cv-upload-sharp"
                                     accept=".pdf,.doc,.docx"
                                     onChange={handleFileChange}
                                     hidden
                                 />
-                                <label htmlFor="cv-upload" className="file-upload-label">
-                                    <UploadCloud size={24} />
-                                    <span>{formData.cvFile ? formData.cvFile.name : "Click to upload file"}</span>
+                                <label htmlFor="cv-upload-sharp" className="sharp-upload-area">
+                                    <UploadCloud size={24} className="upload-icon" />
+                                    <div className="upload-text">
+                                        <span className="upload-main">{formData.cvFile ? formData.cvFile.name : "Click to select file"}</span>
+                                        <span className="upload-sub">Maximum file size: 10MB</span>
+                                    </div>
                                 </label>
+                            </div>
+
+                            <div className="field-group">
+                                <label className="field-label">Proposal Executive Summary</label>
+                                <div className="input-with-icon top">
+                                    <FileText size={18} className="field-icon" />
+                                    <textarea
+                                        name="details"
+                                        placeholder="Outline your project goals and how the funding will be utilized..."
+                                        className="sharp-textarea"
+                                        rows={6}
+                                        value={formData.details}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
                             </div>
                         </div>
 
-                        <div className="form-group">
-                            <label className="form-label">Additional Details</label>
-                            <textarea
-                                name="details"
-                                className="form-textarea"
-                                placeholder="Tell us why you are the best fit for this grant..."
-                                rows={5}
-                                value={formData.details}
-                                onChange={handleChange}
-                            ></textarea>
+                        {/* 3. Execution */}
+                        <div className="form-action-area">
+                            <button
+                                type="submit"
+                                className="btn btn-primary full-width large-btn"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? (
+                                    <>Processing Application...</>
+                                ) : (
+                                    <>Submit Final Application <Send size={16} /></>
+                                )}
+                            </button>
+                            <p className="terms-text">
+                                All grant applications are reviewed by the SUI Foundation committee. You will be notified of the decision via your registered account profile.
+                            </p>
                         </div>
-
-                        <button
-                            type="submit"
-                            className="btn-submit-app"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? 'Submitting...' : (
-                                <>Submit Application <Send size={16} /></>
-                            )}
-                        </button>
                     </form>
-                </GlassCard>
+                </SharpCard>
             </div>
 
             <style>{`
-                .grant-application-page {
+                .application-wrapper {
                     max-width: 800px;
                     margin: 0 auto;
-                    padding-bottom: 40px;
                 }
 
-                .btn-back {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    background: none;
-                    border: none;
-                    color: var(--color-text-secondary);
-                    cursor: pointer;
-                    margin-bottom: 24px;
-                    font-size: 0.9rem;
-                    transition: color 0.2s;
-                }
-                .btn-back:hover { color: var(--color-text); }
-
-                .app-header {
-                    margin-bottom: 32px;
+                .application-header-sharp {
                     text-align: center;
+                    margin-bottom: 40px;
                 }
 
-                .app-header h1 {
-                    font-size: 2rem;
-                    font-weight: 700;
-                    margin-bottom: 8px;
+                .application-badge {
+                    font-size: 0.7rem;
+                    font-weight: 800;
+                    letter-spacing: 0.1em;
+                    color: var(--color-primary);
+                    background: var(--color-primary-soft);
+                    padding: 4px 12px;
+                    border-radius: 4px;
+                    border: 1px solid rgba(37, 99, 235, 0.1);
                 }
 
-                .subtitle {
+                .application-title {
+                    font-size: 2.25rem;
+                    font-weight: 800;
+                    margin: 16px 0 8px;
+                    letter-spacing: -0.02em;
+                }
+
+                .application-subtitle {
                     color: var(--color-text-secondary);
-                    font-size: 1.1rem;
+                    font-size: 1rem;
                 }
 
-                .application-form-card {
-                    padding: 32px;
+                .application-form-sharp {
+                    padding: 48px !important;
                 }
 
-                .form-group {
-                    margin-bottom: 24px;
+                .form-section {
+                    margin-bottom: 40px;
                 }
 
-                .form-label {
+                .section-h-small {
+                    font-size: 0.75rem;
+                    font-weight: 800;
+                    color: var(--color-text-muted);
+                    margin-bottom: 16px;
+                    letter-spacing: 0.05em;
+                }
+
+                .field-group { margin-bottom: 24px; }
+
+                .field-label {
                     display: block;
-                    font-size: 0.9rem;
-                    font-weight: 500;
-                    margin-bottom: 8px;
+                    font-size: 0.85rem;
+                    font-weight: 700;
                     color: var(--color-text-secondary);
+                    margin-bottom: 10px;
                 }
 
-                .input-wrapper {
+                .input-with-icon {
                     display: flex;
                     align-items: center;
-                    background: rgba(255,255,255,0.03);
-                    border: 1px solid var(--color-glass-border);
+                    gap: 12px;
+                    background: white;
+                    border: 1px solid var(--color-border);
                     border-radius: var(--radius-md);
-                    padding: 0 12px;
-                    transition: border-color 0.2s;
+                    padding: 0 16px;
+                    transition: all 0.2s;
                 }
 
-                .input-wrapper:focus-within {
+                .input-with-icon.top { align-items: flex-start; padding-top: 14px; }
+
+                .input-with-icon:focus-within {
                     border-color: var(--color-primary);
+                    box-shadow: 0 0 0 4px var(--color-primary-soft);
                 }
 
-                .input-icon {
-                    color: var(--color-text-secondary);
-                    margin-right: 8px;
-                }
+                .field-icon { color: var(--color-text-muted); }
 
-                .form-input {
+                .sharp-input, .sharp-textarea {
                     flex: 1;
                     background: transparent;
                     border: none;
-                    padding: 12px 0;
-                    color: var(--color-text);
                     outline: none;
+                    padding: 14px 0;
                     font-size: 1rem;
+                    color: var(--color-text);
+                    font-family: inherit;
                 }
 
-                .file-upload-label {
+                .sharp-upload-area {
                     display: flex;
-                    flex-direction: column;
                     align-items: center;
-                    gap: 12px;
-                    padding: 32px;
-                    border: 2px dashed var(--color-glass-border);
+                    gap: 16px;
+                    padding: 24px;
+                    border: 1px dashed var(--color-border);
                     border-radius: var(--radius-md);
+                    background: #f8fafc;
                     cursor: pointer;
                     transition: all 0.2s;
-                    color: var(--color-text-secondary);
-                    background: rgba(255,255,255,0.01);
                 }
 
-                .file-upload-label:hover {
-                    border-color: var(--color-primary);
-                    background: rgba(255,255,255,0.03);
-                    color: var(--color-text);
+                .sharp-upload-area:hover {
+                    background: #f1f5f9;
+                    border-color: var(--color-text-muted);
                 }
 
-                .form-textarea {
-                    width: 100%;
-                    background: rgba(255,255,255,0.03);
-                    border: 1px solid var(--color-glass-border);
-                    border-radius: var(--radius-md);
-                    padding: 12px;
-                    color: var(--color-text);
-                    outline: none;
-                    font-family: inherit;
-                    font-size: 1rem;
-                    resize: vertical;
-                    transition: border-color 0.2s;
+                .upload-icon { color: var(--color-primary); }
+                .upload-main { display: block; font-weight: 700; font-size: 0.95rem; color: var(--color-text); }
+                .upload-sub { font-size: 0.75rem; color: var(--color-text-muted); }
+
+                .large-btn { padding: 18px !important; font-size: 1.1rem !important; }
+
+                .terms-text {
+                    text-align: center;
+                    font-size: 0.75rem;
+                    line-height: 1.5;
+                    color: var(--color-text-muted);
+                    margin-top: 24px;
+                    max-width: 480px;
+                    margin-left: auto;
+                    margin-right: auto;
                 }
 
-                .form-textarea:focus {
-                    border-color: var(--color-primary);
-                }
-
-                .btn-submit-app {
-                    width: 100%;
-                    padding: 14px;
-                    background: var(--color-primary);
-                    color: white;
-                    border: none;
-                    border-radius: var(--radius-md);
-                    font-size: 1.1rem;
-                    font-weight: 600;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 10px;
-                    transition: background 0.2s;
-                }
-
-                .btn-submit-app:hover {
-                    background: var(--color-primary-hover);
-                }
-                
-                .btn-submit-app:disabled {
-                    opacity: 0.7;
-                    cursor: wait;
+                @media (max-width: 640px) {
+                    .application-form-sharp { padding: 32px 24px !important; }
                 }
             `}</style>
         </div>

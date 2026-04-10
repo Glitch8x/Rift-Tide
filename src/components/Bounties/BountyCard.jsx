@@ -1,8 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import GlassCard from '../UI/GlassCard';
-import { Clock, Users } from 'lucide-react';
+import SharpCard from '../UI/GlassCard'; // Now SharpCard
+import { Clock, Users, ArrowRight } from 'lucide-react';
 
+/**
+ * BountyCard component - Redesigned for a professional "First Dollar" aesthetic.
+ * Focuses on clarity, sharp borders, and FinTech-style rewarding badges.
+ */
 const BountyCard = ({
   id,
   title,
@@ -16,124 +20,150 @@ const BountyCard = ({
   const navigate = useNavigate();
 
   return (
-    <GlassCard hoverEffect className="bounty-card" onClick={() => navigate(`/quest/${id}`)}>
-      <div className="card-header">
-        <div className="community-info">
-          <img src={communityImg || 'https://via.placeholder.com/32'} alt={community} className="community-img" />
-          <span className="community-name">{community}</span>
+    <SharpCard 
+      hoverEffect 
+      className="bounty-card" 
+      onClick={() => navigate(`/quest/${id}`)}
+    >
+      <div className="card-top">
+        <div className="org-mention">
+          <img src={communityImg || 'https://via.placeholder.com/20'} alt={community} className="org-img" />
+          <span className="org-name">{community}</span>
         </div>
-        <div className="reward-badge">
-          {reward} LOFI
+        <div className="payout-badge">
+          {reward} SUI
         </div>
       </div>
 
-      <h3 className="bounty-title">{title}</h3>
-
-      <div className="tags">
-        {tags.map(tag => (
-          <span key={tag} className="tag">{tag}</span>
-        ))}
+      <div className="card-body">
+        <h3 className="bounty-title-text">{title}</h3>
+        <div className="tag-row">
+          {tags.map(tag => (
+            <span key={tag} className="tag-pill">{tag}</span>
+          ))}
+        </div>
       </div>
 
-      <div className="card-footer">
-        <div className="meta-info">
-          <Clock size={14} className="icon" />
-          <span>{deadline}</span>
+      <div className="card-footer-info">
+        <div className="meta-pair">
+          <Clock size={14} className="meta-icon" />
+          <span>Ends {deadline}</span>
         </div>
-        <div className="meta-info">
-          <Users size={14} className="icon" />
-          <span>{participants} active</span>
+        <div className="meta-pair">
+          <Users size={14} className="meta-icon" />
+          <span>{participants} joined</span>
+        </div>
+        <div className="view-arrow">
+          <ArrowRight size={16} />
         </div>
       </div>
 
       <style>{`
         .bounty-card {
-          min-height: 220px;
-          justify-content: space-between;
+          padding: 24px !important;
+          min-height: 200px;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
           cursor: pointer;
         }
 
-        .card-header {
+        .card-top {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 16px;
         }
 
-        .community-info {
+        .org-mention {
           display: flex;
           align-items: center;
           gap: 8px;
         }
 
-        .community-img {
-          width: 24px;
-          height: 24px;
-          border-radius: 50%;
+        .org-img {
+          width: 20px;
+          height: 20px;
+          border-radius: 4px;
           object-fit: cover;
         }
 
-        .community-name {
+        .org-name {
           font-size: 0.85rem;
+          font-weight: 600;
           color: var(--color-text-secondary);
         }
 
-        .reward-badge {
-          background: rgba(255, 137, 6, 0.15);
-          color: var(--color-primary);
-          padding: 4px 10px;
-          border-radius: var(--radius-full);
+        .payout-badge {
           font-size: 0.8rem;
           font-weight: 700;
-          border: 1px solid rgba(255, 137, 6, 0.2);
+          color: var(--color-primary);
+          background: var(--color-primary-soft);
+          padding: 4px 12px;
+          border-radius: var(--radius-full);
+          border: 1px solid rgba(37, 99, 235, 0.1);
         }
 
-        .bounty-title {
-          font-size: 1.25rem;
-          font-weight: 600;
-          margin-bottom: 16px;
-          line-height: 1.4;
+        .bounty-title-text {
+          font-size: 1.15rem;
+          font-weight: 700;
+          line-height: 1.5;
+          margin-bottom: 12px;
+          color: var(--color-text);
           display: -webkit-box;
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
           overflow: hidden;
         }
 
-        .tags {
+        .tag-row {
           display: flex;
           flex-wrap: wrap;
-          gap: 6px;
-          margin-bottom: 20px;
+          gap: 8px;
         }
 
-        .tag {
+        .tag-pill {
           font-size: 0.75rem;
-          padding: 4px 8px;
-          background: rgba(255,255,255,0.05);
+          font-weight: 600;
+          padding: 4px 10px;
+          background: #f3f4f6;
+          color: #4b5563;
           border-radius: 4px;
-          color: var(--color-text-secondary);
         }
 
-        .card-footer {
+        .card-footer-info {
+          margin-top: auto;
           display: flex;
-          justify-content: space-between;
+          align-items: center;
+          gap: 16px;
           padding-top: 16px;
-          border-top: 1px solid var(--color-glass-border);
-          color: var(--color-text-secondary);
-          font-size: 0.8rem;
+          border-top: 1px solid var(--color-border);
+          color: var(--color-text-muted);
+          font-size: 0.85rem;
+          position: relative;
         }
 
-        .meta-info {
+        .meta-pair {
           display: flex;
           align-items: center;
           gap: 6px;
         }
-        
-        .icon {
-          opacity: 0.7;
+
+        .meta-icon {
+          color: var(--color-text-muted);
+        }
+
+        .view-arrow {
+          margin-left: auto;
+          color: var(--color-text-muted);
+          transition: transform 0.2s, color 0.2s;
+        }
+
+        .bounty-card:hover .view-arrow {
+          transform: translateX(4px);
+          color: var(--color-primary);
         }
       `}</style>
-    </GlassCard>
+    </SharpCard>
   );
 };
 
