@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, Sparkles, Briefcase, Zap, DollarSign, CheckCircle, ArrowUpRight, TrendingUp, Clock } from 'lucide-react';
+import { Search, Filter, Sparkles, Briefcase, Zap, DollarSign, CheckCircle, ArrowUpRight, TrendingUp, Clock, PlusCircle } from 'lucide-react';
 import BountyCard from '../components/Bounties/BountyCard';
 import SharpCard from '../components/UI/GlassCard'; // Now SharpCard
 import CreateBountyModal from '../components/Modals/CreateBountyModal';

@@ -127,7 +127,7 @@ const QuestDetail = () => {
                             <Share2 size={16} /> Copy Reference URL
                         </button>
                     </SharpCard>
-                </div>
+                </aside>
             </div>
 
             <style>{`
