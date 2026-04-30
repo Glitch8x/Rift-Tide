@@ -1,6 +1,8 @@
 import React from 'react';
 
 const BrandLogo = ({ size = 32, showText = false, light = false, boxed = false }) => {
+    // The Gemini logo is horizontal (emblem + text). 
+    // 'size' will act as the height to maintain aspect ratio.
     const height = size;
 
     return (
@@ -9,8 +11,8 @@ const BrandLogo = ({ size = 32, showText = false, light = false, boxed = false }
             style={{ 
                 display: 'flex',
                 alignItems: 'center',
-                gap: '12px',
-                height: `${height}px`
+                height: `${height}px`,
+                position: 'relative'
             }}
         >
             <img 
@@ -21,22 +23,12 @@ const BrandLogo = ({ size = 32, showText = false, light = false, boxed = false }
                     width: 'auto',
                     objectFit: 'contain',
                     display: 'block',
-                    borderRadius: boxed ? '8px' : '0'
+                    filter: light ? 'brightness(0) invert(1) contrast(1.2)' : 'drop-shadow(0 0 12px rgba(0, 209, 255, 0.2))',
+                    transition: 'all 0.3s ease'
                 }} 
             />
             
-            {showText && !boxed && (
-                <div style={{ display: 'flex', flexDirection: 'column', lineHeight: '1.1' }}>
-                    <span style={{ 
-                        fontFamily: 'Plus Jakarta Sans, sans-serif',
-                        fontWeight: '900',
-                        fontSize: `${height * 0.4}px`,
-                        color: light ? 'white' : '#0B1120',
-                        letterSpacing: '-0.02em',
-                        whiteSpace: 'nowrap'
-                    }}>RIFT TIDE</span>
-                </div>
-            )}
+            {/* We don't add extra text here because the Gemini logo already includes "RIFT TIDE" */}
         </div>
     );
 };

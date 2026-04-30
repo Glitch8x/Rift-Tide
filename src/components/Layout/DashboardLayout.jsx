@@ -49,7 +49,7 @@ const DashboardLayout = ({ children }) => {
                 <div className="nav-container">
                     {/* Left: Brand */}
                     <div className="nav-brand" onClick={() => navigate('/dashboard')}>
-                        <BrandLogo size={150} showText={false} />
+                        <BrandLogo size={50} showText={false} />
                     </div>
 
                     {/* Center: Main Nav Links (Desktop) */}

@@ -30,7 +30,7 @@ const Login = () => {
                 className="rift-auth-card"
             >
                 <div className="logo-box">
-                    <img src="/Gemini_Generated_Image_ldq5hsldq5hsldq5__1_-removebg-preview.png" alt="Rift Tide" style={{ width: '360px', height: 'auto' }} />
+                    <BrandLogo size={80} />
                 </div>
                 
                 <h1 className="auth-title">Welcome Back</h1>
