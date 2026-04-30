@@ -67,10 +67,6 @@ const DashboardLayout = ({ children }) => {
 
                     {/* Right: Actions & User */}
                     <div className="nav-right-actions">
-                        <div className="header-search">
-                            <Search size={18} />
-                            <input type="text" placeholder="Search..." />
-                        </div>
                         
                         <button className="icon-btn">
                             <Bell size={20} />
