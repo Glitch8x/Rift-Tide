@@ -38,7 +38,7 @@ const PostGrantModal = ({ isOpen, onClose, onPost }) => {
                 >
                     <header className="modal-header-v4">
                         <div className="header-icon-v4 logo-wrap">
-                            <img src="/rift-tide-final.png?v=sui1" alt="Logo" />
+                            <img src="/rift-tide-logo.png?v=sui1" alt="Logo" />
                         </div>
                         <div className="header-text-v4">
                             <h2>Initialize <span>Funding</span></h2>

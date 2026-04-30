@@ -16,7 +16,7 @@ const BrandLogo = ({ size = 32, showText = false, light = false, boxed = false }
             }}
         >
             <img 
-                src="/rift-tide-final.png" 
+                src="/rift-tide-logo.png" 
                 alt="Rift Tide" 
                 style={{ 
                     height: '100%',
