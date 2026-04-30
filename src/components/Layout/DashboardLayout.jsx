@@ -45,11 +45,11 @@ const DashboardLayout = ({ children }) => {
     return (
         <div className="rift-horizontal-layout">
             {/* Top Navigation Bar */}
-            <nav className="rift-top-nav">
+            <nav className="dashboard-header">
                 <div className="nav-container">
                     {/* Left: Brand */}
                     <div className="nav-brand" onClick={() => navigate('/dashboard')}>
-                        <BrandLogo size={80} showText={false} />
+                        <BrandLogo size={90} showText={false} />
                     </div>
 
                     {/* Center: Main Nav Links (Desktop) */}
@@ -160,8 +160,8 @@ const DashboardLayout = ({ children }) => {
                     flex-direction: column;
                 }
 
-                .rift-top-nav {
-                    height: 80px;
+                .dashboard-header {
+                    height: 100px;
                     background: white;
                     border-bottom: 1px solid #E2E8F0;
                     position: sticky;

@@ -11,7 +11,7 @@ const Landing = () => {
         <div className="landing-container" style={{ minHeight: '100vh', background: '#FFFFFF', fontFamily: 'var(--font-main)' }}>
             {/* Top Navbar - Clean & Floating Style */}
             <nav style={{ 
-                height: '80px', 
+                height: '100px', 
                 background: 'rgba(255, 255, 255, 0.8)', 
                 backdropFilter: 'blur(20px)',
                 borderBottom: '1px solid rgba(0,0,0,0.05)',
@@ -24,7 +24,7 @@ const Landing = () => {
                 zIndex: 1000
             }}>
                 <div className="nav-left" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
-                    <BrandLogo size={80} showText={false} />
+                    <BrandLogo size={90} showText={false} />
                 </div>
 
                 <div className="nav-center" style={{ display: 'flex', gap: '40px' }}>
