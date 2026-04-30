@@ -23,8 +23,22 @@ const Landing = () => {
                 top: 0,
                 zIndex: 1000
             }}>
-                <div className="nav-left" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
+                <div className="nav-left" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '20px' }} onClick={() => navigate('/')}>
                     <BrandLogo size={120} showText={false} />
+                    <div className="landing-search" style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '10px', 
+                        background: '#F1F5F9', 
+                        padding: '0 16px', 
+                        height: '44px', 
+                        borderRadius: '12px',
+                        width: '240px',
+                        marginLeft: '20px'
+                    }}>
+                        <Search size={18} color="#64748B" />
+                        <input type="text" placeholder="Search..." style={{ background: 'transparent', border: 'none', outline: 'none', fontSize: '0.9rem' }} />
+                    </div>
                 </div>
 
                 <div className="nav-center" style={{ display: 'flex', gap: '40px' }}>
