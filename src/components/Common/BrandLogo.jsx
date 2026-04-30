@@ -21,7 +21,7 @@ const BrandLogo = ({ size = 32, showText = false, light = false, boxed = false }
                     width: 'auto',
                     objectFit: 'contain',
                     display: 'block',
-                    filter: light ? 'brightness(0) invert(1)' : 'none'
+                    borderRadius: boxed ? '8px' : '0'
                 }} 
             />
             

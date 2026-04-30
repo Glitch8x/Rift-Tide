@@ -5,6 +5,8 @@ import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import BrandLogo from '../Common/BrandLogo';
+
 const Sidebar = () => {
     const auth = useAuth();
     const user = auth?.user;
@@ -29,7 +31,7 @@ const Sidebar = () => {
             <div className="rift-mobile-header mobile-only">
                 <div className="branding-v4">
                     <div className="branding-icon-v4-wrap">
-                        <img src="/rift-tide-logo.png" alt="Rift Tide" style={{ width: 'auto', height: '40px' }} />
+                        <BrandLogo size={40} />
                     </div>
                 </div>
                 <button className="menu-toggle-v4" onClick={() => setIsOpen(!isOpen)}>
@@ -43,7 +45,7 @@ const Sidebar = () => {
                 <div className="sidebar-inner-v4">
                     <div className="sidebar-branding-v4">
                         <div className="branding-hex-v4-final">
-                            <img src="/rift-tide-logo.png" alt="Rift Tide" style={{ width: '100%', height: 'auto' }} />
+                            <BrandLogo size={60} />
                         </div>
                     </div>
 
