@@ -116,12 +116,12 @@ const initialStats = {
 };
 
 const initialUsers = [
-    { id: 1, name: 'Yeti Believer', level: 1, xp: 0, quests: 2, earnings: 500, avatar: 'https://ui-avatars.com/api/?name=Yeti+Believer&background=0D8ABC&color=fff' },
-    { id: 2, name: 'CryptoKing', level: 15, xp: 14500, quests: 42, earnings: 12500, avatar: 'https://ui-avatars.com/api/?name=CK&background=E53170&color=fff' },
-    { id: 3, name: 'SuiMaster', level: 12, xp: 11200, quests: 35, earnings: 9800, avatar: 'https://ui-avatars.com/api/?name=SM&background=FF8906&color=fff' },
-    { id: 4, name: 'GreenThumb', level: 8, xp: 7500, quests: 18, earnings: 4500, avatar: 'https://ui-avatars.com/api/?name=GT&background=2CB67D&color=fff' },
-    { id: 5, name: 'PixelArtist', level: 20, xp: 19800, quests: 55, earnings: 25000, avatar: 'https://ui-avatars.com/api/?name=PA&background=7F5AF0&color=fff' },
-    { id: 6, name: 'SolanaDev', level: 14, xp: 13200, quests: 28, earnings: 15000, avatar: 'https://ui-avatars.com/api/?name=SD&background=6366F1&color=fff' },
+    { id: 1, name: 'Alex Thompson', level: 1, xp: 0, quests: 2, earnings: 500, avatar: 'https://ui-avatars.com/api/?name=Alex+Thompson&background=0D8ABC&color=fff' },
+    { id: 2, name: 'Sarah Jenkins', level: 15, xp: 14500, quests: 42, earnings: 12500, avatar: 'https://ui-avatars.com/api/?name=Sarah+Jenkins&background=E53170&color=fff' },
+    { id: 3, name: 'Michael Ross', level: 12, xp: 11200, quests: 35, earnings: 9800, avatar: 'https://ui-avatars.com/api/?name=Michael+Ross&background=FF8906&color=fff' },
+    { id: 4, name: 'Elena Rodriguez', level: 8, xp: 7500, quests: 18, earnings: 4500, avatar: 'https://ui-avatars.com/api/?name=Elena+Rodriguez&background=2CB67D&color=fff' },
+    { id: 5, name: 'David Chen', level: 20, xp: 19800, quests: 55, earnings: 25000, avatar: 'https://ui-avatars.com/api/?name=David+Chen&background=7F5AF0&color=fff' },
+    { id: 6, name: 'Jordan Smith', level: 14, xp: 13200, quests: 28, earnings: 15000, avatar: 'https://ui-avatars.com/api/?name=Jordan+Smith&background=6366F1&color=fff' },
 ];
 
 // Simulated Service
@@ -131,26 +131,26 @@ class MockApiService {
         this.grants = [...initialGrants];
         this.stats = { ...initialStats };
         this.user = {
-            name: 'Yeti Believer',
+            name: 'Alex Thompson',
             level: 1,
             xp: 0
         };
         this.users = [...initialUsers];
         this.users = [...initialUsers];
         this.recentEarners = [
-            { id: 101, name: 'Olaoye roqeeb', task: 'Fere AI UGC Bounty', amount: 4, category: 'Content', avatar: 'https://ui-avatars.com/api/?name=Olaoye+roqeeb&background=E53170&color=fff' },
+            { id: 101, name: 'Olaoye Roqeeb', task: 'Fere AI UGC Bounty', amount: 4, category: 'Content', avatar: 'https://ui-avatars.com/api/?name=Olaoye+Roqeeb&background=E53170&color=fff' },
             { id: 102, name: 'th buidl', task: 'Solana ecosystem intros', amount: 2, category: 'Development', avatar: 'https://ui-avatars.com/api/?name=th+buidl&background=FF8906&color=fff' }
         ];
         this.notifications = [];
         this.listeners = [];
         this.winners = [
-            { id: 10, user: 'Yeti Believer', walletAddress: '0x707c...87a7', itemTitle: 'Sui Token Dashboard', rank: 1, prizeAmount: 2500, paidAt: new Date().toISOString() },
-            { id: 11, user: 'CryptoKing', walletAddress: '0x123...bcde', itemTitle: 'Move Language Walkthrough', rank: 2, prizeAmount: 400, paidAt: new Date().toISOString() },
-            { id: 12, user: 'Olaoye roqeeb', walletAddress: '0x987...cba9', itemTitle: 'Twitter Raid: Sui Scalability', rank: 3, prizeAmount: 50, paidAt: new Date().toISOString() },
+            { id: 10, user: 'Alex Thompson', walletAddress: '0x707c...87a7', itemTitle: 'Sui Token Dashboard', rank: 1, prizeAmount: 2500, paidAt: new Date().toISOString() },
+            { id: 11, user: 'Sarah Jenkins', walletAddress: '0x123...bcde', itemTitle: 'Move Language Walkthrough', rank: 2, prizeAmount: 400, paidAt: new Date().toISOString() },
+            { id: 12, user: 'David Chen', walletAddress: '0x987...cba9', itemTitle: 'Twitter Raid: Sui Scalability', rank: 3, prizeAmount: 50, paidAt: new Date().toISOString() },
         ]; 
         this.submissions = [
             {
-                user: 'CryptoKing',
+                user: 'Sarah Jenkins',
                 walletAddress: '0x1234567890abcdef1234567890abcdef12345678',
                 itemTitle: 'Build a Sui Network Token Dashboard',
                 itemId: 1,
