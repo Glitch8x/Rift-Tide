@@ -1,26 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useData } from '../../context/DataContext';
-import SharpCard from '../../components/UI/GlassCard'; // Now SharpCard
-import { PlusCircle, Trophy, Banknote, RefreshCw, Layers, ShieldCheck, UserCheck, Inbox, ArrowUpRight } from 'lucide-react';
+import { PlusCircle, Trophy, Banknote, RefreshCw, Layers, ShieldCheck, UserCheck, Inbox, ArrowUpRight, Activity, Terminal, Database, Sliders, Zap, Users, Globe, Flag, Shield, ExternalLink, Twitter, Video, Mail, Search, CheckCircle, Medal, Star } from 'lucide-react';
 import PostBountyModal from '../../components/Modals/PostBountyModal';
 import PostGrantModal from '../../components/Modals/PostGrantModal';
+import { motion, AnimatePresence } from 'framer-motion';
 
-/**
- * AdminDashboard - Redesigned for a professional SUI network command center.
- * Focuses on high-density data, sharp borders, and FinTech-style management tools.
- */
 const AdminDashboard = () => {
-    const { bounties, grants, submissions, selectRankedWinner, postBounty, postGrant, syncTelegram } = useData();
-    const [activeTab, setActiveTab] = useState('bounties');
+    const { bounties, grants, submissions, winners, postBounty, postGrant, syncTelegram, selectRankedWinner } = useData();
+    const [activeTab, setActiveTab] = useState('submissions');
     const [isPostModalOpen, setIsPostModalOpen] = useState(false);
     const [isGrantModalOpen, setIsGrantModalOpen] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
-
-    const handleSelectWinner = (bountyId, name, rank) => {
-        if (window.confirm(`Finalize selection: ${name} as ${rank === 1 ? '1st' : rank === 2 ? '2nd' : '3rd'} Place?`)) {
-            selectRankedWinner(bountyId, name, rank);
-        }
-    };
+    const [searchQuery, setSearchQuery] = useState('');
+    const [rankingSelection, setRankingSelection] = useState(null); 
 
     const handleSync = () => {
         setIsSyncing(true);
@@ -30,239 +22,286 @@ const AdminDashboard = () => {
         }, 1500);
     };
 
+    const confirmWinner = (sub, rank) => {
+        selectRankedWinner(sub.itemId, sub.walletAddress, rank, sub);
+    };
+
+    const filteredSubmissions = useMemo(() => {
+        return submissions.filter(s => 
+            !winners.some(w => w.walletAddress === s.walletAddress && w.itemId === s.itemId) &&
+            (s.user.toLowerCase().includes(searchQuery.toLowerCase()) || 
+             s.itemTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+             s.walletAddress.toLowerCase().includes(searchQuery.toLowerCase()))
+        );
+    }, [submissions, searchQuery, winners]);
+
+    const stats = [
+        { label: 'Ecosystem TVL', value: '128K SUI', icon: <Banknote size={20} />, color: '#00D1FF' },
+        { label: 'Total Builders', value: '2,840', icon: <Users size={20} />, color: '#10B981' },
+        { label: 'Ranked Winners', value: winners.length, icon: <Trophy size={20} />, color: '#F59E0B' },
+        { label: 'Pending Review', value: filteredSubmissions.length, icon: <Inbox size={20} />, color: '#EC4899' },
+    ];
+
     return (
-        <div className="admin-container animate-fade-in">
-            <header className="admin-top-bar">
-                <div className="admin-intro">
-                    <h1 className="admin-title">Network Command</h1>
-                    <p className="admin-subtitle">Managing the Sui-gig contribution engine.</p>
+        <div className="admin-rift-v4">
+            <div className="bg-blur-blob blob-adm-1"></div>
+            <div className="bg-blur-blob blob-adm-2"></div>
+
+            <header className="admin-header-v2">
+                <div className="header-left">
+                    <div className="admin-badge">
+                        <Shield size={14} /> Administrator Panel
+                    </div>
+                    <h1>Control <span>Center</span></h1>
+                    <p>Rank contributors (1st, 2nd, 3rd) and dispatch ecosystem rewards.</p>
                 </div>
-                <div className="admin-actions">
-                    <button className="btn btn-outline" onClick={handleSync} disabled={isSyncing}>
+                <div className="header-right">
+                    <button className="sync-btn" onClick={handleSync} disabled={isSyncing}>
                         <RefreshCw size={18} className={isSyncing ? 'spin' : ''} />
-                        {isSyncing ? 'Syncing Raids...' : 'Sync Pipeline'}
                     </button>
-                    <button className="btn btn-primary" onClick={() => setIsPostModalOpen(true)}>
-                        <PlusCircle size={18} /> New Quest
+                    <button className="launch-btn" onClick={() => setIsPostModalOpen(true)}>
+                        <PlusCircle size={20} /> Launch Bounty
                     </button>
-                    <button className="btn btn-primary" onClick={() => setIsGrantModalOpen(true)}>
-                        <Banknote size={18} /> New Grant
+                    <button className="launch-btn grant" onClick={() => setIsGrantModalOpen(true)}>
+                        <PlusCircle size={20} /> New Grant
                     </button>
                 </div>
             </header>
 
-            <div className="admin-nav-tabs">
-                <button 
-                    className={`nav-tab ${activeTab === 'bounties' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('bounties')}
-                >
-                    <Layers size={18} /> Active Quests
-                </button>
-                <button 
-                    className={`nav-tab ${activeTab === 'grants' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('grants')}
-                >
-                    <ShieldCheck size={18} /> Grant Programs
-                </button>
-                <button 
-                    className={`nav-tab ${activeTab === 'submissions' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('submissions')}
-                >
-                    <Inbox size={18} /> Review Queue
-                </button>
+            <div className="admin-stats-v2">
+                {stats.map((s, i) => (
+                    <div key={i} className="stat-card-v2">
+                        <div className="stat-icon" style={{ color: s.color, background: `${s.color}15` }}>
+                            {s.icon}
+                        </div>
+                        <div className="stat-info">
+                            <span className="label">{s.label}</span>
+                            <span className="value">{s.value}</span>
+                        </div>
+                    </div>
+                ))}
             </div>
 
-            <div className="admin-data-view">
-                {activeTab === 'bounties' && (
-                    <div className="data-list">
-                        {bounties.map(bounty => (
-                            <SharpCard key={bounty.id} className="admin-item-card">
-                                <div className="item-main">
-                                    <div className="item-header">
-                                        <h3 className="item-name">{bounty.title}</h3>
-                                        <div className="item-pill-row">
-                                            <span className="payout-pill">{bounty.reward} SUI</span>
-                                            <span className={`status-pill ${bounty.status}`}>
-                                                {bounty.status.toUpperCase()}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div className="item-meta">
-                                        <span>{bounty.category || 'General'}</span>
-                                        <span className="dot">•</span>
-                                        <span>{bounty.participants} Contributors</span>
-                                    </div>
-                                    
-                                    {bounty.status !== 'completed' && bounty.participantsList && (
-                                        <div className="management-tray">
-                                            <p className="tray-h">PENDING APPROVALS</p>
-                                            <div className="participant-scroller">
-                                                {bounty.participantsList.map((p, idx) => (
-                                                    <div key={idx} className="p-row-sharp">
-                                                        <div className="p-id">
-                                                            <img src={p.avatar} alt="" className="p-img-tiny" />
-                                                            <span className="p-name-bold">{p.name}</span>
-                                                        </div>
-                                                        <div className="p-rank-btns">
-                                                            <button className="rank-btn gold" onClick={() => handleSelectWinner(bounty.id, p.name, 1)}>1ST</button>
-                                                            <button className="rank-btn silver" onClick={() => handleSelectWinner(bounty.id, p.name, 2)}>2ND</button>
-                                                            <button className="rank-btn bronze" onClick={() => handleSelectWinner(bounty.id, p.name, 3)}>3RD</button>
+            <div className="admin-tabs-v2">
+                {[
+                    { id: 'submissions', label: 'Review Queue', count: filteredSubmissions.length },
+                    { id: 'winners', label: 'Ranked Archive', count: winners.length },
+                    { id: 'bounties', label: 'Active Missions', count: bounties.length },
+                ].map(tab => (
+                    <button 
+                        key={tab.id}
+                        className={`tab-btn ${activeTab === tab.id ? 'active' : ''}`} 
+                        onClick={() => setActiveTab(tab.id)}
+                    >
+                        {tab.label}
+                        {tab.count > 0 && <span className="count">{tab.count}</span>}
+                    </button>
+                ))}
+            </div>
+
+            <div className="admin-main-v2">
+                <AnimatePresence mode="wait">
+                    {activeTab === 'submissions' && (
+                        <motion.div 
+                            key="queue"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="queue-card"
+                        >
+                            <div className="admin-filter-bar">
+                                <div className="search-wrap-v4">
+                                    <Search size={18} />
+                                    <input 
+                                        type="text" 
+                                        placeholder="Search by name, mission, or wallet..." 
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                    />
+                                </div>
+                                <div className="filter-stats">
+                                    {filteredSubmissions.length} entries awaiting review
+                                </div>
+                            </div>
+
+                            <div className="table-wrapper">
+                                <table className="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Contributor</th>
+                                            <th>Mission</th>
+                                            <th>Evidence</th>
+                                            <th className="text-right">Select Placement</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredSubmissions.map((sub, i) => (
+                                            <tr key={i}>
+                                                <td>
+                                                    <div className="contributor-cell">
+                                                        <div className="avatar">{sub.user?.charAt(0)}</div>
+                                                        <div className="details">
+                                                            <span className="name">{sub.user}</span>
+                                                            <span className="wallet">{sub.walletAddress}</span>
                                                         </div>
                                                     </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {bounty.status === 'completed' && (
-                                        <div className="completed-tray">
-                                            <UserCheck size={14} /> <span>Winner: <strong>{bounty.winner}</strong></span>
-                                        </div>
-                                    )}
-                                </div>
-                            </SharpCard>
-                        ))}
-                    </div>
-                )}
-
-                {activeTab === 'grants' && (
-                    <div className="data-list">
-                        {grants.map(grant => (
-                            <SharpCard key={grant.id} className="admin-item-card">
-                                <div className="item-header">
-                                    <h3 className="item-name">{grant.title}</h3>
-                                    <span className="payout-pill">{grant.amount}</span>
-                                </div>
-                                <div className="item-meta">
-                                    <span>{grant.applicants} Applicants Joined</span>
-                                    <span className="dot">•</span>
-                                    <span className="text-success">Funded by SUI Foundation</span>
-                                </div>
-                                <div className="grant-admin-actions">
-                                   <button className="btn btn-outline small-btn">Review Proposals <ArrowUpRight size={14} /></button>
-                                </div>
-                            </SharpCard>
-                        ))}
-                    </div>
-                )}
-
-                {activeTab === 'submissions' && (
-                    <div className="data-list">
-                        {submissions.length === 0 ? (
-                            <div className="empty-command-state">
-                                <Inbox size={48} />
-                                <p>The review queue is currently empty.</p>
+                                                </td>
+                                                <td><span className="mission-name">{sub.itemTitle}</span></td>
+                                                <td>
+                                                    <div className="evidence-links">
+                                                        {sub.twitterLink && <a href={sub.twitterLink} target="_blank" rel="noreferrer"><Twitter size={16} /></a>}
+                                                        {sub.videoLink && <a href={sub.videoLink} target="_blank" rel="noreferrer"><Video size={16} /></a>}
+                                                        {sub.assetLink && <a href={sub.assetLink} target="_blank" rel="noreferrer"><ExternalLink size={16} /></a>}
+                                                    </div>
+                                                </td>
+                                                <td className="text-right">
+                                                    <div className="rank-actions">
+                                                        <button className="rank-btn r1" onClick={() => confirmWinner(sub, 1)}>1st</button>
+                                                        <button className="rank-btn r2" onClick={() => confirmWinner(sub, 2)}>2nd</button>
+                                                        <button className="rank-btn r3" onClick={() => confirmWinner(sub, 3)}>3rd</button>
+                                                        <button className="dm-btn-v4" onClick={() => alert(`Messaging ${sub.user}...`)}><Mail size={16} /></button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
-                        ) : (
-                            submissions.map((sub, index) => (
-                                <SharpCard key={index} className="admin-item-card">
-                                    <div className="item-header">
-                                        <span className="type-tab-pill">{sub.type}</span>
-                                        <span className="date-text">{new Date(sub.submittedAt).toLocaleDateString()}</span>
-                                    </div>
-                                    <h4 className="sub-title-main">{sub.itemTitle}</h4>
-                                    <div className="sub-action-footer">
-                                        {sub.projectLink && <a href={sub.projectLink} target="_blank" rel="noreferrer" className="btn btn-outline small-btn">View Asset</a>}
-                                        <button className="btn btn-primary small-btn">Approve Payout</button>
-                                    </div>
-                                </SharpCard>
-                            ))
-                        )}
-                    </div>
-                )}
+                        </motion.div>
+                    )}
+
+                    {activeTab === 'winners' && (
+                        <motion.div 
+                            key="winners"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="queue-card winners-card"
+                        >
+                            <div className="table-wrapper">
+                                <table className="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Placement</th>
+                                            <th>Winner</th>
+                                            <th>Mission</th>
+                                            <th>Prize Tier</th>
+                                            <th className="text-right">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {winners.map((win, i) => (
+                                            <tr key={i}>
+                                                <td>
+                                                    <div className={`rank-badge v${win.rank}`}>
+                                                        {win.rank === 1 ? <Medal size={14} /> : win.rank === 2 ? <Trophy size={14} /> : <Star size={14} />}
+                                                        <span>{win.rank === 1 ? '1st Place' : win.rank === 2 ? '2nd Place' : '3rd Place'}</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div className="contributor-cell">
+                                                        <div className="details">
+                                                            <span className="name">{win.user}</span>
+                                                            <span className="wallet">{win.walletAddress}</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td><span className="mission-name">{win.itemTitle}</span></td>
+                                                <td><span className="prize-info">+{win.prizeAmount} SUI</span></td>
+                                                <td className="text-right">
+                                                    <span className="status-badge paid">
+                                                        <CheckCircle size={14} /> DISPATCHED
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {activeTab === 'bounties' && (
+                        <motion.div 
+                            key="bounties"
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="module-card"
+                        >
+                            <div className="module-empty">
+                                <Activity size={48} />
+                                <h3>Module Operational</h3>
+                                <p>Active ecosystem missions are currently synced.</p>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
 
             <PostBountyModal isOpen={isPostModalOpen} onClose={() => setIsPostModalOpen(false)} onPost={postBounty} />
             <PostGrantModal isOpen={isGrantModalOpen} onClose={() => setIsGrantModalOpen(false)} onPost={postGrant} />
 
             <style>{`
-                .admin-container {
-                    max-width: 1200px;
-                    margin: 0 auto;
-                }
+                .admin-rift-v4 { max-width: 1300px; margin: 0 auto; padding: 40px 0; }
+                .admin-header-v2 { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 48px; }
+                .header-left h1 { font-size: 3.5rem; font-weight: 900; letter-spacing: -0.04em; margin: 8px 0; }
+                .header-left h1 span { color: var(--color-primary); }
+                .admin-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: #F1F5F9; border-radius: 99px; font-size: 0.75rem; font-weight: 800; color: #475569; text-transform: uppercase; }
+                .header-right { display: flex; gap: 16px; }
+                .launch-btn { padding: 14px 24px; background: #0F172A; color: white; border: none; border-radius: 16px; font-weight: 700; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: all 0.2s; }
+                .launch-btn.grant { background: var(--color-primary); }
+                .sync-btn { width: 52px; height: 52px; background: white; border: 1px solid #E2E8F0; border-radius: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #64748B; }
 
-                .admin-top-bar {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    margin-bottom: 48px;
-                }
+                .admin-stats-v2 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 48px; }
+                .stat-card-v2 { background: white; border: 1px solid #E2E8F0; border-radius: 24px; padding: 24px; display: flex; align-items: center; gap: 20px; }
+                .stat-icon { width: 52px; height: 52px; border-radius: 16px; display: flex; align-items: center; justify-content: center; }
+                .stat-info .label { font-size: 0.8rem; font-weight: 700; color: #94A3B8; text-transform: uppercase; }
+                .stat-info .value { font-size: 1.5rem; font-weight: 900; color: #0F172A; }
 
-                .admin-title { font-size: 2.25rem; font-weight: 800; margin-bottom: 8px; }
-                .admin-subtitle { color: var(--color-text-muted); font-size: 1rem; }
+                .admin-tabs-v2 { display: flex; gap: 40px; border-bottom: 1px solid #E2E8F0; margin-bottom: 40px; }
+                .tab-btn { padding: 16px 0; background: transparent; border: none; font-size: 1rem; font-weight: 700; color: #94A3B8; cursor: pointer; position: relative; display: flex; align-items: center; gap: 12px; }
+                .tab-btn.active { color: var(--color-primary); }
+                .tab-btn.active::after { content: ''; position: absolute; bottom: -1px; left: 0; right: 0; height: 3px; background: var(--color-primary); border-radius: 99px; }
+                .tab-btn .count { padding: 2px 10px; background: #F1F5F9; border-radius: 99px; font-size: 0.75rem; color: #64748B; }
 
-                .admin-actions { display: flex; gap: 16px; }
+                .queue-card { background: white; border: 1px solid #E2E8F0; border-radius: 32px; overflow: hidden; box-shadow: 0 4px 30px rgba(0,0,0,0.02); }
+                .admin-filter-bar { padding: 24px 32px; background: #F8FAFC; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #F1F5F9; }
+                .search-wrap-v4 { display: flex; align-items: center; gap: 14px; background: white; padding: 0 20px; height: 48px; border-radius: 14px; border: 1px solid #E2E8F0; width: 400px; }
+                .search-wrap-v4 input { border: none; outline: none; font-size: 0.9rem; font-weight: 500; width: 100%; }
 
-                .admin-nav-tabs {
-                    display: flex;
-                    gap: 32px;
-                    margin-bottom: 32px;
-                    border-bottom: 1px solid var(--color-border);
-                }
+                .admin-table { width: 100%; border-collapse: collapse; }
+                .admin-table th { background: #F8FAFC; padding: 20px 32px; text-align: left; font-size: 0.75rem; font-weight: 800; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; }
+                .admin-table td { padding: 24px 32px; border-bottom: 1px solid #F1F5F9; }
 
-                .nav-tab {
-                    background: none;
-                    border: none;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    padding: 12px 0;
-                    color: var(--color-text-muted);
-                    font-weight: 700;
-                    font-size: 0.9rem;
-                    cursor: pointer;
-                    border-bottom: 2px solid transparent;
-                    transition: all 0.2s;
-                }
+                .contributor-cell { display: flex; align-items: center; gap: 16px; }
+                .avatar { width: 44px; height: 44px; background: #F1F5F9; color: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; }
+                .details { display: flex; flex-direction: column; }
+                .details .name { font-weight: 800; color: #0F172A; }
+                .details .wallet { font-size: 0.75rem; font-family: monospace; color: #94A3B8; }
 
-                .nav-tab.active {
-                    color: var(--color-primary);
-                    border-bottom-color: var(--color-primary);
-                }
+                .rank-actions { display: flex; gap: 8px; justify-content: flex-end; align-items: center; }
+                .rank-btn { padding: 8px 14px; border-radius: 10px; border: none; font-weight: 800; font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
+                .rank-btn.r1 { background: #F59E0B20; color: #F59E0B; border: 1px solid #F59E0B30; }
+                .rank-btn.r2 { background: #94A3B820; color: #64748B; border: 1px solid #94A3B830; }
+                .rank-btn.r3 { background: #D9770620; color: #B45309; border: 1px solid #D9770630; }
+                .rank-btn:hover { transform: scale(1.05); }
 
-                .data-list { display: flex; flex-direction: column; gap: 16px; }
+                .dm-btn-v4 { width: 36px; height: 36px; background: #F1F5F9; border: none; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #64748B; cursor: pointer; margin-left: 8px; }
 
-                .admin-item-card { padding: 24px !important; }
+                .rank-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 99px; font-weight: 800; font-size: 0.8rem; }
+                .rank-badge.v1 { background: #F59E0B15; color: #F59E0B; }
+                .rank-badge.v2 { background: #94A3B815; color: #64748B; }
+                .rank-badge.v3 { background: #D9770615; color: #B45309; }
 
-                .item-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-                .item-name { font-size: 1.15rem; font-weight: 700; color: var(--color-text); }
+                .prize-info { font-weight: 700; color: var(--color-primary); }
+                .status-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 99px; font-size: 0.75rem; font-weight: 800; }
+                .status-badge.paid { background: #10B98115; color: #10B981; }
 
-                .item-pill-row { display: flex; gap: 12px; }
-                .payout-pill { font-size: 0.85rem; font-weight: 800; color: var(--color-primary); }
-                .status-pill { font-size: 0.75rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #f1f5f9; }
-                .status-pill.active { color: #16a34a; background: #f0fdf4; }
-
-                .item-meta { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--color-text-muted); margin-bottom: 16px; }
-                .dot { opacity: 0.5; }
-
-                .management-tray { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--color-border); }
-                .tray-h { font-size: 0.7rem; font-weight: 800; color: var(--color-text-muted); letter-spacing: 0.05em; margin-bottom: 16px; }
-
-                .participant-scroller { display: flex; flex-direction: column; gap: 8px; }
-                .p-row-sharp { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; background: #f8fafc; border-radius: var(--radius-sm); border: 1px solid var(--color-border); }
-                .p-id { display: flex; align-items: center; gap: 10px; }
-                .p-img-tiny { width: 24px; height: 24px; border-radius: 50%; }
-                .p-name-bold { font-weight: 700; font-size: 0.9rem; }
-
-                .p-rank-btns { display: flex; gap: 8px; }
-                .rank-btn { border: none; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; cursor: pointer; transition: opacity 0.2s; }
-                .rank-btn.gold { background: #fefce8; color: #854d0e; border: 1px solid #fde68a; }
-                .rank-btn.silver { background: #f8fafc; color: #475569; border: 1px solid #e2e8f0; }
-                .rank-btn.bronze { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
-                .rank-btn:hover { opacity: 0.8; }
-
-                .completed-tray { display: flex; align-items: center; gap: 8px; color: var(--color-text-muted); font-size: 0.9rem; }
-
-                .empty-command-state { text-align: center; padding: 80px; color: var(--color-text-muted); }
-
-                .sub-title-main { font-size: 1.1rem; font-weight: 700; margin-bottom: 24px; }
-                .type-tab-pill { font-size: 0.7rem; font-weight: 800; background: #f1f5f9; padding: 2px 8px; border-radius: 4px; }
-                .sub-action-footer { display: flex; gap: 12px; }
-
-                .small-btn { padding: 8px 16px !important; font-size: 0.85rem !important; height: auto !important; }
-
+                .module-card { padding: 60px; background: white; border: 1px solid #E2E8F0; border-radius: 32px; text-align: center; }
                 .spin { animation: spin 1s linear infinite; }
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                .text-right { text-align: right; }
+
+                @media (max-width: 1024px) { .admin-stats-v2 { grid-template-columns: repeat(2, 1fr); } }
             `}</style>
         </div>
     );

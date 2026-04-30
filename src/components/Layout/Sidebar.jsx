@@ -1,276 +1,254 @@
 import React, { useState } from 'react';
-import { Home, Compass, Banknote, PlusCircle, Settings, LogOut, User, Trophy, LayoutDashboard } from 'lucide-react';
+import { Home, Compass, Banknote, PlusCircle, Settings, LogOut, User, Trophy, LayoutDashboard, ChevronRight } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
 import { useAuth } from '../../context/AuthContext';
-import PostBountyModal from '../Modals/PostBountyModal';
+import { motion, AnimatePresence } from 'framer-motion';
 
-/**
- * Sidebar component - Redesigned for a professional FinTech aesthetic
- * inspired by First Dollar.
- */
 const Sidebar = () => {
-  const dataContext = useData();
-  const { postBounty, notifications } = dataContext || { postBounty: () => { }, notifications: [] };
-  const auth = useAuth();
-  const user = auth?.user;
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+    const auth = useAuth();
+    const user = auth?.user;
+    const [isOpen, setIsOpen] = useState(false);
 
-  const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
-    { icon: Compass, label: 'Marketplace', path: '/explore' },
-    { icon: Banknote, label: 'Staking & Grants', path: '/grants' },
-    { icon: Trophy, label: 'Leaderboard', path: '/leaderboard' },
-    { icon: User, label: 'My Profile', path: '/profile' },
-  ];
+    const navItems = [
+        { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+        { icon: Compass, label: 'Marketplace', path: '/explore' },
+        { icon: Banknote, label: 'Funding', path: '/grants' },
+        { icon: Trophy, label: 'Leaderboard', path: '/leaderboard' },
+        { icon: User, label: 'Profile', path: '/profile' },
+        { icon: Settings, label: 'Settings', path: '/settings' },
+    ];
 
-  const handlePostBounty = (newBounty) => {
-    postBounty(newBounty);
-  };
+    const handleNavClick = () => {
+        if (window.innerWidth < 1024) setIsOpen(false);
+    };
 
-  const handleNavClick = () => {
-    if (window.innerWidth < 1024) setIsOpen(false);
-  };
-
-  return (
-    <>
-      {/* Mobile Header Bar */}
-      <div className="mobile-header mobile-only">
-        <h1 className="logo-text">Sui-<span className="logo-accent">gig</span></h1>
-        <button className="menu-toggle" onClick={() => setIsOpen(!isOpen)}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            {isOpen ? <path d="M18 6L6 18M6 6l12 12" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
-          </svg>
-        </button>
-      </div>
-
-      <aside className={`sidebar-container ${isOpen ? 'show' : ''}`}>
-        <div className="sidebar-inner">
-          <div className="sidebar-header">
-            <h1 className="logo-text">Sui-<span className="logo-accent">gig</span></h1>
-          </div>
-
-          <nav className="sidebar-nav">
-            <p className="nav-group-title">MAIN MENU</p>
-            {navItems.map((item) => (
-              <NavLink
-                key={item.label}
-                to={item.path}
-                className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
-                onClick={handleNavClick}
-              >
-                <item.icon size={20} className="link-icon" />
-                <span>{item.label}</span>
-              </NavLink>
-            ))}
-          </nav>
-
-          <div className="sidebar-footer">
-            <div className="user-card">
-              <div className="user-avatar-small">
-                 {user?.name?.charAt(0) || 'Y'}
-              </div>
-              <div className="user-details">
-                <p className="user-name-text">{user?.name || 'Yeti'}</p>
-                <p className="user-wallet-text">
-                  {user?.walletAddress 
-                    ? `${user.walletAddress.substring(0, 6)}...${user.walletAddress.substring(user.walletAddress.length - 4)}`
-                    : 'Not Connected'
-                  }
-                </p>
-              </div>
-              <button className="settings-btn" onClick={() => auth.logout()} title="Sign Out">
-                <LogOut size={16} />
-              </button>
+    return (
+        <React.Fragment>
+            {/* Mobile Header Bar - Modern Wizz Style */}
+            <div className="wizz-mobile-header mobile-only">
+                <div className="branding-v4">
+                    <div className="branding-icon-v4-wrap">
+                        <img src="/Gemini_Generated_Image_ldq5hsldq5hsldq5__1_-removebg-preview.png" alt="Rift Tide" style={{ width: 'auto', height: '40px' }} />
+                    </div>
+                </div>
+                <button className="menu-toggle-v4" onClick={() => setIsOpen(!isOpen)}>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        {isOpen ? <path d="M18 6L6 18M6 6l12 12" /> : <path d="M4 6h16M4 12h16M4 18h16" />}
+                    </svg>
+                </button>
             </div>
-          </div>
-        </div>
 
-        <PostBountyModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          onPost={handlePostBounty}
-        />
+            <aside className={`wizz-sidebar ${isOpen ? 'show' : ''}`}>
+                <div className="sidebar-inner-v4">
+                    <div className="sidebar-branding-v4">
+                        <div className="branding-hex-v4-final">
+                            <img src="/Gemini_Generated_Image_ldq5hsldq5hsldq5__1_-removebg-preview.png" alt="Rift Tide" style={{ width: '100%', height: 'auto' }} />
+                        </div>
+                    </div>
 
-        <style>{`
-          .sidebar-container {
-            width: 280px;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            background: var(--color-surface);
-            border-right: 1px solid var(--color-border);
-            z-index: 1000;
-            transition: transform 0.3s ease;
-          }
+                    <nav className="sidebar-nav-v4">
+                        <div className="nav-group-v4">
+                            {navItems.map((item, i) => (
+                                <NavLink
+                                    key={item.label}
+                                    to={item.path}
+                                    className={({ isActive }) => `nav-link-v4 ${isActive ? 'active' : ''}`}
+                                    onClick={handleNavClick}
+                                >
+                                    <div className="icon-wrap-v4">
+                                        <item.icon size={20} />
+                                    </div>
+                                    <span className="label-v4">{item.label}</span>
+                                    <ChevronRight className="arrow-v4" size={14} />
+                                </NavLink>
+                            ))}
+                        </div>
+                    </nav>
 
-          .sidebar-inner {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            padding: 32px 20px;
-          }
+                    <footer className="sidebar-footer-v4">
+                        <div className="user-profile-v4">
+                            <div className="avatar-v4">
+                                <div className="status-indicator"></div>
+                                {user?.name?.charAt(0) || 'S'}
+                            </div>
+                            <div className="user-info-v4">
+                                <span className="name-v4">{user?.name || 'Explorer'}</span>
+                                <span className="role-v4">Contributor</span>
+                            </div>
+                        </div>
+                        <button className="logout-btn-v4" onClick={() => auth.logout()}>
+                            <LogOut size={16} /> Exit Session
+                        </button>
+                    </footer>
+                </div>
+            </aside>
 
-          .sidebar-header {
-            margin-bottom: 48px;
-            padding-left: 12px;
-          }
+            <style>{`
+                .wizz-sidebar {
+                    position: fixed;
+                    left: 24px;
+                    top: 24px;
+                    bottom: 24px;
+                    width: 280px;
+                    background: rgba(255, 255, 255, 0.8) !important;
+                    backdrop-filter: blur(20px);
+                    border: 1px solid rgba(255, 255, 255, 0.5);
+                    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+                    border-radius: 32px !important;
+                    z-index: 1000;
+                    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+                }
 
-          .logo-text {
-            font-size: 1.25rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            color: var(--color-text);
-          }
+                .sidebar-inner-v4 { display: flex; flex-direction: column; height: 100%; padding: 12px; }
 
-          .logo-accent {
-            color: var(--color-primary);
-          }
+                .sidebar-branding-v4 {
+                    width: 100%;
+                    padding: 32px 0;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                .branding-icon-v4-wrap {
+                    width: 52px;
+                    height: 52px;
+                    background: transparent;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0px;
+                    overflow: visible;
+                }
+                .branding-icon-v4-wrap img { 
+                    width: auto; 
+                    height: 40px; 
+                    object-fit: contain;
+                }
 
-          .nav-group-title {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: var(--color-text-muted);
-            letter-spacing: 0.05em;
-            margin-bottom: 16px;
-            padding-left: 12px;
-          }
+                .branding-hex-v4-final {
+                    width: 100%;
+                    padding: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    overflow: visible;
+                }
+                .branding-hex-v4-final img { 
+                    width: 100%; 
+                    max-width: 250px;
+                    height: auto; 
+                    object-fit: contain;
+                    display: block;
+                }
+                .branding-text-stack h2 { font-size: 1.25rem; font-weight: 800; color: var(--color-text); margin: 0; line-height: 1; }
+                .branding-text-stack h2 span { color: var(--color-primary); }
+                .branding-text-stack p { font-size: 0.75rem; color: var(--color-text-muted); font-weight: 400; margin-top: 4px; }
 
-          .sidebar-nav {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-          }
+                .sidebar-nav-v4 { flex: 1; padding: 20px 0; }
+                .nav-group-v4 { display: flex; flex-direction: column; gap: 8px; }
 
-          .sidebar-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            border-radius: var(--radius-sm);
-            color: var(--color-text-secondary);
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-          }
+                .nav-link-v4 {
+                    display: flex;
+                    align-items: center;
+                    padding: 14px 16px;
+                    border-radius: 18px !important;
+                    color: var(--color-text-secondary);
+                    font-weight: 700;
+                    font-size: 0.95rem;
+                    transition: all 0.3s;
+                    position: relative;
+                }
+                .icon-wrap-v4 { margin-right: 14px; opacity: 0.6; transition: all 0.3s; }
+                .arrow-v4 { margin-left: auto; opacity: 0; transform: translateX(-10px); transition: all 0.3s; }
 
-          .sidebar-link:hover {
-            background: var(--color-bg);
-            color: var(--color-text);
-          }
+                .nav-link-v4:hover {
+                    background: var(--color-primary-soft);
+                    color: var(--color-primary);
+                    padding-left: 20px;
+                }
+                .nav-link-v4.active {
+                    background: white;
+                    color: var(--color-primary);
+                    box-shadow: 0 10px 20px rgba(56, 193, 244, 0.1);
+                }
+                .nav-link-v4.active .icon-wrap-v4 { opacity: 1; color: var(--color-primary); }
+                .nav-link-v4.active .arrow-v4 { opacity: 0.5; transform: translateX(0); }
 
-          .sidebar-link.active {
-            background: var(--color-primary-soft);
-            color: var(--color-primary);
-          }
+                .sidebar-footer-v4 {
+                    padding: 20px;
+                    background: white;
+                    border-radius: 24px !important;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+                }
 
-          .link-icon {
-            transition: transform 0.2s;
-          }
+                .user-profile-v4 {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    margin-bottom: 20px;
+                    padding: 4px;
+                }
+                .avatar-v4 {
+                    width: 40px;
+                    height: 40px;
+                    background: var(--color-primary);
+                    color: white;
+                    border-radius: 12px !important;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 800;
+                    position: relative;
+                }
+                .status-indicator {
+                    position: absolute;
+                    bottom: -2px;
+                    right: -2px;
+                    width: 10px;
+                    height: 10px;
+                    background: #10B981;
+                    border: 2px solid white;
+                    border-radius: 50% !important;
+                }
+                .user-info-v4 { display: flex; flex-direction: column; }
+                .name-v4 { font-size: 0.9rem; font-weight: 800; color: var(--color-text); line-height: 1.2; }
+                .role-v4 { font-size: 0.7rem; color: var(--color-text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
 
-          .sidebar-link.active .link-icon {
-            transform: scale(1.1);
-          }
+                .logout-btn-v4 {
+                    width: 100%;
+                    height: 44px;
+                    background: var(--color-bg-secondary);
+                    border-radius: 14px !important;
+                    color: #EF4444;
+                    font-weight: 700;
+                    font-size: 0.85rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    transition: all 0.2s;
+                }
+                .logout-btn-v4:hover { background: #FEF2F2; transform: scale(0.98); }
 
-          .sidebar-footer {
-            margin-top: auto;
-            padding-top: 24px;
-            border-top: 1px solid var(--color-border);
-          }
+                @media (max-width: 1024px) {
+                    .wizz-sidebar { left: -300px; transform: translateX(0); }
+                    .wizz-sidebar.show { left: 16px; top: 16px; bottom: 16px; width: 260px; }
+                    .wizz-mobile-header {
+                        position: fixed; top: 0; left: 0; right: 0; height: 64px; background: white; border-bottom: 1px solid var(--color-border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; z-index: 999;
+                    }
+                    .branding-v4 { display: flex; align-items: center; gap: 10px; }
+                    .branding-v4 h2 { font-size: 1.25rem; font-weight: 800; margin: 0; }
+                    .branding-v4 h2 span { color: var(--color-primary); }
+                    .branding-icon-v4 { color: var(--color-primary); }
+                    .menu-toggle-v4 { color: var(--color-text); background: var(--color-bg-secondary); padding: 8px; border-radius: 10px !important; }
+                }
 
-          .user-card {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            background: var(--color-bg);
-            border-radius: var(--radius-md);
-            border: 1px solid var(--color-border);
-          }
-
-          .user-avatar-small {
-            width: 32px;
-            height: 32px;
-            background: var(--color-primary);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.8rem;
-          }
-
-          .user-details {
-            flex: 1;
-            min-width: 0;
-          }
-
-          .user-name-text {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-
-          .user-wallet-text {
-            font-size: 0.75rem;
-            color: var(--color-text-muted);
-            font-family: monospace;
-          }
-
-          .settings-btn {
-            background: none;
-            border: none;
-            color: var(--color-text-muted);
-            padding: 4px;
-            transition: color 0.2s;
-          }
-
-          .settings-btn:hover {
-            color: #ef4444;
-          }
-
-          /* Mobile Styles */
-          .mobile-header {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 64px;
-            background: var(--color-surface);
-            border-bottom: 1px solid var(--color-border);
-            padding: 0 20px;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 900;
-          }
-
-          .menu-toggle {
-            background: none;
-            border: none;
-            color: var(--color-text);
-          }
-
-          @media (max-width: 1024px) {
-            .mobile-header { display: flex; }
-            .sidebar-container {
-              transform: translateX(-100%);
-            }
-            .sidebar-container.show {
-              transform: translateX(0);
-            }
-          }
-        `}</style>
-      </aside>
-    </>
-  );
+                @media (min-width: 1025px) {
+                    .mobile-only { display: none; }
+                }
+            `}</style>
+        </React.Fragment>
+    );
 };
 
 export default Sidebar;

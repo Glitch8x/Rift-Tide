@@ -1,22 +1,28 @@
 import React from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SuiClientProvider, WalletProvider } from '@mysten/dapp-kit';
 import { getFullnodeUrl } from '@mysten/sui/client';
 import '@mysten/dapp-kit/dist/index.css';
 
-import Sidebar from './components/Layout/Sidebar';
+import DashboardLayout from './components/Layout/DashboardLayout';
 import Home from './pages/Home';
 import Explore from './pages/Explore';
 import Grants from './pages/Grants';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 import Profile from './pages/Profile';
 import QuestDetail from './pages/QuestDetail';
 import GrantApplication from './pages/GrantApplication';
+import Hub from './pages/Hub';
 import QuestSubmission from './pages/QuestSubmission';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import Leaderboard from './pages/Leaderboard';
+import Settings from './pages/Settings';
+import Jobs from './pages/Jobs';
+import Landing from './pages/Landing';
 
 import { DataProvider } from './context/DataContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -55,26 +61,20 @@ const ProtectedRoute = ({ children }) => {
 
 // Simple Admin Guard
 const ProtectedAdminRoute = ({ children }) => {
-  const isAdmin = localStorage.getItem('isAdmin');
-  if (!isAdmin) {
-    return <Navigate to="/admin" replace />;
+  const { user } = useAuth();
+  
+  // Restricted Admin Wallet Address
+  const ADMIN_WALLET = '0xebdcab3f6b981a9b68a7b0d866c713a8fd486e9873f08b615207ca471601c189'; 
+  
+  if (!user || user.walletAddress?.toLowerCase() !== ADMIN_WALLET.toLowerCase()) {
+    console.warn("Unauthorized Admin Access attempt from:", user?.walletAddress);
+    return <Navigate to="/dashboard" replace />;
   }
+  
   return children;
 };
 
-// Layout Component (Sidebar + Main Content)
-const AppLayout = ({ children }) => {
-  return (
-    <div className="app-container">
-      <Sidebar />
-      <main className="main-content">
-        <div className="container">
-          {children}
-        </div>
-      </main>
-    </div>
-  );
-};
+
 
 function App() {
   return (
@@ -89,82 +89,109 @@ function App() {
               <DataProvider>
                 <Routes>
                   <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
 
-                  <Route path="/" element={
+                  <Route path="/" element={<Landing />} />
+
+                  <Route path="/dashboard" element={
                     <ProtectedRoute>
-                      <AppLayout>
+                      <DashboardLayout>
                         <Home />
-                      </AppLayout>
+                      </DashboardLayout>
                     </ProtectedRoute>
                   } />
 
                   <Route path="/explore" element={
                     <ProtectedRoute>
-                      <AppLayout>
+                      <DashboardLayout>
                         <Explore />
-                      </AppLayout>
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  } />
+
+                  <Route path="/jobs" element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Jobs />
+                      </DashboardLayout>
                     </ProtectedRoute>
                   } />
 
                   <Route path="/grants" element={
                     <ProtectedRoute>
-                      <AppLayout>
+                      <DashboardLayout>
                         <Grants />
-                      </AppLayout>
+                      </DashboardLayout>
                     </ProtectedRoute>
                   } />
 
                   <Route path="/leaderboard" element={
                     <ProtectedRoute>
-                      <AppLayout>
+                      <DashboardLayout>
                         <Leaderboard />
-                      </AppLayout>
+                      </DashboardLayout>
                     </ProtectedRoute>
                   } />
 
                   <Route path="/grants/apply/:id" element={
                     <ProtectedRoute>
-                      <AppLayout>
+                      <DashboardLayout>
                         <GrantApplication />
-                      </AppLayout>
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  } />
+
+                  <Route path="/hub" element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Hub />
+                      </DashboardLayout>
                     </ProtectedRoute>
                   } />
 
                   <Route path="/profile" element={
                     <ProtectedRoute>
-                      <AppLayout>
+                      <DashboardLayout>
                         <Profile />
-                      </AppLayout>
+                      </DashboardLayout>
+                    </ProtectedRoute>
+                  } />
+
+                  <Route path="/settings" element={
+                    <ProtectedRoute>
+                      <DashboardLayout>
+                        <Settings />
+                      </DashboardLayout>
                     </ProtectedRoute>
                   } />
 
                   <Route path="/quest/submit/:id" element={
                     <ProtectedRoute>
-                      <AppLayout>
+                      <DashboardLayout>
                         <QuestSubmission />
-                      </AppLayout>
+                      </DashboardLayout>
                     </ProtectedRoute>
                   } />
 
                   <Route path="/admin" element={
-                    <AppLayout>
+                    <DashboardLayout>
                       <AdminLogin />
-                    </AppLayout>
+                    </DashboardLayout>
                   } />
 
                   <Route path="/admin/dashboard" element={
                     <ProtectedAdminRoute>
-                      <AppLayout>
+                      <DashboardLayout>
                         <AdminDashboard />
-                      </AppLayout>
+                      </DashboardLayout>
                     </ProtectedAdminRoute>
                   } />
 
                   <Route path="/quest/:id" element={
                     <ProtectedRoute>
-                      <AppLayout>
+                      <DashboardLayout>
                         <QuestDetail />
-                      </AppLayout>
+                      </DashboardLayout>
                     </ProtectedRoute>
                   } />
                 </Routes>

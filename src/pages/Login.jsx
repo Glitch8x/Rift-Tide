@@ -1,355 +1,148 @@
-import React, { useState } from 'react';
-import { ConnectButton } from '@mysten/dapp-kit';
-import { Sparkles, ShieldCheck, Zap, Globe } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Wallet, ArrowRight, Shield, Lock, Mail, Github, Chrome, Smartphone, Gamepad2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import SharpCard from '../components/UI/GlassCard'; // Now SharpCard
+import { useNavigate, Link } from 'react-router-dom';
+import { ConnectButton } from '@mysten/dapp-kit';
 
-/**
- * Login Page - Redesigned for a professional, secure FinTech entry
- * inspired by First Dollar and modern Web3 interfaces.
- */
+import BrandLogo from '../components/Common/BrandLogo';
+
 const Login = () => {
-  const [manualAddress, setManualAddress] = useState('');
-  const { manualLogin, user } = useAuth();
-  const navigate = useNavigate();
+    const { user, login } = useAuth();
+    const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-  React.useEffect(() => {
-    if (user) {
-      navigate('/');
-    }
-  }, [user, navigate]);
+    useEffect(() => {
+        if (user) {
+            navigate('/dashboard');
+        }
+    }, [user, navigate]);
 
-  const handleManualSubmit = (e) => {
-    e.preventDefault();
-    if (manualAddress.trim()) {
-      manualLogin(manualAddress.trim());
-    }
-  };
+    return (
+        <div className="rift-login-container">
+            {/* Main Login Card */}
+            <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rift-auth-card"
+            >
+                <div className="logo-box">
+                    <img src="/Gemini_Generated_Image_ldq5hsldq5hsldq5__1_-removebg-preview.png" alt="Rift Tide" style={{ width: '360px', height: 'auto' }} />
+                </div>
+                
+                <h1 className="auth-title">Welcome Back</h1>
+                <p className="auth-subtitle">Sign in to Rift Tide to continue your journey.</p>
 
-  return (
-    <div className="login-wrapper animate-fade-in">
-      <div className="login-left">
-        <div className="login-branding">
-          <div className="logo-badge">
-             <Sparkles size={24} color="white" />
-          </div>
-          <h1 className="branding-title">Sui-gig</h1>
-          <p className="branding-tagline">The premium contribution network for the Sui ecosystem.</p>
+                {/* Sui Wallet Connect */}
+                <div className="sui-wallet-wrap">
+                    <ConnectButton 
+                        connectText={
+                            <div className="sui-connect-btn">
+                                <Wallet size={18} />
+                                <span>Connect Sui Wallet</span>
+                            </div>
+                        }
+                    />
+                </div>
+
+                {/* Google Login */}
+                <div className="google-login-wrap" style={{ marginBottom: '16px' }}>
+                    <button type="button" className="social-btn" style={{ width: '100%', background: '#FFFFFF', border: '1px solid #E2E8F0', color: '#475569', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '48px', borderRadius: '12px', cursor: 'pointer' }}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21.35 11.1H12V13.9H17.85C17.65 15 16.25 17.1 12 17.1C8.45 17.1 5.7 14.6 5.7 11.5C5.7 8.4 8.45 5.9 12 5.9C13.6 5.9 14.9 6.5 15.75 7.3L18 5.05C16.5 3.7 14.4 3 12 3C6.48 3 2 7.48 2 13C2 18.52 6.48 23 12 23C18 23 22 18.5 22 13.5C22 12.5 21.85 11.8 21.35 11.1Z" fill="#4285F4"/></svg>
+                        <span style={{ marginLeft: '8px', fontWeight: '600' }}>Continue with Google</span>
+                    </button>
+                </div>
+
+                <div className="auth-footer-link" style={{ marginTop: '24px' }}>
+                    New to Rift Tide? <Link to="/signup">Join the Tribe</Link>
+                </div>
+            </motion.div>
+
+            <style>{`
+                .rift-login-container {
+                    min-height: 100vh;
+                    background-color: #F9FBFC;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    padding: 64px 24px;
+                    font-family: var(--font-body);
+                }
+
+                .logo-box {
+                    display: flex;
+                    justify-content: center;
+                    margin-bottom: 32px;
+                }
+
+                .rift-auth-card {
+                    background: #FFFFFF;
+                    width: 100%;
+                    max-width: 480px;
+                    padding: 48px;
+                    border-radius: 24px;
+                    box-shadow: 0 4px 24px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.04);
+                    border: 1px solid #F1F5F9;
+                    text-align: center;
+                }
+
+                .auth-title {
+                    font-family: var(--font-heading);
+                    font-weight: 800;
+                    font-size: 2.25rem;
+                    margin-bottom: 12px;
+                    color: #0B1120;
+                }
+
+                .auth-subtitle {
+                    color: #64748B;
+                    font-size: 1rem;
+                    margin-bottom: 32px;
+                }
+
+                .sui-wallet-wrap {
+                    margin-bottom: 16px;
+                }
+
+                .sui-wallet-wrap button {
+                    width: 100% !important;
+                    height: 52px !important;
+                    background: #FFFFFF !important;
+                    border: 1px solid #E2E8F0 !important;
+                    border-radius: 12px !important;
+                    display: flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    padding: 0 !important;
+                }
+
+                .sui-connect-btn {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    color: #475569;
+                    font-weight: 600;
+                    font-family: 'Inter', sans-serif;
+                }
+
+                .auth-footer-link {
+                    font-size: 0.95rem;
+                    color: #64748B;
+                    font-weight: 500;
+                }
+
+                .auth-footer-link a {
+                    color: var(--color-primary);
+                    font-weight: 700;
+                    text-decoration: none;
+                    margin-left: 4px;
+                }
+            `}</style>
         </div>
-
-        <div className="login-features">
-          <div className="feature-row">
-            <div className="feature-icon-box">
-              <ShieldCheck size={20} />
-            </div>
-            <div>
-              <p className="feature-h">Secure by Design</p>
-              <p className="feature-p">Integrate directly with Slush and Mysten Labs SDK.</p>
-            </div>
-          </div>
-          <div className="feature-row">
-            <div className="feature-icon-box">
-              <Zap size={20} />
-            </div>
-            <div>
-              <p className="feature-h">Instant Rewards</p>
-              <p className="feature-p">Get paid instantly in stablecoins or SUI upon approval.</p>
-            </div>
-          </div>
-          <div className="feature-row">
-             <div className="feature-icon-box">
-              <Globe size={20} />
-            </div>
-            <div>
-              <p className="feature-h">Global Opportunities</p>
-              <p className="feature-p">Access the best projects across the entire Sui network.</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="login-footer-text">
-          © 2026 Sui-gig. All rights reserved.
-        </div>
-      </div>
-
-      <div className="login-right">
-        <SharpCard className="auth-card">
-          <div className="auth-header">
-            <h2 className="auth-title">Welcome back</h2>
-            <p className="auth-subtitle">Connect your wallet to access your health and quest assets.</p>
-          </div>
-
-          <div className="wallet-connect-area">
-             <div className="connect-btn-container">
-                <ConnectButton />
-             </div>
-             <p className="wallet-hint">We recommend using <strong>Slush Wallet</strong> for the best experience.</p>
-          </div>
-
-          <div className="divider-container">
-             <div className="divider-line" />
-             <span className="divider-label">OR ACCESS VIA ADDRESS</span>
-             <div className="divider-line" />
-          </div>
-
-          <form onSubmit={handleManualSubmit} className="login-form">
-            <div className="input-group">
-              <label className="input-label">Wallet Address</label>
-              <input
-                type="text"
-                placeholder="0x..."
-                className="auth-input"
-                value={manualAddress}
-                onChange={(e) => setManualAddress(e.target.value)}
-                required
-              />
-            </div>
-            <button type="submit" className="btn btn-primary full-width">
-              Continue to Dashboard
-            </button>
-          </form>
-
-          <p className="auth-footer-help">
-            Need help? <a href="#">Visit our support center</a>
-          </p>
-        </SharpCard>
-      </div>
-
-      <style>{`
-        .login-wrapper {
-          display: grid;
-          grid-template-columns: 1fr 1.2fr;
-          min-height: 100vh;
-          background: white;
-        }
-
-        .login-left {
-          background: #0f172a; /* Deep Navy */
-          color: white;
-          padding: 80px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .login-left::after {
-          content: '';
-          position: absolute;
-          top: 0; right: 0; bottom: 0; left: 0;
-          background: radial-gradient(circle at 10% 10%, rgba(37, 99, 235, 0.1) 0%, transparent 50%);
-          pointer-events: none;
-        }
-
-        .logo-badge {
-          width: 48px;
-          height: 48px;
-          background: var(--color-primary);
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 24px;
-          box-shadow: 0 0 20px rgba(37, 99, 235, 0.4);
-        }
-
-        .branding-title {
-          font-size: 2.5rem;
-          font-weight: 800;
-          letter-spacing: -0.04em;
-          margin-bottom: 12px;
-        }
-
-        .branding-tagline {
-          font-size: 1.1rem;
-          color: #94a3b8;
-          max-width: 360px;
-          line-height: 1.6;
-        }
-
-        .login-features {
-          display: flex;
-          flex-direction: column;
-          gap: 32px;
-          margin: 60px 0;
-        }
-
-        .feature-row {
-          display: flex;
-          gap: 20px;
-          align-items: flex-start;
-        }
-
-        .feature-icon-box {
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--color-primary);
-          flex-shrink: 0;
-        }
-
-        .feature-h {
-          font-weight: 600;
-          font-size: 1.05rem;
-          margin-bottom: 4px;
-        }
-
-        .feature-p {
-          font-size: 0.9rem;
-          color: #94a3b8;
-          line-height: 1.5;
-        }
-
-        .login-footer-text {
-          font-size: 0.85rem;
-          color: #64748b;
-        }
-
-        .login-right {
-          background: #f8fafc;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 40px;
-        }
-
-        .auth-card {
-          width: 100%;
-          max-width: 480px;
-          padding: 48px !important;
-          background: white !important;
-          border: 1px solid #e2e8f0 !important;
-          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02) !important;
-        }
-
-        .auth-header {
-          text-align: center;
-          margin-bottom: 32px;
-        }
-
-        .auth-title {
-          font-size: 1.75rem;
-          font-weight: 700;
-          margin-bottom: 8px;
-          color: #1e293b;
-        }
-
-        .auth-subtitle {
-          font-size: 0.95rem;
-          color: #64748b;
-          line-height: 1.5;
-        }
-
-        .wallet-connect-area {
-          margin-bottom: 32px;
-        }
-
-        .connect-btn-container {
-          display: flex;
-          justify-content: center;
-          margin-bottom: 16px;
-        }
-
-        .connect-btn-container button {
-          width: 100% !important;
-          padding: 12px !important;
-          font-size: 1rem !important;
-          border-radius: var(--radius-sm) !important;
-          background: #1e293b !important;
-          color: white !important;
-          font-weight: 600 !important;
-          transition: transform 0.2s !important;
-        }
-
-        .connect-btn-container button:hover {
-          transform: translateY(-1px);
-          background: #0f172a !important;
-        }
-
-        .wallet-hint {
-          font-size: 0.8rem;
-          color: #94a3b8;
-          text-align: center;
-        }
-
-        .divider-container {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          margin-bottom: 24px;
-        }
-
-        .divider-line {
-          flex: 1;
-          height: 1px;
-          background: #e2e8f0;
-        }
-
-        .divider-label {
-          font-size: 0.7rem;
-          font-weight: 700;
-          color: #94a3b8;
-          letter-spacing: 0.05em;
-        }
-
-        .input-group {
-          margin-bottom: 24px;
-        }
-
-        .input-label {
-          display: block;
-          font-size: 0.85rem;
-          font-weight: 600;
-          color: #475569;
-          margin-bottom: 8px;
-        }
-
-        .auth-input {
-          width: 100%;
-          padding: 12px 16px;
-          border-radius: var(--radius-sm);
-          border: 1px solid #cbd5e1;
-          background: #fff;
-          font-size: 0.95rem;
-          transition: all 0.2s;
-        }
-
-        .auth-input:focus {
-          outline: none;
-          border-color: var(--color-primary);
-          box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-        }
-
-        .auth-footer-help {
-          text-align: center;
-          margin-top: 32px;
-          font-size: 0.9rem;
-          color: #64748b;
-        }
-
-        .auth-footer-help a {
-          color: var(--color-primary);
-          font-weight: 600;
-        }
-
-        .full-width { width: 100%; }
-
-        @media (max-width: 1024px) {
-          .login-wrapper {
-            grid-template-columns: 1fr;
-          }
-          .login-left { display: none; }
-        }
-      `}</style>
-    </div>
-  );
+    );
 };
 
 export default Login;

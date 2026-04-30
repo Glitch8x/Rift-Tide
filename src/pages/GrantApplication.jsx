@@ -1,280 +1,338 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
-import SharpCard from '../components/UI/GlassCard'; // Now SharpCard
-import { ArrowLeft, UploadCloud, Link as LinkIcon, Send, FileText, Globe } from 'lucide-react';
+import { ChevronLeft, ShieldCheck, Wallet, ArrowRight, FileText, Globe, CheckCircle2, Zap, Send, Info } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-/**
- * GrantApplication Page - Redesigned for a formal, high-stakes funding entry.
- * Follows the First Dollar style with sharp layouts and clear verification steps.
- */
 const GrantApplication = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { grants, applyGrant } = useData();
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { grants } = useData();
+    const grant = grants.find(g => g.id === parseInt(id));
 
-    const [formData, setFormData] = useState({
-        projectLink: '',
-        details: '',
-        cvFile: null
+    const [form, setForm] = useState({
+        projectName: '',
+        projectDescription: '',
+        budgetRequest: '',
+        website: '',
+        resumeLink: ''
     });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
 
-    const grant = grants?.find(g => g.id.toString() === id);
-
-    if (!grant) {
-        return (
-            <div className="container" style={{ padding: '80px 20px', textAlign: 'center' }}>
-                <h2 style={{ marginBottom: '16px' }}>Funding program not found</h2>
-                <button className="btn btn-outline" onClick={() => navigate(-1)}>Return to Programs</button>
-            </div>
-        );
-    }
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        setFormData(prev => ({ ...prev, cvFile: file }));
-    };
-
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        applyGrant(grant.id, {
-            ...formData,
-            submittedAt: new Date().toISOString()
-        });
-
-        navigate('/grants');
+        setTimeout(() => {
+            setIsSubmitting(false);
+            setIsSuccess(true);
+            setTimeout(() => navigate('/grants'), 4000);
+        }, 2000);
     };
 
+    if (!grant) return (
+        <div className="empty-application-v4">
+            <Info size={60} />
+            <h2>Grant Program Not Found</h2>
+            <button className="wizz-btn-primary" onClick={() => navigate('/grants')}>Go Back</button>
+        </div>
+    );
+
     return (
-        <div className="application-wrapper animate-fade-in">
-            <button className="breadcrumb-back" onClick={() => navigate(-1)} style={{ marginBottom: '32px' }}>
-                <ArrowLeft size={16} /> Back to Funding Programs
-            </button>
+        <div className="wizz-application-page animate-fade-in">
+            <div className="bg-blur-blob blob-app-1"></div>
+            <div className="bg-blur-blob blob-app-2"></div>
 
-            <div className="application-content">
-                <header className="application-header-sharp">
-                    <span className="application-badge">GRANT APPLICATION</span>
-                    <h1 className="application-title">Apply for Funding</h1>
-                    <p className="application-subtitle">Program: <strong>{grant.title}</strong> • {grant.amount}</p>
-                </header>
-
-                <SharpCard className="application-form-sharp">
-                    <form onSubmit={handleSubmit}>
-                        {/* 1. Project Links */}
-                        <div className="form-section">
-                            <h3 className="section-h-small">1. PROJECT RESOURCES</h3>
-                            <div className="field-group">
-                                <label className="field-label">Portfolio or Project Repository</label>
-                                <div className="input-with-icon">
-                                    <Globe size={18} className="field-icon" />
-                                    <input
-                                        type="url"
-                                        name="projectLink"
-                                        placeholder="https://github.com/org/project"
-                                        className="sharp-input"
-                                        required
-                                        value={formData.projectLink}
-                                        onChange={handleChange}
-                                    />
-                                </div>
+            <AnimatePresence mode="wait">
+                {isSuccess ? (
+                    <motion.div 
+                        key="success"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="success-container-v4"
+                    >
+                        <div className="success-card-v4 elevated-card">
+                            <div className="success-icon-v4">
+                                <CheckCircle2 size={64} />
                             </div>
+                            <h2>Proposal Transmitted!</h2>
+                            <p className="success-sub">ID: GR-2026-X842</p>
+                            <div className="success-body-v4">
+                                <p>The {grant.title} committee has received your proposal. Our review engine will process your submission within 10-15 cycles.</p>
+                            </div>
+                            <div className="success-loader">
+                                <div className="loader-fill"></div>
+                            </div>
+                            <span className="redirect-text">Redirecting to Grants Hub...</span>
                         </div>
-
-                        {/* 2. Documentation */}
-                        <div className="form-section">
-                            <h3 className="section-h-small">2. SUPPORTING DOCUMENTATION</h3>
-                            <div className="field-group">
-                                <label className="field-label">CV or Pitch Deck (PDF)</label>
-                                <input
-                                    type="file"
-                                    id="cv-upload-sharp"
-                                    accept=".pdf,.doc,.docx"
-                                    onChange={handleFileChange}
-                                    hidden
-                                />
-                                <label htmlFor="cv-upload-sharp" className="sharp-upload-area">
-                                    <UploadCloud size={24} className="upload-icon" />
-                                    <div className="upload-text">
-                                        <span className="upload-main">{formData.cvFile ? formData.cvFile.name : "Click to select file"}</span>
-                                        <span className="upload-sub">Maximum file size: 10MB</span>
-                                    </div>
-                                </label>
-                            </div>
-
-                            <div className="field-group">
-                                <label className="field-label">Proposal Executive Summary</label>
-                                <div className="input-with-icon top">
-                                    <FileText size={18} className="field-icon" />
-                                    <textarea
-                                        name="details"
-                                        placeholder="Outline your project goals and how the funding will be utilized..."
-                                        className="sharp-textarea"
-                                        rows={6}
-                                        value={formData.details}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* 3. Execution */}
-                        <div className="form-action-area">
-                            <button
-                                type="submit"
-                                className="btn btn-primary full-width large-btn"
-                                disabled={isSubmitting}
-                            >
-                                {isSubmitting ? (
-                                    <>Processing Application...</>
-                                ) : (
-                                    <>Submit Final Application <Send size={16} /></>
-                                )}
+                    </motion.div>
+                ) : (
+                    <motion.div 
+                        key="form"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="application-container-v4"
+                    >
+                        <nav className="back-nav-v4">
+                            <button onClick={() => navigate(-1)} className="back-pill-v4">
+                                <ChevronLeft size={18} /> Cancel Application
                             </button>
-                            <p className="terms-text">
-                                All grant applications are reviewed by the SUI Foundation committee. You will be notified of the decision via your registered account profile.
-                            </p>
+                        </nav>
+
+                        <header className="app-header-v4">
+                            <div className="app-badge-v4">
+                                <Send size={14} /> Official Application
+                            </div>
+                            <h1 className="app-title-v4">Funding <span>Proposal</span></h1>
+                            <p className="app-subtitle-v4">Applying for the <strong>{grant.title}</strong> program. Your vision, backed by the Sui ecosystem.</p>
+                        </header>
+
+                        <div className="app-grid-v4">
+                            <main className="app-main-v4">
+                                <div className="glass-pill-v4 form-card-v4">
+                                    <form onSubmit={handleSubmit} className="wizz-form-v4">
+                                        <div className="form-row-v4">
+                                            <div className="form-group-v4">
+                                                <label>Project Name</label>
+                                                <div className="input-wrap-v4">
+                                                    <input 
+                                                        type="text" 
+                                                        placeholder="e.g. Sui Commerce Engine" 
+                                                        required
+                                                        value={form.projectName}
+                                                        onChange={(e) => setForm({...form, projectName: e.target.value})}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="form-group-v4">
+                                                <label>Capital Requested (USD)</label>
+                                                <div className="input-wrap-v4">
+                                                    <input 
+                                                        type="text" 
+                                                        placeholder="50,000" 
+                                                        required
+                                                        value={form.budgetRequest}
+                                                        onChange={(e) => setForm({...form, budgetRequest: e.target.value})}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="form-group-v4 full-width">
+                                            <label>Mission Strategy</label>
+                                            <div className="textarea-wrap-v4">
+                                                <textarea 
+                                                    placeholder="Describe your project, roadmap, and how you will impact the Sui ecosystem..." 
+                                                    required
+                                                    rows={8}
+                                                    value={form.projectDescription}
+                                                    onChange={(e) => setForm({...form, projectDescription: e.target.value})}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="form-group-v4 full-width">
+                                            <label>External Resources</label>
+                                            <div className="input-wrap-v4 with-icon">
+                                                <Globe size={18} />
+                                                <input 
+                                                    type="url" 
+                                                    placeholder="Website or Social Link" 
+                                                    value={form.website}
+                                                    onChange={(e) => setForm({...form, website: e.target.value})}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="form-group-v4 full-width">
+                                            <label>Resume / Project Portfolio Link</label>
+                                            <div className="input-wrap-v4 with-icon">
+                                                <FileText size={18} />
+                                                <input 
+                                                    type="url" 
+                                                    placeholder="Link to your resume or portfolio (GitHub / LinkedIn)" 
+                                                    required
+                                                    value={form.resumeLink}
+                                                    onChange={(e) => setForm({...form, resumeLink: e.target.value})}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="form-footer-v4">
+                                            <button type="submit" className="wizz-btn-primary full-width large" disabled={isSubmitting}>
+                                                {isSubmitting ? (
+                                                    "Transmitting..."
+                                                ) : (
+                                                    <>Submit Application <ArrowRight size={20} /></>
+                                                )}
+                                            </button>
+                                            <p className="legal-info-v4">
+                                                By submitting, you agree to our ecosystem contribution terms and project verification standards.
+                                            </p>
+                                        </div>
+                                    </form>
+                                </div>
+                            </main>
+
+                            <aside className="app-sidebar-v4">
+                                <div className="glass-pill-v4 side-card-v4">
+                                    <h3>Program Details</h3>
+                                    <div className="side-stats-v4">
+                                        <div className="side-stat-item">
+                                            <span className="label">Available Pool</span>
+                                            <span className="val highlight">{grant.amount}</span>
+                                        </div>
+                                        <div className="side-stat-item">
+                                            <span className="label">Filing Cycle</span>
+                                            <span className="val">Q2 2024</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="glass-pill-v4 side-card-v4">
+                                    <h3>Guidelines</h3>
+                                    <ul className="guideline-list-v4">
+                                        <li><ShieldCheck size={16} /> Open ecosystem standards</li>
+                                        <li><ShieldCheck size={16} /> Scalable architecture</li>
+                                        <li><ShieldCheck size={16} /> Verified identity required</li>
+                                    </ul>
+                                </div>
+                            </aside>
                         </div>
-                    </form>
-                </SharpCard>
-            </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <style>{`
-                .application-wrapper {
-                    max-width: 800px;
+                .wizz-application-page {
+                    padding: 80px 24px 120px;
+                    max-width: 1200px;
                     margin: 0 auto;
+                    position: relative;
                 }
 
-                .application-header-sharp {
-                    text-align: center;
-                    margin-bottom: 40px;
+                .bg-blur-blob {
+                    position: fixed;
+                    width: 600px;
+                    height: 600px;
+                    border-radius: 50% !important;
+                    filter: blur(100px);
+                    opacity: 0.08;
+                    z-index: -1;
                 }
+                .blob-app-1 { top: 10%; right: -5%; background: var(--color-primary); }
+                .blob-app-2 { bottom: 10%; left: -5%; background: var(--color-accent); }
 
-                .application-badge {
-                    font-size: 0.7rem;
-                    font-weight: 800;
-                    letter-spacing: 0.1em;
-                    color: var(--color-primary);
-                    background: var(--color-primary-soft);
-                    padding: 4px 12px;
-                    border-radius: 4px;
-                    border: 1px solid rgba(37, 99, 235, 0.1);
-                }
-
-                .application-title {
-                    font-size: 2.25rem;
-                    font-weight: 800;
-                    margin: 16px 0 8px;
-                    letter-spacing: -0.02em;
-                }
-
-                .application-subtitle {
-                    color: var(--color-text-secondary);
-                    font-size: 1rem;
-                }
-
-                .application-form-sharp {
-                    padding: 48px !important;
-                }
-
-                .form-section {
-                    margin-bottom: 40px;
-                }
-
-                .section-h-small {
-                    font-size: 0.75rem;
-                    font-weight: 800;
-                    color: var(--color-text-muted);
-                    margin-bottom: 16px;
-                    letter-spacing: 0.05em;
-                }
-
-                .field-group { margin-bottom: 24px; }
-
-                .field-label {
-                    display: block;
-                    font-size: 0.85rem;
-                    font-weight: 700;
-                    color: var(--color-text-secondary);
-                    margin-bottom: 10px;
-                }
-
-                .input-with-icon {
+                .back-nav-v4 { margin-bottom: 40px; }
+                .back-pill-v4 {
                     display: flex;
                     align-items: center;
-                    gap: 12px;
+                    gap: 8px;
+                    padding: 10px 20px;
                     background: white;
                     border: 1px solid var(--color-border);
-                    border-radius: var(--radius-md);
-                    padding: 0 16px;
-                    transition: all 0.2s;
-                }
-
-                .input-with-icon.top { align-items: flex-start; padding-top: 14px; }
-
-                .input-with-icon:focus-within {
-                    border-color: var(--color-primary);
-                    box-shadow: 0 0 0 4px var(--color-primary-soft);
-                }
-
-                .field-icon { color: var(--color-text-muted); }
-
-                .sharp-input, .sharp-textarea {
-                    flex: 1;
-                    background: transparent;
-                    border: none;
-                    outline: none;
-                    padding: 14px 0;
-                    font-size: 1rem;
-                    color: var(--color-text);
-                    font-family: inherit;
-                }
-
-                .sharp-upload-area {
-                    display: flex;
-                    align-items: center;
-                    gap: 16px;
-                    padding: 24px;
-                    border: 1px dashed var(--color-border);
-                    border-radius: var(--radius-md);
-                    background: #f8fafc;
+                    border-radius: 9999px;
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                    color: var(--color-text-muted);
                     cursor: pointer;
                     transition: all 0.2s;
                 }
+                .back-pill-v4:hover { border-color: var(--color-primary); color: var(--color-primary); }
 
-                .sharp-upload-area:hover {
-                    background: #f1f5f9;
-                    border-color: var(--color-text-muted);
+                .app-header-v4 { margin-bottom: 60px; }
+                .app-badge-v4 {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 6px 14px;
+                    background: var(--color-primary-soft);
+                    color: var(--color-primary);
+                    border-radius: 9999px;
+                    font-size: 0.8rem;
+                    font-weight: 800;
+                    margin-bottom: 20px;
+                    text-transform: uppercase;
+                }
+                .app-title-v4 { font-size: 3.5rem; font-weight: 800; color: var(--color-text); line-height: 1; margin-bottom: 20px; }
+                .app-title-v4 span { color: var(--color-primary); }
+                .app-subtitle-v4 { font-size: 1.15rem; color: var(--color-text-muted); font-weight: 400; }
+
+                .app-grid-v4 { display: grid; grid-template-columns: 1fr 340px; gap: 40px; }
+                
+                .form-card-v4 { padding: 48px !important; }
+                .wizz-form-v4 { display: flex; flex-direction: column; gap: 32px; }
+
+                .form-row-v4 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+                .form-group-v4 { display: flex; flex-direction: column; gap: 10px; }
+                .form-group-v4 label { font-size: 0.9rem; font-weight: 700; color: var(--color-text); }
+
+                .input-wrap-v4, .textarea-wrap-v4 {
+                    background: rgba(0,0,0,0.04);
+                    border: 2.5px solid rgba(0,0,0,0.08);
+                    border-radius: 16px !important;
+                    transition: all 0.2s;
+                }
+                .input-wrap-v4:focus-within, .textarea-wrap-v4:focus-within {
+                    border-color: var(--color-primary);
+                    background: white;
+                    box-shadow: 0 8px 24px -10px rgba(56, 193, 244, 0.2);
                 }
 
-                .upload-icon { color: var(--color-primary); }
-                .upload-main { display: block; font-weight: 700; font-size: 0.95rem; color: var(--color-text); }
-                .upload-sub { font-size: 0.75rem; color: var(--color-text-muted); }
-
-                .large-btn { padding: 18px !important; font-size: 1.1rem !important; }
-
-                .terms-text {
-                    text-align: center;
-                    font-size: 0.75rem;
-                    line-height: 1.5;
-                    color: var(--color-text-muted);
-                    margin-top: 24px;
-                    max-width: 480px;
-                    margin-left: auto;
-                    margin-right: auto;
+                .input-wrap-v4 input, .textarea-wrap-v4 textarea {
+                    width: 100%;
+                    padding: 16px 20px;
+                    border: none;
+                    background: transparent;
+                    outline: none;
+                    font-size: 1rem;
+                    font-weight: 400;
+                    color: var(--color-text);
                 }
+                .input-wrap-v4 input::placeholder, .textarea-wrap-v4 textarea::placeholder {
+                    color: #94A3B8;
+                    font-weight: 400;
+                }
+                .input-wrap-v4.with-icon { display: flex; align-items: center; padding-left: 20px; }
+                .input-wrap-v4.with-icon input { padding-left: 12px; }
+                .input-wrap-v4.with-icon svg { color: var(--color-primary); opacity: 0.6; }
 
-                @media (max-width: 640px) {
-                    .application-form-sharp { padding: 32px 24px !important; }
+                .form-footer-v4 { text-align: center; border-top: 1px solid var(--color-border); padding-top: 40px; }
+                .large { height: 64px; font-size: 1.1rem; }
+                .legal-info-v4 { font-size: 0.8rem; color: var(--color-text-muted); margin-top: 20px; font-weight: 500; max-width: 400px; margin-left: auto; margin-right: auto; }
+
+                .side-card-v4 { padding: 32px !important; margin-bottom: 24px; }
+                .side-card-v4 h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 24px; }
+                
+                .side-stats-v4 { display: flex; flex-direction: column; gap: 20px; }
+                .side-stat-item { display: flex; justify-content: space-between; }
+                .side-stat-item .label { font-size: 0.9rem; font-weight: 700; color: var(--color-text-muted); }
+                .side-stat-item .val { font-size: 0.95rem; font-weight: 800; color: var(--color-text); }
+                .side-stat-item .highlight { color: var(--color-primary); }
+
+                .guideline-list-v4 { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+                .guideline-list-v4 li { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; font-weight: 400; color: var(--color-text); }
+                .guideline-list-v4 li svg { color: var(--color-primary); }
+
+                /* Success State */
+                .success-container-v4 { display: flex; align-items: center; justify-content: center; min-height: 60vh; }
+                .success-card-v4 { padding: 60px !important; text-align: center; max-width: 500px; }
+                .success-icon-v4 { width: 100px; height: 100px; background: #10B98115; color: #10B981; border-radius: 50% !important; display: flex; align-items: center; justify-content: center; margin: 0 auto 32px; }
+                .success-card-v4 h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; }
+                .success-sub { font-family: monospace; font-size: 0.9rem; font-weight: 700; color: var(--color-primary); background: var(--color-primary-soft); padding: 4px 12px; border-radius: 6px !important; display: inline-block; margin-bottom: 32px; }
+                .success-body-v4 p { font-size: 1.1rem; color: var(--color-text-muted); font-weight: 400; line-height: 1.6; }
+
+                .success-loader { width: 100%; height: 6px; background: var(--color-surface); border-radius: 10px !important; margin: 40px 0 16px; overflow: hidden; }
+                .loader-fill { height: 100%; background: #10B981; border-radius: 10px !important; animation: fill-progress 4s linear; width: 0; }
+                .redirect-text { font-size: 0.85rem; font-weight: 700; color: var(--color-text-muted); }
+
+                @keyframes fill-progress { from { width: 0; } to { width: 100%; } }
+
+                @media (max-width: 1024px) {
+                    .app-grid-v4 { grid-template-columns: 1fr; }
+                    .form-row-v4 { grid-template-columns: 1fr; }
+                    .app-title-v4 { font-size: 2.5rem; }
                 }
             `}</style>
         </div>

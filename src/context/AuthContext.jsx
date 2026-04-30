@@ -32,9 +32,34 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('lofi_manual_wallet');
     };
 
+    const login = async ({ email, password }) => {
+        // Mock email login
+        setLoading(true);
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                const mockUser = {
+                    id: 'mock-user-123',
+                    name: 'Builder',
+                    email: email,
+                    avatar: `https://ui-avatars.com/api/?name=Builder&background=random`,
+                    walletAddress: '0x...',
+                    earnings: 0,
+                    completedQuests: 0,
+                    connectionType: 'email'
+                };
+                setUser(mockUser);
+                localStorage.setItem('lofi_user', JSON.stringify(mockUser));
+                setLoading(false);
+                resolve(mockUser);
+            }, 1000);
+        });
+    };
+
     const logout = () => {
         disconnect();
         manualLogout();
+        localStorage.removeItem('lofi_user');
+        setUser(null);
     };
 
     useEffect(() => {
@@ -44,6 +69,7 @@ export const AuthProvider = ({ children }) => {
             // User is connected with wallet (either dApp kit or manual)
             const walletAddress = account.address;
             const shortAddress = `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
+            const isWallet = !!currentAccount;
 
             setUser({
                 id: walletAddress,
@@ -52,7 +78,8 @@ export const AuthProvider = ({ children }) => {
                 avatar: `https://ui-avatars.com/api/?name=${shortAddress}&background=random`,
                 walletAddress: walletAddress,
                 earnings: 0,
-                completedQuests: 0
+                completedQuests: 0,
+                connectionType: isWallet ? 'wallet' : 'manual'
             });
         } else {
             // No wallet connected
@@ -65,6 +92,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         manualLogin,
         manualLogout,
+        login,
         logout
     };
 

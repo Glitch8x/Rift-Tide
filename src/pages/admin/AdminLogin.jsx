@@ -1,181 +1,197 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Shield, Lock, ArrowRight, ShieldCheck } from 'lucide-react';
-import SharpCard from '../../components/UI/GlassCard'; // Now SharpCard
+import { ShieldCheck, ShieldAlert, Key, Wallet, Lock, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useAuth } from '../../context/AuthContext';
 
-/**
- * AdminLogin Page - Redesigned for a high-security, professional entry.
- * Follows the "First Dollar" style with sharp borders and clean typography.
- */
 const AdminLogin = () => {
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const { user } = useAuth();
     const navigate = useNavigate();
+    const [isVerifying, setIsVerifying] = useState(false);
+    const [error, setError] = useState('');
 
-    const handleLogin = (e) => {
-        e.preventDefault();
-        if (password === 'Daniel@2007') {
-            localStorage.setItem('isAdmin', 'true');
-            navigate('/admin/dashboard');
-        } else {
-            setError('The password you entered is incorrect. Access denied.');
-        }
+    // Restricted Admin Wallet Address
+    const ADMIN_WALLET = '0xebdcab3f6b981a9b68a7b0d866c713a8fd486e9873f08b615207ca471601c189';
+
+    const checkAccess = () => {
+        setIsVerifying(true);
+        setTimeout(() => {
+            if (user?.walletAddress?.toLowerCase() === ADMIN_WALLET.toLowerCase()) {
+                localStorage.setItem('isAdmin', 'true');
+                navigate('/admin/dashboard');
+            } else {
+                setError('Access Denied: Your wallet address is not authorized for administrative access.');
+                setIsVerifying(false);
+            }
+        }, 1500);
     };
 
+    useEffect(() => {
+        if (user) {
+            checkAccess();
+        }
+    }, [user]);
+
     return (
-        <div className="admin-login-container animate-fade-in">
-            <SharpCard className="admin-auth-card">
-                <header className="auth-header">
-                    <div className="auth-lock-icon">
-                        <Lock size={24} />
+        <div className="admin-gate-page">
+            <div className="bg-blur-blob blob-adm-1"></div>
+            <div className="bg-blur-blob blob-adm-2"></div>
+            
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="gate-container"
+            >
+                <div className="gate-card">
+                    <div className="gate-icon">
+                        {error ? <ShieldAlert size={48} /> : <ShieldCheck size={48} />}
                     </div>
-                    <h1 className="auth-title">Administrator Terminal</h1>
-                    <p className="auth-subtitle">Unauthorized access is strictly prohibited and logged.</p>
-                </header>
+                    <h1>Admin <span>Gate</span></h1>
+                    <p className="gate-subtitle">
+                        Identity verification in progress. This area is restricted to authorized ecosystem roots.
+                    </p>
 
-                <form onSubmit={handleLogin} className="auth-form">
-                    <div className="field-group">
-                        <label className="field-label">Access Password</label>
-                        <div className={`input-wrapper-sharp ${error ? 'error' : ''}`}>
-                             <input
-                                type="password"
-                                placeholder="••••••••••••"
-                                value={password}
-                                onChange={(e) => {setPassword(e.target.value); setError('');}}
-                                className="sharp-input-field"
-                                required
-                            />
+                    {!user ? (
+                        <div className="gate-state">
+                            <div className="status-pill pending">
+                                <Wallet size={16} /> Wallet Not Connected
+                            </div>
+                            <button className="wizz-btn-primary full-width" onClick={() => navigate('/login')}>
+                                Connect Authorized Wallet
+                            </button>
                         </div>
-                    </div>
-                    
-                    {error && (
-                        <div className="error-alert">
-                            <ShieldCheck size={16} /> {error}
+                    ) : isVerifying ? (
+                        <div className="gate-state">
+                            <div className="status-pill verifying">
+                                <div className="loader-mini" /> Verifying Identity...
+                            </div>
+                            <p className="wallet-ref">{user.walletAddress}</p>
                         </div>
-                    )}
+                    ) : error ? (
+                        <div className="gate-state">
+                            <div className="error-box">
+                                <p>{error}</p>
+                            </div>
+                            <button className="wizz-btn-outline full-width" onClick={() => navigate('/dashboard')}>
+                                Return to User Dashboard
+                            </button>
+                        </div>
+                    ) : null}
 
-                    <button type="submit" className="btn btn-primary full-width large-btn">
-                        Enter Secure Dashboard <ArrowRight size={18} />
-                    </button>
-                </form>
-
-                <div className="auth-footer">
-                    <p>© 2026 Sui-gig Management Console</p>
+                    <footer className="gate-footer">
+                        <p>© 2026 Rift Tide Protocol • Command & Control v2.4</p>
+                    </footer>
                 </div>
-            </SharpCard>
+            </motion.div>
 
             <style>{`
-                .admin-login-container {
-                    min-height: calc(100vh - 200px);
+                .admin-gate-page {
+                    min-height: 80vh;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    padding: 40px 20px;
+                    padding: 24px;
                 }
 
-                .admin-auth-card {
+                .gate-container {
                     width: 100%;
-                    max-width: 440px;
-                    padding: 48px !important;
+                    max-width: 500px;
                 }
 
-                .auth-header {
+                .gate-card {
+                    background: white;
+                    border: 1px solid #E2E8F0;
+                    border-radius: 32px;
+                    padding: 60px;
                     text-align: center;
+                    box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+                }
+
+                .gate-icon {
+                    width: 80px;
+                    height: 80px;
+                    background: #F8FAFC;
+                    color: var(--color-primary);
+                    border-radius: 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin: 0 auto 32px;
+                }
+
+                .gate-card h1 {
+                    font-size: 2.5rem;
+                    font-weight: 900;
+                    letter-spacing: -0.04em;
+                    margin-bottom: 12px;
+                }
+
+                .gate-card h1 span {
+                    color: var(--color-primary);
+                }
+
+                .gate-subtitle {
+                    color: #64748B;
+                    font-weight: 500;
+                    line-height: 1.6;
                     margin-bottom: 40px;
                 }
 
-                .auth-lock-icon {
-                    width: 56px;
-                    height: 56px;
-                    background: #f8fafc;
-                    border: 1px solid var(--color-border);
-                    border-radius: 16px;
+                .gate-state {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 20px;
+                }
+
+                .status-pill {
+                    padding: 10px 20px;
+                    border-radius: 99px;
+                    font-size: 0.85rem;
+                    font-weight: 800;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    margin: 0 auto 24px;
-                    color: var(--color-text-muted);
+                    gap: 10px;
                 }
 
-                .auth-title {
-                    font-size: 1.5rem;
-                    font-weight: 800;
-                    letter-spacing: -0.02em;
-                    margin-bottom: 8px;
+                .status-pill.pending { background: #F1F5F9; color: #64748B; }
+                .status-pill.verifying { background: var(--color-primary-soft); color: var(--color-primary); }
+
+                .wallet-ref {
+                    font-family: monospace;
+                    font-size: 0.75rem;
+                    color: #94A3B8;
+                    word-break: break-all;
                 }
 
-                .auth-subtitle {
-                    color: var(--color-text-muted);
-                    font-size: 0.85rem;
+                .error-box {
+                    padding: 20px;
+                    background: #FEF2F2;
+                    border: 1px solid #FEE2E2;
+                    border-radius: 16px;
+                    color: #DC2626;
+                    font-size: 0.9rem;
+                    font-weight: 600;
                     line-height: 1.5;
                 }
 
-                .field-group { margin-bottom: 24px; }
-
-                .field-label {
-                    display: block;
+                .gate-footer {
+                    margin-top: 48px;
                     font-size: 0.75rem;
-                    font-weight: 800;
-                    color: var(--color-text-muted);
-                    margin-bottom: 8px;
-                    letter-spacing: 0.05em;
-                }
-
-                .input-wrapper-sharp {
-                    background: #f8fafc;
-                    border: 1px solid var(--color-border);
-                    border-radius: var(--radius-sm);
-                    padding: 2px;
-                    transition: border-color 0.2s, box-shadow 0.2s;
-                }
-
-                .input-wrapper-sharp.error {
-                    border-color: #ef4444;
-                    background: #fef2f2;
-                }
-
-                .input-wrapper-sharp:focus-within {
-                    border-color: var(--color-primary);
-                    box-shadow: 0 0 0 4px var(--color-primary-soft);
-                    background: white;
-                }
-
-                .sharp-input-field {
-                    width: 100%;
-                    padding: 12px 14px;
-                    background: transparent;
-                    border: none;
-                    outline: none;
-                    font-size: 1rem;
-                    color: var(--color-text);
-                    text-align: center;
-                    letter-spacing: 0.2rem;
-                }
-
-                .error-alert {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    background: #fef2f2;
-                    color: #ef4444;
-                    padding: 12px;
-                    border-radius: var(--radius-sm);
-                    font-size: 0.85rem;
                     font-weight: 600;
-                    margin-bottom: 24px;
-                    border: 1px solid #fee2e2;
+                    color: #94A3B8;
                 }
 
-                .large-btn { padding: 14px !important; font-size: 1rem !important; }
-
-                .auth-footer {
-                    margin-top: 40px;
-                    text-align: center;
-                    font-size: 0.75rem;
-                    color: var(--color-text-muted);
+                .loader-mini {
+                    width: 16px;
+                    height: 16px;
+                    border: 2px solid var(--color-primary);
+                    border-top-color: transparent;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
                 }
 
-                .full-width { width: 100%; }
+                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
             `}</style>
         </div>
     );

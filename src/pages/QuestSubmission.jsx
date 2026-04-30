@@ -1,276 +1,315 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
-import { useCurrentAccount } from '@mysten/dapp-kit';
-import SharpCard from '../components/UI/GlassCard'; // Now SharpCard
-import { ArrowLeft, Link as LinkIcon, Send, Wallet, AlertCircle, FileText, CheckCircle2 } from 'lucide-react';
+import { Upload, Link as LinkIcon, FileText, CheckCircle2, ChevronLeft, ShieldCheck, AlertCircle, Zap, Send, Trophy, Info, Twitter, Video } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-/**
- * QuestSubmission Page - Redesigned for a formal, professional FinTech entry.
- * Follows the First Dollar style with sharp layouts and clear verification steps.
- */
 const QuestSubmission = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { bounties, joinBounty } = useData();
-    const currentAccount = useCurrentAccount();
-    const walletAddress = currentAccount?.address;
-    const isConnected = !!currentAccount;
+    const { bounties } = useData();
+    const quest = bounties.find(b => b.id === parseInt(id));
+
+    const [form, setForm] = useState({
+        twitterLink: '',
+        videoLink: '',
+        briefTelling: '',
+    });
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [submissionLink, setSubmissionLink] = useState('');
-    const [summary, setSummary] = useState('');
-
-    const quest = bounties?.find(b => b.id.toString() === id);
-
-    if (!quest) {
-        return (
-            <div className="container" style={{ padding: '80px 20px', textAlign: 'center' }}>
-                <h2 style={{ marginBottom: '16px' }}>Quest not found</h2>
-                <button className="btn btn-outline" onClick={() => navigate(-1)}>Return to Gallery</button>
-            </div>
-        );
-    }
+    const [isSuccess, setIsSuccess] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (!isConnected) {
-            alert("Please connect your Sui wallet (Slush) to proceed with submission.");
-            return;
-        }
-
         setIsSubmitting(true);
         await new Promise(resolve => setTimeout(resolve, 2000));
-
-        joinBounty(quest.id, {
-            submissionLink,
-            summary,
-            walletAddress: walletAddress || '0x...',
-            submittedAt: new Date().toISOString()
-        });
-
-        navigate('/quest/' + id);
+        setIsSubmitting(false);
+        setIsSuccess(true);
+        setTimeout(() => navigate('/profile'), 4000);
     };
 
+    if (!quest) return (
+        <div className="empty-submission-v4">
+            <Info size={60} />
+            <h2>Mission Not Found</h2>
+            <button className="wizz-btn-primary" onClick={() => navigate('/explore')}>Go to Explore</button>
+        </div>
+    );
+
     return (
-        <div className="submission-wrapper animate-fade-in">
-            <button className="breadcrumb-back" onClick={() => navigate(-1)} style={{ marginBottom: '32px' }}>
-                <ArrowLeft size={16} /> Back to Asset Details
-            </button>
+        <div className="wizz-submission-page animate-fade-in">
+            <div className="bg-blur-blob blob-sub-1"></div>
+            <div className="bg-blur-blob blob-sub-2"></div>
 
-            <div className="submission-content">
-                <header className="submission-header-sharp">
-                    <span className="submission-badge">FORMAL SUBMISSION</span>
-                    <h1 className="submission-title">Submit Contribution</h1>
-                    <p className="submission-subtitle">Project: <strong>{quest.title}</strong></p>
-                </header>
-
-                <SharpCard className="submission-form-sharp">
-                    <form onSubmit={handleSubmit}>
-                        {/* 1. Network Identity */}
-                        <div className="form-section">
-                            <h3 className="section-h-small">1. VERIFY IDENTITY</h3>
-                            <div className={`identity-display-box ${isConnected ? 'verified' : 'unverified'}`}>
-                                <div className="identity-icon">
-                                    {isConnected ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
-                                </div>
-                                <div className="identity-text">
-                                    <p className="id-label">{isConnected ? 'SUI WALLET CONNECTED' : 'WALLET DISCONNECTED'}</p>
-                                    <p className="id-val monospaced">
-                                        {isConnected 
-                                            ? `${walletAddress.substring(0, 16)}...${walletAddress.substring(walletAddress.length - 12)}`
-                                            : 'Please connect via Slush Wallet'}
-                                    </p>
-                                </div>
+            <AnimatePresence mode="wait">
+                {isSuccess ? (
+                    <motion.div 
+                        key="success"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="success-container-v4"
+                    >
+                        <div className="success-card-v4 elevated-card">
+                            <div className="success-icon-v4">
+                                <Trophy size={64} />
                             </div>
-                            <p className="form-help">Your wallet address will be used for reward distribution upon approval.</p>
+                            <h2>Mission Completed!</h2>
+                            <p className="success-sub">TX: 0x82...F9A2</p>
+                            <div className="success-body-v4">
+                                <p>Your contribution has been successfully transmitted to the {quest.community} network. Verification nodes are now processing your evidence.</p>
+                            </div>
+                            <div className="success-reward-badge-v4">
+                                <Zap size={18} /> +{quest.reward} SUI Pending
+                            </div>
+                            <div className="success-loader">
+                                <div className="loader-fill"></div>
+                            </div>
+                            <span className="redirect-text">Returning to your Profile...</span>
                         </div>
-
-                        {/* 2. Asset Link */}
-                        <div className="form-section">
-                            <h3 className="section-h-small">2. CONTRIBUTION ASSETS</h3>
-                            <div className="field-group">
-                                <label className="field-label">Reference URL (GitHub, Doc, Design)</label>
-                                <div className="input-with-icon">
-                                    <LinkIcon size={18} className="field-icon" />
-                                    <input
-                                        type="url"
-                                        placeholder="https://github.com/org/repo/pull/1"
-                                        className="sharp-input"
-                                        required
-                                        value={submissionLink}
-                                        onChange={(e) => setSubmissionLink(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="field-group">
-                                <label className="field-label">Executive Summary</label>
-                                <div className="input-with-icon top">
-                                    <FileText size={18} className="field-icon" />
-                                    <textarea
-                                        placeholder="Briefly describe your contribution and key outcomes..."
-                                        className="sharp-textarea"
-                                        rows={4}
-                                        value={summary}
-                                        onChange={(e) => setSummary(e.target.value)}
-                                        required
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* 3. Execution */}
-                        <div className="form-action-area">
-                            <button
-                                type="submit"
-                                className="btn btn-primary full-width large-btn"
-                                disabled={isSubmitting || !isConnected}
-                            >
-                                {isSubmitting ? (
-                                    <>Processing Submission...</>
-                                ) : (
-                                    <>Finalize Submission <Send size={16} /></>
-                                )}
+                    </motion.div>
+                ) : (
+                    <motion.div 
+                        key="form"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="submission-container-v4"
+                    >
+                        <nav className="back-nav-v4">
+                            <button onClick={() => navigate(-1)} className="back-pill-v4">
+                                <ChevronLeft size={18} /> Cancel Submission
                             </button>
-                            <p className="terms-text">
-                                By submitting, you agree to the Sui-gig contribution guidelines and authorize the network to verify your work.
-                            </p>
+                        </nav>
+
+                        <header className="sub-header-v4">
+                            <div className="sub-badge-v4">
+                                <Send size={14} /> Mission Filing
+                            </div>
+                            <h1 className="sub-title-v4">Submit <span>Evidence</span></h1>
+                            <p className="sub-subtitle-v4">Finalize your work for <strong>{quest.title}</strong> and claim your reward.</p>
+                        </header>
+
+                        <div className="sub-grid-v4">
+                            <main className="sub-main-v4">
+                                <div className="glass-pill-v4 form-card-v4">
+                                    <form onSubmit={handleSubmit} className="wizz-form-v4">
+                                        
+                                        <div className="form-group-v4 full-width">
+                                            <label>Twitter Link (Optional)</label>
+                                            <div className="input-wrap-v4 with-icon">
+                                                <Twitter size={18} />
+                                                <input 
+                                                    type="url" 
+                                                    placeholder="https://x.com/your-tweet..." 
+                                                    value={form.twitterLink}
+                                                    onChange={(e) => setForm({...form, twitterLink: e.target.value})}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="form-group-v4 full-width">
+                                            <label>Video Link (Optional)</label>
+                                            <div className="input-wrap-v4 with-icon">
+                                                <Video size={18} />
+                                                <input 
+                                                    type="url" 
+                                                    placeholder="https://youtube.com/... or Loom link" 
+                                                    value={form.videoLink}
+                                                    onChange={(e) => setForm({...form, videoLink: e.target.value})}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="form-group-v4 full-width">
+                                            <label>Brief Telling (Description)</label>
+                                            <div className="textarea-wrap-v4">
+                                                <textarea 
+                                                    placeholder="Briefly explain what you've accomplished and any key details we should know..." 
+                                                    required
+                                                    rows={8}
+                                                    value={form.briefTelling}
+                                                    onChange={(e) => setForm({...form, briefTelling: e.target.value})}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="form-footer-v4">
+                                            <button type="submit" className="wizz-btn-primary full-width large" disabled={isSubmitting}>
+                                                {isSubmitting ? "Processing..." : "Submit Mission Evidence"}
+                                            </button>
+                                            <p className="legal-info-v4">
+                                                Submissions are final and will be archived on the Sui blockchain for verification.
+                                            </p>
+                                        </div>
+                                    </form>
+                                </div>
+                            </main>
+
+                            <aside className="sub-sidebar-v4">
+                                <div className="glass-pill-v4 side-card-v4">
+                                    <h3>Mission Reward</h3>
+                                    <div className="reward-pill-v4">
+                                        <span className="reward-amt">{quest.reward} SUI</span>
+                                        <span className="reward-status">Verified Base Pay</span>
+                                    </div>
+                                </div>
+
+                                <div className="glass-pill-v4 side-card-v4">
+                                    <h3>Verification Status</h3>
+                                    <ul className="guideline-list-v4">
+                                        <li><ShieldCheck size={16} /> Wallet Pre-Signed</li>
+                                        <li><ShieldCheck size={16} /> Anti-spam active</li>
+                                        <li><ShieldCheck size={16} /> Audit queue: Low</li>
+                                    </ul>
+                                </div>
+                            </aside>
                         </div>
-                    </form>
-                </SharpCard>
-            </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <style>{`
-                .submission-wrapper {
-                    max-width: 800px;
+                .wizz-submission-page {
+                    padding: 40px 24px 120px;
+                    max-width: 1200px;
                     margin: 0 auto;
+                    position: relative;
                 }
 
-                .submission-header-sharp {
-                    text-align: center;
-                    margin-bottom: 40px;
+                .bg-blur-blob {
+                    position: fixed;
+                    width: 600px;
+                    height: 600px;
+                    border-radius: 50% !important;
+                    filter: blur(100px);
+                    opacity: 0.08;
+                    z-index: -1;
                 }
+                .blob-sub-1 { top: 10%; right: -5%; background: var(--color-primary); }
+                .blob-sub-2 { bottom: 10%; left: -5%; background: var(--color-accent); }
 
-                .submission-badge {
-                    font-size: 0.7rem;
-                    font-weight: 800;
-                    letter-spacing: 0.1em;
-                    color: var(--color-primary);
-                    background: var(--color-primary-soft);
-                    padding: 4px 12px;
-                    border-radius: 4px;
-                    border: 1px solid rgba(37, 99, 235, 0.1);
-                }
-
-                .submission-title {
-                    font-size: 2.25rem;
-                    font-weight: 800;
-                    margin: 16px 0 8px;
-                    letter-spacing: -0.02em;
-                }
-
-                .submission-subtitle {
-                    color: var(--color-text-secondary);
-                    font-size: 1rem;
-                }
-
-                .submission-form-sharp {
-                    padding: 48px !important;
-                }
-
-                .form-section {
-                    margin-bottom: 40px;
-                }
-
-                .section-h-small {
-                    font-size: 0.75rem;
-                    font-weight: 800;
-                    color: var(--color-text-muted);
-                    margin-bottom: 16px;
-                    letter-spacing: 0.05em;
-                }
-
-                .identity-display-box {
+                .back-nav-v4 { margin-bottom: 32px; }
+                .back-pill-v4 {
                     display: flex;
                     align-items: center;
-                    gap: 16px;
-                    padding: 16px 20px;
-                    border-radius: var(--radius-md);
-                    border: 1px solid var(--color-border);
-                    background: #f8fafc;
-                }
-
-                .identity-display-box.verified {
-                    border-color: #bbf7d0;
-                    background: #f0fdf4;
-                }
-
-                .identity-display-box.verified .identity-icon { color: #16a34a; }
-                .identity-display-box.unverified .identity-icon { color: #ef4444; }
-
-                .id-label { font-size: 0.7rem; font-weight: 800; color: var(--color-text-muted); margin-bottom: 4px; }
-                .id-val { font-size: 0.9rem; font-weight: 700; color: var(--color-text); }
-                .monospaced { font-family: monospace; }
-
-                .form-help { font-size: 0.8rem; color: var(--color-text-muted); margin-top: 12px; }
-
-                .field-group { margin-bottom: 24px; }
-
-                .field-label {
-                    display: block;
+                    gap: 8px;
+                    padding: 8px 16px;
+                    background: white;
+                    border: 1px solid #E2E8F0;
+                    border-radius: 9999px;
                     font-size: 0.85rem;
                     font-weight: 700;
-                    color: var(--color-text-secondary);
-                    margin-bottom: 10px;
-                }
-
-                .input-with-icon {
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    background: white;
-                    border: 1px solid var(--color-border);
-                    border-radius: var(--radius-md);
-                    padding: 0 16px;
+                    color: #64748B;
+                    cursor: pointer;
                     transition: all 0.2s;
                 }
+                .back-pill-v4:hover { border-color: var(--color-primary); color: var(--color-primary); }
 
-                .input-with-icon.top { align-items: flex-start; padding-top: 14px; }
+                .sub-header-v4 { margin-bottom: 48px; }
+                .sub-badge-v4 {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 6px 14px;
+                    background: var(--color-primary-soft);
+                    color: var(--color-primary);
+                    border-radius: 9999px;
+                    font-size: 0.75rem;
+                    font-weight: 800;
+                    margin-bottom: 16px;
+                    text-transform: uppercase;
+                }
+                .sub-title-v4 { font-size: 3rem; font-weight: 800; color: #0F172A; line-height: 1.1; margin-bottom: 16px; letter-spacing: -0.04em; }
+                .sub-title-v4 span { color: var(--color-primary); }
+                .sub-subtitle-v4 { font-size: 1.1rem; color: #64748B; font-weight: 500; }
 
-                .input-with-icon:focus-within {
+                .sub-grid-v4 { display: grid; grid-template-columns: 1fr 340px; gap: 40px; }
+                
+                .form-card-v4 { 
+                    padding: 40px !important; 
+                    background: white; 
+                    border: 1px solid #E2E8F0; 
+                    border-radius: 24px;
+                    box-shadow: 0 4px 24px rgba(0,0,0,0.02);
+                }
+                .wizz-form-v4 { display: flex; flex-direction: column; gap: 28px; }
+
+                .form-group-v4 { display: flex; flex-direction: column; gap: 8px; }
+                .form-group-v4 label { font-size: 0.85rem; font-weight: 800; color: #0F172A; }
+
+                .input-wrap-v4, .textarea-wrap-v4 {
+                    background: #F8FAFC;
+                    border: 1.5px solid #E2E8F0;
+                    border-radius: 14px !important;
+                    transition: all 0.2s;
+                }
+                .input-wrap-v4:focus-within, .textarea-wrap-v4:focus-within {
                     border-color: var(--color-primary);
+                    background: white;
                     box-shadow: 0 0 0 4px var(--color-primary-soft);
                 }
 
-                .field-icon { color: var(--color-text-muted); }
-
-                .sharp-input, .sharp-textarea {
-                    flex: 1;
-                    background: transparent;
+                .input-wrap-v4 input, .textarea-wrap-v4 textarea {
+                    width: 100%;
+                    padding: 14px 16px;
                     border: none;
+                    background: transparent;
                     outline: none;
-                    padding: 14px 0;
-                    font-size: 1rem;
-                    color: var(--color-text);
-                    font-family: inherit;
+                    font-size: 0.95rem;
+                    font-weight: 500;
+                    color: #0F172A;
                 }
+                .input-wrap-v4.with-icon { display: flex; align-items: center; padding-left: 16px; }
+                .input-wrap-v4.with-icon input { padding-left: 12px; }
+                .input-wrap-v4.with-icon svg { color: var(--color-primary); opacity: 0.8; }
 
-                .large-btn { padding: 18px !important; font-size: 1.1rem !important; }
+                .form-footer-v4 { text-align: center; border-top: 1px solid #F1F5F9; padding-top: 32px; }
+                .large { height: 56px; font-size: 1.05rem; }
+                .legal-info-v4 { font-size: 0.75rem; color: #94A3B8; margin-top: 16px; font-weight: 600; }
 
-                .terms-text {
+                .side-card-v4 { 
+                    padding: 24px !important; 
+                    background: white; 
+                    border: 1px solid #E2E8F0; 
+                    border-radius: 20px;
+                    margin-bottom: 24px; 
+                }
+                .side-card-v4 h3 { font-size: 0.95rem; font-weight: 800; margin-bottom: 20px; }
+                
+                .reward-pill-v4 {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                    padding: 20px;
+                    background: var(--color-primary-soft);
+                    border-radius: 16px !important;
                     text-align: center;
-                    font-size: 0.75rem;
-                    line-height: 1.5;
-                    color: var(--color-text-muted);
-                    margin-top: 24px;
-                    max-width: 480px;
-                    margin-left: auto;
-                    margin-right: auto;
                 }
+                .reward-amt { font-size: 1.5rem; font-weight: 900; color: var(--color-primary); }
+                .reward-status { font-size: 0.75rem; font-weight: 800; color: var(--color-primary); opacity: 0.8; }
 
-                @media (max-width: 640px) {
-                    .submission-form-sharp { padding: 32px 24px !important; }
+                .guideline-list-v4 { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+                .guideline-list-v4 li { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: #475569; }
+                .guideline-list-v4 li svg { color: var(--color-primary); }
+
+                /* Success State */
+                .success-container-v4 { display: flex; align-items: center; justify-content: center; min-height: 60vh; }
+                .success-card-v4 { padding: 60px !important; text-align: center; max-width: 500px; border-top: 8px solid #10B981 !important; }
+                .success-icon-v4 { width: 100px; height: 100px; background: #10B98115; color: #10B981; border-radius: 50% !important; display: flex; align-items: center; justify-content: center; margin: 0 auto 32px; }
+                .success-card-v4 h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; }
+                .success-sub { font-family: monospace; font-size: 0.9rem; font-weight: 700; color: #10B981; background: #10B98115; padding: 4px 12px; border-radius: 6px !important; display: inline-block; margin-bottom: 32px; }
+                .success-body-v4 p { font-size: 1.1rem; color: #64748B; font-weight: 400; line-height: 1.6; }
+
+                .success-reward-badge-v4 { display: inline-flex; align-items: center; gap: 10px; padding: 12px 24px; background: var(--color-primary-soft); color: var(--color-primary); border-radius: 12px !important; font-weight: 800; margin-top: 32px; }
+
+                .success-loader { width: 100%; height: 6px; background: #F1F5F9; border-radius: 10px !important; margin: 40px 0 16px; overflow: hidden; }
+                .loader-fill { height: 100%; background: #10B981; border-radius: 10px !important; animation: fill-progress 4s linear; width: 0; }
+                .redirect-text { font-size: 0.85rem; font-weight: 700; color: #94A3B8; }
+
+                @keyframes fill-progress { from { width: 0; } to { width: 100%; } }
+
+                @media (max-width: 1024px) {
+                    .sub-grid-v4 { grid-template-columns: 1fr; }
+                    .sub-title-v4 { font-size: 2.5rem; }
                 }
             `}</style>
         </div>

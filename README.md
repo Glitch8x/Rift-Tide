@@ -3,7 +3,7 @@
 Sui-gig is a decentralized bounty and quest platform designed to bridge the gap between Web3 projects and active contributors. It provides a streamlined interface for organizations to post tasks and for users to earn rewards, ensuring transparency and trust through blockchain technology.
 
 ## Live Demo
-Check out the platform here: [sui-gig.vercel.app](https://lofi-quest.vercel.app/)
+Check out the platform here: [sui-gig.vercel.app](https://sui-gig.vercel.app/)
 
 ## Features
 
@@ -11,7 +11,7 @@ Check out the platform here: [sui-gig.vercel.app](https://lofi-quest.vercel.app/
 - **Proof of Contribution**: A secure submission system for linking GitHub PRs, social proofs, or wallet addresses.
 - **Transparent Rewards**: Integrated logic to facilitate reward distribution to contributors upon task approval.
 - **User Dashboard**: Personal tracking for ongoing quests, total earnings, and reputation.
-- **Responsive UI**: A modern, "Lofi-inspired" aesthetic built for a seamless user experience across devices.
+- **Responsive UI**: A modern, premium aesthetic built for a seamless user experience across devices.
 
 ## Tech Stack
 
@@ -22,6 +22,6 @@ Check out the platform here: [sui-gig.vercel.app](https://lofi-quest.vercel.app/
 
 ## Getting Started
 
-1. Clone the repository: `git clone https://github.com/Glitch8x/lofi-quests.git`
+1. Clone the repository: `git clone https://github.com/Glitch8x/sui-gig.git`
 2. Install dependencies: `npm install`
 3. Start the development server: `npm run dev`

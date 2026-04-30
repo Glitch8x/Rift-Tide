@@ -1,170 +1,269 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import SharpCard from '../UI/GlassCard'; // Now SharpCard
-import { Clock, Users, ArrowRight } from 'lucide-react';
+import { ArrowRight, Zap, Target, Users, Clock, MapPin, Bookmark } from 'lucide-react';
+import { motion } from 'framer-motion';
 
-/**
- * BountyCard component - Redesigned for a professional "First Dollar" aesthetic.
- * Focuses on clarity, sharp borders, and FinTech-style rewarding badges.
- */
-const BountyCard = ({
-  id,
-  title,
-  community,
-  communityImg,
-  reward,
-  deadline,
-  tags = [],
-  participants = 0
-}) => {
-  const navigate = useNavigate();
+const BountyCard = ({ bounty }) => {
+    const navigate = useNavigate();
 
-  return (
-    <SharpCard 
-      hoverEffect 
-      className="bounty-card" 
-      onClick={() => navigate(`/quest/${id}`)}
-    >
-      <div className="card-top">
-        <div className="org-mention">
-          <img src={communityImg || 'https://via.placeholder.com/20'} alt={community} className="org-img" />
-          <span className="org-name">{community}</span>
-        </div>
-        <div className="payout-badge">
-          {reward} SUI
-        </div>
-      </div>
+    return (
+        <motion.div 
+            whileHover={{ y: -4, boxShadow: '0 12px 24px rgba(0,0,0,0.06)' }}
+            className="rift-bounty-card"
+            onClick={() => navigate(`/quest/${bounty.id}`)}
+        >
+            <div className="rift-card-content">
+                {/* Logo Section */}
+                <div className="rift-logo-section">
+                    <div className="rift-org-logo">
+                        <img src={bounty.communityImg || '/sui-gig-logo.png'} alt={bounty.community} />
+                    </div>
+                </div>
 
-      <div className="card-body">
-        <h3 className="bounty-title-text">{title}</h3>
-        <div className="tag-row">
-          {tags.map(tag => (
-            <span key={tag} className="tag-pill">{tag}</span>
-          ))}
-        </div>
-      </div>
+                {/* Main Info Section */}
+                <div className="rift-info-section">
+                    <div className="rift-top-row">
+                        <h3 className="rift-title">{bounty.title}</h3>
+                        <span className="rift-separator">•</span>
+                        <span className="rift-org-name">{bounty.community}</span>
+                    </div>
 
-      <div className="card-footer-info">
-        <div className="meta-pair">
-          <Clock size={14} className="meta-icon" />
-          <span>Ends {deadline}</span>
-        </div>
-        <div className="meta-pair">
-          <Users size={14} className="meta-icon" />
-          <span>{participants} joined</span>
-        </div>
-        <div className="view-arrow">
-          <ArrowRight size={16} />
-        </div>
-      </div>
+                    <div className="rift-meta-row">
+                        <div className="rift-meta-item">
+                            <Zap size={16} className="cyan-icon" />
+                            <span>{bounty.reward} USDC</span>
+                        </div>
+                    </div>
 
-      <style>{`
-        .bounty-card {
-          padding: 24px !important;
-          min-height: 200px;
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-          cursor: pointer;
-        }
+                    <p className="rift-description">
+                        {bounty.description || 'Contribute to this mission and earn rewards for your impact.'}
+                    </p>
 
-        .card-top {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
+                    <div className="rift-tags-row">
+                        {bounty.tags?.map(tag => (
+                            <span key={tag} className="rift-tag">{tag.toUpperCase()}</span>
+                        ))}
+                        {!bounty.tags?.length && (
+                            <>
+                                <span className="rift-tag">RUST</span>
+                                <span className="rift-tag">SOLANA</span>
+                                <span className="rift-tag">INFRASTRUCTURE</span>
+                            </>
+                        )}
+                    </div>
+                </div>
 
-        .org-mention {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
+                {/* Action Section */}
+                <div className="rift-action-section">
+                    {bounty.isFeatured && <span className="featured-badge">FEATURED</span>}
+                    <div className="action-buttons">
+                        <button className="apply-btn">Apply Now</button>
+                        <button className="bookmark-btn">
+                            <Bookmark size={20} />
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-        .org-img {
-          width: 20px;
-          height: 20px;
-          border-radius: 4px;
-          object-fit: cover;
-        }
+            <style>{`
+                .rift-bounty-card {
+                    background: white;
+                    border: 1px solid var(--color-border);
+                    border-radius: 20px;
+                    padding: 32px;
+                    cursor: pointer;
+                    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                    position: relative;
+                    margin-bottom: 20px;
+                }
 
-        .org-name {
-          font-size: 0.85rem;
-          font-weight: 600;
-          color: var(--color-text-secondary);
-        }
+                .rift-card-content {
+                    display: flex;
+                    gap: 28px;
+                }
 
-        .payout-badge {
-          font-size: 0.8rem;
-          font-weight: 700;
-          color: var(--color-primary);
-          background: var(--color-primary-soft);
-          padding: 4px 12px;
-          border-radius: var(--radius-full);
-          border: 1px solid rgba(37, 99, 235, 0.1);
-        }
+                /* Logo */
+                .rift-logo-section {
+                    flex-shrink: 0;
+                }
 
-        .bounty-title-text {
-          font-size: 1.15rem;
-          font-weight: 700;
-          line-height: 1.5;
-          margin-bottom: 12px;
-          color: var(--color-text);
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
+                .rift-org-logo {
+                    width: 64px;
+                    height: 64px;
+                    background: #F1F5F9;
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    overflow: hidden;
+                    border: 1px solid var(--color-border);
+                }
 
-        .tag-row {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-        }
+                .rift-org-logo img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
 
-        .tag-pill {
-          font-size: 0.75rem;
-          font-weight: 600;
-          padding: 4px 10px;
-          background: #f3f4f6;
-          color: #4b5563;
-          border-radius: 4px;
-        }
+                /* Info */
+                .rift-info-section {
+                    flex: 1;
+                    min-width: 0;
+                }
 
-        .card-footer-info {
-          margin-top: auto;
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          padding-top: 16px;
-          border-top: 1px solid var(--color-border);
-          color: var(--color-text-muted);
-          font-size: 0.85rem;
-          position: relative;
-        }
+                .rift-top-row {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    margin-bottom: 8px;
+                }
 
-        .meta-pair {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
+                .rift-title {
+                    font-size: 1.5rem;
+                    font-weight: 800;
+                    color: var(--color-text);
+                    margin: 0;
+                    letter-spacing: -0.02em;
+                }
 
-        .meta-icon {
-          color: var(--color-text-muted);
-        }
+                .rift-separator {
+                    color: var(--color-text-muted);
+                    font-size: 1.2rem;
+                }
 
-        .view-arrow {
-          margin-left: auto;
-          color: var(--color-text-muted);
-          transition: transform 0.2s, color 0.2s;
-        }
+                .rift-org-name {
+                    font-size: 0.95rem;
+                    font-weight: 700;
+                    color: var(--color-text-secondary);
+                }
 
-        .bounty-card:hover .view-arrow {
-          transform: translateX(4px);
-          color: var(--color-primary);
-        }
-      `}</style>
-    </SharpCard>
-  );
+                .rift-meta-row {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 24px;
+                    margin-bottom: 24px;
+                }
+
+                .rift-meta-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    color: var(--color-text-secondary);
+                    font-size: 0.9rem;
+                    font-weight: 700;
+                }
+
+                .cyan-icon {
+                    color: var(--color-primary);
+                }
+
+                .rift-description {
+                    font-size: 1rem;
+                    color: var(--color-text-secondary);
+                    line-height: 1.6;
+                    margin-bottom: 24px;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+
+                .rift-tags-row {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                }
+
+                .rift-tag {
+                    padding: 6px 14px;
+                    background: #F8FAFC;
+                    border: 1px solid var(--color-border);
+                    border-radius: 8px;
+                    font-size: 0.7rem;
+                    font-weight: 800;
+                    color: var(--color-text-secondary);
+                    letter-spacing: 0.05em;
+                }
+
+                /* Action */
+                .rift-action-section {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    align-items: flex-end;
+                    flex-shrink: 0;
+                }
+
+                .featured-badge {
+                    font-size: 0.65rem;
+                    font-weight: 800;
+                    color: #0369A1;
+                    background: #F0F9FF;
+                    padding: 4px 10px;
+                    border-radius: 6px;
+                    letter-spacing: 0.08em;
+                }
+
+                .action-buttons {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                    align-items: center;
+                }
+
+                .apply-btn {
+                    padding: 12px 32px;
+                    background: var(--color-primary);
+                    color: white;
+                    border-radius: 12px;
+                    font-weight: 800;
+                    font-size: 0.95rem;
+                    transition: all 0.2s;
+                }
+
+                .apply-btn:hover {
+                    background: var(--color-primary-hover);
+                    transform: translateY(-1px);
+                }
+
+                .bookmark-btn {
+                    width: 48px;
+                    height: 48px;
+                    border: 1px solid var(--color-border);
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--color-text-secondary);
+                    transition: all 0.2s;
+                }
+
+                .bookmark-btn:hover {
+                    background: #F8FAFC;
+                    color: var(--color-text);
+                }
+
+                @media (max-width: 768px) {
+                    .rift-card-content {
+                        flex-direction: column;
+                        gap: 20px;
+                    }
+                    .rift-action-section {
+                        flex-direction: row;
+                        justify-content: space-between;
+                        align-items: center;
+                        margin-top: 10px;
+                    }
+                    .action-buttons {
+                        flex-direction: row;
+                    }
+                    .rift-title {
+                        font-size: 1.25rem;
+                    }
+                }
+            `}</style>
+        </motion.div>
+    );
 };
 
 export default BountyCard;

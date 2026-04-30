@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 @import './variables.css';
 
 * {
@@ -8,7 +7,8 @@
 }
 
 body {
-    font-family: var(--font-main);
+    font-family: var(--font-body);
+    font-weight: 400;
     background-color: var(--color-bg);
     color: var(--color-text);
     line-height: 1.6;
@@ -16,88 +16,193 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 193, 244, 0.04) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(0, 163, 224, 0.04) 0px, transparent 50%);
+    background-attachment: fixed;
+}
+
+h1, h2, h3, h4, .font-heading {
+    font-family: var(--font-heading);
+    font-weight: 800; /* ExtraBold */
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--color-text);
+}
+
+.font-featured {
+    font-family: var(--font-featured);
+}
+
+.font-inter {
+    font-family: var(--font-body);
+}
+
+.text-medium {
+    font-weight: 500;
+}
+
+.text-regular {
+    font-weight: 400;
+}
+
+.text-bold {
+    font-weight: 700;
+}
+
+.text-extrabold {
+    font-weight: 800;
 }
 
 a {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--color-primary);
     text-decoration: none;
-    color: inherit;
-    transition: opacity 0.2s ease;
+}
+
+a:hover {
+    color: var(--color-primary-hover);
+    transform: translateY(-1px);
 }
 
 button {
-    font-family: inherit;
+    font-family: var(--font-main);
     cursor: pointer;
     border: none;
     background: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Scrollbar */
+/* Scrollbar - Modern Slim */
 ::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--color-bg);
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--color-bg-secondary);
-    border-radius: 4px;
+    background: #E2E8F0;
+    border-radius: 10px !important;
+    border: 3px solid transparent;
+    background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-text-secondary);
+    background-color: #CBD5E1;
 }
 
-/* Utilities */
-.glass-panel {
-    background: var(--color-glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--color-glass-border);
-    border-radius: var(--radius-lg);
+/* Wizz-style Glass Card */
+.glass-pill-v4 {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     box-shadow: var(--shadow-lg);
+    border-radius: var(--radius-lg) !important;
+}
+
+.elevated-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 0 var(--space-md);
+    padding: 0 40px;
 }
 
-.btn-primary {
-    background: var(--color-primary);
-    color: #fff;
-    padding: 10px 24px;
-    border-radius: var(--radius-full);
-    font-weight: 600;
-    transition: all 0.3s ease;
+/* Wizz Utility Buttons */
+.wizz-btn-primary, .btn-pill-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    color: white;
+    font-weight: 700;
+    border-radius: var(--radius-full) !important;
+    font-size: 0.95rem;
+    box-shadow: 0 10px 20px -5px rgba(56, 193, 244, 0.4);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    gap: 10px;
 }
 
-.btn-primary:hover {
-    background: var(--color-primary-hover);
-    box-shadow: var(--shadow-glow);
-    transform: translateY(-2px);
+.wizz-btn-primary:hover, .btn-pill-primary:hover {
+    transform: scale(1.02) translateY(-2px);
+    box-shadow: 0 15px 30px -10px rgba(56, 193, 244, 0.6);
+}
+
+.wizz-btn-outline, .btn-pill-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 28px;
+    background: white;
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    font-weight: 700;
+    border-radius: var(--radius-full) !important;
+    font-size: 0.95rem;
+    gap: 10px;
+    transition: all 0.2s;
+}
+
+.wizz-btn-outline:hover, .btn-pill-outline:hover {
+    background: var(--color-primary-soft);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+/* Gradient Background Accents */
+.subtle-bg-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(56, 193, 244, 0.05) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: -1;
+    pointer-events: none;
 }
 
 /* Layout */
 .app-container {
     display: flex;
+    flex-direction: column;
     min-height: 100vh;
-    background: var(--color-bg);
 }
 
 .main-content {
     flex: 1;
-    margin-left: 290px; /* Sidebar width (260px) + left (16px) + gap */
-    width: calc(100% - 290px);
-    transition: margin-left 0.3s ease;
+    width: 100%;
+    margin-top: 100px; /* Offset for Floating Navbar */
 }
 
 @media (max-width: 768px) {
-    .main-content {
-        margin-left: 0;
-        width: 100%;
-        padding-bottom: 80px; /* Bottom nav space if any */
+    .container {
+        padding: 0 20px;
     }
+    .main-content {
+        margin-top: 80px;
+    }
+}
+/* Nuke any accidental blue backgrounds in branding */
+.sidebar-brand, 
+.nav-brand, 
+.rift-logo-container, 
+.branding-hex-v4-final,
+.sidebar-branding-v4 {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.rift-emblem-img {
+    background: transparent !important;
 }

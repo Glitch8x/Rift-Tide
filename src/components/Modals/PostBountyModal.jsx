@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { X, DollarSign, Tag, Type, Layers } from 'lucide-react';
-import GlassCard from '../UI/GlassCard';
+import { X, DollarSign, Tag, Type, Layers, Zap, Flag, Target, Calendar } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const PostBountyModal = ({ isOpen, onClose, onPost }) => {
     const [formData, setFormData] = useState({
@@ -21,14 +21,13 @@ const PostBountyModal = ({ isOpen, onClose, onPost }) => {
             ...formData,
             reward: parseInt(formData.reward),
             tags: formData.tags.split(',').map(t => t.trim()).filter(t => t),
-            community: 'Yeti Believer', // Hardcoded for current user
-            communityImg: 'https://ui-avatars.com/api/?name=Yeti+Believer&background=3b82f6&color=fff',
+            community: 'Network Contributor',
+            communityImg: 'https://ui-avatars.com/api/?name=User&background=38C1F4&color=FFFFFF',
             type: 'bounty',
             featured: false
         });
 
         onClose();
-        // Reset form
         setFormData({
             title: '',
             reward: '',
@@ -39,172 +38,215 @@ const PostBountyModal = ({ isOpen, onClose, onPost }) => {
     };
 
     return (
-        <div className="modal-overlay">
-            <GlassCard className="modal-content">
-                <div className="modal-header">
-                    <h2>Post a New Bounty</h2>
-                    <button className="btn-close" onClick={onClose}>
-                        <X size={24} />
-                    </button>
-                </div>
-
-                <form onSubmit={handleSubmit} className="bounty-form">
-                    <div className="form-group">
-                        <label><Type size={16} /> Title</label>
-                        <input
-                            type="text"
-                            placeholder="e.g. Design a Logo for..."
-                            value={formData.title}
-                            onChange={e => setFormData({ ...formData, title: e.target.value })}
-                            autoFocus
-                        />
-                    </div>
-
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label><DollarSign size={16} /> Reward (LOFI)</label>
-                            <input
-                                type="number"
-                                placeholder="500"
-                                value={formData.reward}
-                                onChange={e => setFormData({ ...formData, reward: e.target.value })}
-                            />
+        <AnimatePresence>
+            <div className="wizz-modal-overlay">
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                    className="wizz-modal-card glass-pill-v4"
+                >
+                    <header className="modal-header-v4">
+                        <div className="header-icon-v4 logo-wrap">
+                            <img src="/sui-gig-logo.png?v=sui1" alt="Logo" />
                         </div>
-                        <div className="form-group">
-                            <label><Layers size={16} /> Category</label>
-                            <select
-                                value={formData.category}
-                                onChange={e => setFormData({ ...formData, category: e.target.value })}
-                            >
-                                <option value="Community">Community</option>
-                                <option value="Design">Design</option>
-                                <option value="Development">Development</option>
-                                <option value="Content">Content</option>
-                                <option value="Green Impact">Green Impact</option>
-                            </select>
+                        <div className="header-text-v4">
+                            <h2>Initialize <span>Mission</span></h2>
+                            <p>Define objectives and reward parameters for the new community quest.</p>
                         </div>
-                    </div>
+                        <button className="modal-close-v4" onClick={onClose}>
+                            <X size={20} />
+                        </button>
+                    </header>
 
-                    <div className="form-group">
-                        <label><Tag size={16} /> Tags (comma separated)</label>
-                        <input
-                            type="text"
-                            placeholder="design, figma, art"
-                            value={formData.tags}
-                            onChange={e => setFormData({ ...formData, tags: e.target.value })}
-                        />
-                    </div>
+                    <form onSubmit={handleSubmit} className="modal-form-v4">
+                        <div className="form-row-v4">
+                            <div className="form-group-v4 full">
+                                <label>Mission Title</label>
+                                <div className="input-wrap-v4 with-icon">
+                                    <Target size={18} />
+                                    <input
+                                        type="text"
+                                        placeholder="E.g. Technical SEO Audit for Mainnet"
+                                        value={formData.title}
+                                        onChange={e => setFormData({ ...formData, title: e.target.value })}
+                                        autoFocus
+                                        required
+                                    />
+                                </div>
+                            </div>
+                        </div>
 
-                    <div className="modal-actions">
-                        <button type="button" className="btn-cancel" onClick={onClose}>Cancel</button>
-                        <button type="submit" className="btn-submit">Post Bounty</button>
-                    </div>
-                </form>
-            </GlassCard>
+                        <div className="form-row-v4">
+                            <div className="form-group-v4">
+                                <label>Reward Amount (SUI)</label>
+                                <div className="input-wrap-v4 with-icon">
+                                    <Zap size={18} />
+                                    <input
+                                        type="number"
+                                        placeholder="500"
+                                        value={formData.reward}
+                                        onChange={e => setFormData({ ...formData, reward: e.target.value })}
+                                        required
+                                    />
+                                </div>
+                            </div>
 
-            <style>{`
-        .modal-overlay {
-          position: fixed;
-          top: 0; left: 0; right: 0; bottom: 0;
-          background: rgba(0,0,0,0.6);
-          backdrop-filter: blur(4px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1000;
-          animation: fadeIn 0.2s ease-out;
-        }
+                            <div className="form-group-v4">
+                                <label>Category</label>
+                                <div className="input-wrap-v4">
+                                    <select
+                                        value={formData.category}
+                                        onChange={e => setFormData({ ...formData, category: e.target.value })}
+                                    >
+                                        <option value="Community">Community</option>
+                                        <option value="Design">Design</option>
+                                        <option value="Development">Development</option>
+                                        <option value="Content">Content</option>
+                                        <option value="Green Impact">Impact</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
 
-        .modal-content {
-          width: 100%;
-          max-width: 500px;
-          background: #111827; /* Solidish background for readability */
-          border: 1px solid var(--color-primary);
-        }
+                        <div className="form-row-v4">
+                            <div className="form-group-v4 full">
+                                <label>Tags (Comma Separated)</label>
+                                <div className="input-wrap-v4 with-icon">
+                                    <Tag size={18} />
+                                    <input
+                                        type="text"
+                                        placeholder="Security, Rust, Core"
+                                        value={formData.tags}
+                                        onChange={e => setFormData({ ...formData, tags: e.target.value })}
+                                    />
+                                </div>
+                                <span className="input-hint-v4">These help contributors find your mission easily.</span>
+                            </div>
+                        </div>
 
-        .modal-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 24px;
-          padding-bottom: 16px;
-          border-bottom: 1px solid var(--color-glass-border);
-        }
+                        <footer className="modal-footer-v4">
+                            <button type="button" className="wizz-btn-outline" onClick={onClose}>Discard</button>
+                            <button type="submit" className="wizz-btn-primary">
+                                <Flag size={18} /> Launch Mission
+                            </button>
+                        </footer>
+                    </form>
+                </motion.div>
 
-        .btn-close {
-          color: var(--color-text-secondary);
-        }
-        .btn-close:hover {
-          color: var(--color-text);
-        }
+                <style>{`
+                    .wizz-modal-overlay {
+                        position: fixed;
+                        inset: 0;
+                        background: rgba(15, 23, 42, 0.4);
+                        backdrop-filter: blur(12px);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 9999;
+                        padding: 24px;
+                    }
 
-        .bounty-form {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-        }
+                    .wizz-modal-card {
+                        width: 100%;
+                        max-width: 640px;
+                        padding: 40px !important;
+                        position: relative;
+                        background: white !important;
+                    }
 
-        .form-row {
-          display: flex;
-          gap: 16px;
-        }
+                    .modal-header-v4 {
+                        display: flex;
+                        align-items: flex-start;
+                        gap: 20px;
+                        margin-bottom: 40px;
+                        position: relative;
+                    }
+                    .header-icon-v4 {
+                        width: 80px;
+                        height: 80px;
+                        background: transparent;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-shrink: 0;
+                        padding: 0;
+                        overflow: visible;
+                    }
+                    .header-icon-v4 img { 
+                        width: 100%; 
+                        height: 100%; 
+                        object-fit: contain;
+                        transform: scale(4.0) translate(3%, 3%);
+                        mix-blend-mode: multiply;
+                    }
+                    .header-text-v4 h2 { font-size: 1.75rem; font-weight: 800; color: var(--color-text); line-height: 1.2; margin-bottom: 8px; }
+                    .header-text-v4 h2 span { color: var(--color-primary); }
+                    .header-text-v4 p { font-size: 0.95rem; color: var(--color-text-muted); font-weight: 400; }
 
-        .form-group {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
+                    .modal-close-v4 {
+                        position: absolute;
+                        top: -10px;
+                        right: -10px;
+                        width: 32px;
+                        height: 32px;
+                        border-radius: 50% !important;
+                        background: var(--color-surface);
+                        border: 1px solid var(--color-border);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+                        color: var(--color-text-muted);
+                        transition: all 0.2s;
+                    }
+                    .modal-close-v4:hover { background: white; color: var(--color-primary); transform: rotate(90deg); }
 
-        label {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 0.9rem;
-          color: var(--color-text-secondary);
-        }
+                    .modal-form-v4 { display: flex; flex-direction: column; gap: 32px; }
+                    .form-row-v4 { display: flex; gap: 24px; }
+                    .form-group-v4 { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+                    .form-group-v4.full { flex: 0 0 100%; }
+                    .form-group-v4 label { font-size: 0.9rem; font-weight: 700; color: var(--color-text); }
 
-        input, select {
-          background: rgba(255,255,255,0.05);
-          border: 1px solid var(--color-glass-border);
-          padding: 12px;
-          border-radius: var(--radius-sm);
-          color: var(--color-text);
-          font-family: inherit;
-          outline: none;
-        }
+                    .input-wrap-v4 {
+                        background: var(--color-surface);
+                        border: 2px solid var(--color-border);
+                        border-radius: 14px !important;
+                        transition: all 0.2s;
+                    }
+                    .input-wrap-v4:focus-within { border-color: var(--color-primary); background: white; }
+                    .input-wrap-v4 input, .input-wrap-v4 select {
+                        width: 100%;
+                        padding: 14px 18px;
+                        border: none;
+                        background: transparent;
+                        outline: none;
+                        font-size: 0.95rem;
+                        color: var(--color-text);
+                        font-weight: 400;
+                    }
+                    .input-wrap-v4.with-icon { display: flex; align-items: center; padding-left: 18px; }
+                    .input-wrap-v4.with-icon input { padding-left: 10px; }
+                    .input-wrap-v4.with-icon svg { color: var(--color-primary); opacity: 0.6; }
 
-        input:focus, select:focus {
-          border-color: var(--color-primary);
-        }
+                    .input-hint-v4 { font-size: 0.75rem; color: var(--color-text-muted); font-weight: 400; margin-top: 4px; }
 
-        .modal-actions {
-          display: flex;
-          justify-content: flex-end;
-          gap: 12px;
-          margin-top: 12px;
-        }
+                    .modal-footer-v4 {
+                        display: flex;
+                        justify-content: flex-end;
+                        gap: 16px;
+                        margin-top: 16px;
+                        padding-top: 32px;
+                        border-top: 1px solid var(--color-border);
+                    }
 
-        .btn-cancel {
-          padding: 10px 20px;
-          color: var(--color-text-secondary);
-        }
-        .btn-cancel:hover {
-          color: var(--color-text);
-        }
-
-        .btn-submit {
-          background: var(--color-primary);
-          color: white;
-          padding: 10px 24px;
-          border-radius: var(--radius-full);
-          font-weight: 600;
-        }
-        .btn-submit:hover {
-          background: var(--color-primary-hover);
-        }
-      `}</style>
-        </div>
+                    @media (max-width: 640px) {
+                        .form-row-v4 { flex-direction: column; }
+                        .wizz-modal-card { padding: 32px 20px !important; }
+                    }
+                `}</style>
+            </div>
+        </AnimatePresence>
     );
 };
 

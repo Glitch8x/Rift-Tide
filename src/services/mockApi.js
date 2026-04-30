@@ -1,115 +1,86 @@
 // Initial Data
+// Initial Data
 const initialBounties = [
     {
         id: 1,
-        title: 'Clean up Central Park Sector 7',
-        community: 'EcoWarriors NYC',
-        communityImg: 'https://ui-avatars.com/api/?name=Eco&background=2CB67D&color=fff',
-        reward: 500,
-        deadline: '2 days left',
-        participants: 12, // Will dynamically increase
-        participantsList: [
-            { name: 'Yeti Believer', wallet: '0x707c...87a7', avatar: 'https://ui-avatars.com/api/?name=Yeti+Believer&background=0D8ABC&color=fff' },
-            { name: 'CryptoKing', wallet: '0x1234...abcd', avatar: 'https://ui-avatars.com/api/?name=CK&background=E53170&color=fff' },
-            { name: 'PixelArtist', wallet: '0x9876...zyxw', avatar: 'https://ui-avatars.com/api/?name=PA&background=7F5AF0&color=fff' }
-        ],
-        tags: ['Physical', 'Cleanup'],
+        title: 'Build a Sui Network Token Dashboard',
+        community: 'Sui Foundation',
+        communityImg: 'https://ui-avatars.com/api/?name=Sui&background=6FB7F5&color=fff',
+        reward: 2500,
+        deadline: '3 days left',
+        participants: 12,
+        tags: ['Development', 'React', 'Move'],
         featured: true,
-        category: 'Green Impact',
+        category: 'Development',
         type: 'bounty'
     },
     {
         id: 2,
-        title: 'Design a mural for the new community center',
-        community: 'ArtDAO',
-        communityImg: 'https://ui-avatars.com/api/?name=Art&background=E53170&color=fff',
-        reward: 2500,
+        title: 'Design a Premium NFT Collection UI',
+        community: 'Rift Tide Labs',
+        communityImg: 'https://ui-avatars.com/api/?name=Rift&background=00D1FF&color=fff',
+        reward: 1500,
         deadline: '5 days left',
         participants: 45,
-        tags: ['Design', 'Creative'],
-        featured: false,
+        tags: ['Design', 'UI/UX', 'Figma'],
+        featured: true,
         category: 'Design',
         type: 'bounty'
     },
     {
         id: 3,
-        title: 'Plant 50 trees in the downtown area',
-        community: 'GreenCity',
-        communityImg: 'https://ui-avatars.com/api/?name=Green&background=2CB67D&color=fff',
-        reward: 1000,
+        title: 'Create a Technical Walkthrough Video for Move Language',
+        community: 'Move Academy',
+        communityImg: 'https://ui-avatars.com/api/?name=Move&background=7F5AF0&color=fff',
+        reward: 800,
         deadline: '1 week left',
         participants: 8,
-        tags: ['Nature', 'Action'],
+        tags: ['Content', 'Video', 'Education'],
         featured: false,
-        category: 'Green Impact',
+        category: 'Content',
         type: 'bounty'
     },
     {
         id: 5,
-        title: 'Create a "Lofi" playlist for study sessions',
-        community: 'Lofi DAO',
-        communityImg: 'https://ui-avatars.com/api/?name=Lofi&background=7F5AF0&color=fff',
-        reward: 100,
+        title: 'Smart Contract Audit: Governance Protocol',
+        community: 'Shield Pulse',
+        communityImg: 'https://ui-avatars.com/api/?name=Shield&background=EF4444&color=fff',
+        reward: 5000,
         deadline: '24h left',
-        participants: 156,
-        tags: ['Music', 'Content'],
+        participants: 15,
+        tags: ['Security', 'Audit', 'Move'],
         featured: true,
-        category: 'Content',
+        category: 'Development',
         type: 'bounty'
     },
     {
         id: 6,
-        title: 'Build a Solana Token Dashboard',
-        community: 'DevGuild',
-        communityImg: 'https://ui-avatars.com/api/?name=Dev&background=6366F1&color=fff',
-        reward: 5000,
-        deadline: '2 weeks left',
-        participants: 5,
-        tags: ['Development', 'React'],
-        featured: false,
-        category: 'Development',
-        type: 'project'
-    },
-    {
-        id: 7,
-        title: 'Write a Blog Post about Sui Gigs',
-        community: 'Lofi Media',
-        communityImg: 'https://ui-avatars.com/api/?name=Media&background=F6AD55&color=fff',
-        reward: 300,
-        deadline: '3 days left',
-        participants: 22,
-        tags: ['Writing', 'Content'],
+        title: 'Write a Detailed Thread on Sui Scalability',
+        community: 'Sui Network',
+        communityImg: 'https://ui-avatars.com/api/?name=Sui&background=6FB7F5&color=fff',
+        reward: 200,
+        deadline: '2 days left',
+        participants: 156,
+        tags: ['Content', 'Twitter', 'Writing'],
         featured: false,
         category: 'Content',
         type: 'bounty'
     },
     {
-        id: 8,
-        title: 'Develop a Mobile Wallet Integration',
-        community: 'WalletConnect',
-        communityImg: 'https://ui-avatars.com/api/?name=Wallet&background=4299E1&color=fff',
-        reward: 8000,
-        deadline: '1 month left',
-        participants: 12,
-        tags: ['Mobile', 'Integration'],
-        featured: true,
-        category: 'Development',
-        type: 'project'
-    },
-    {
-        id: 9,
-        title: 'Design a new Logo for GreenDAO',
-        community: 'GreenDAO',
-        communityImg: 'https://ui-avatars.com/api/?name=GDAO&background=48BB78&color=fff',
-        reward: 1500,
-        deadline: '1 week left',
-        participants: 6,
-        tags: ['Design', 'Branding'],
-        featured: true,
+        id: 7,
+        title: 'Design 3D Assets for Metaverse Quest',
+        community: 'Rift World',
+        communityImg: 'https://ui-avatars.com/api/?name=RW&background=F59E0B&color=fff',
+        reward: 3500,
+        deadline: '2 weeks left',
+        participants: 5,
+        tags: ['Design', '3D', 'Metaverse'],
+        featured: false,
         category: 'Design',
         type: 'bounty'
     }
 ];
+
 
 const initialGrants = [
     {
@@ -122,9 +93,9 @@ const initialGrants = [
     },
     {
         id: 2,
-        title: 'Lofi Creator Grant',
+        title: 'Sui-gig Creator Grant',
         amount: '$2,000',
-        description: 'Support for artists and developers building on the Lofi protocol.',
+        description: 'Support for artists and developers building on the Sui-gig protocol.',
         tags: ['Art', 'Dev'],
         applicants: 89
     },
@@ -147,7 +118,7 @@ const initialStats = {
 const initialUsers = [
     { id: 1, name: 'Yeti Believer', level: 1, xp: 0, quests: 2, earnings: 500, avatar: 'https://ui-avatars.com/api/?name=Yeti+Believer&background=0D8ABC&color=fff' },
     { id: 2, name: 'CryptoKing', level: 15, xp: 14500, quests: 42, earnings: 12500, avatar: 'https://ui-avatars.com/api/?name=CK&background=E53170&color=fff' },
-    { id: 3, name: 'LofiMaster', level: 12, xp: 11200, quests: 35, earnings: 9800, avatar: 'https://ui-avatars.com/api/?name=LM&background=FF8906&color=fff' },
+    { id: 3, name: 'SuiMaster', level: 12, xp: 11200, quests: 35, earnings: 9800, avatar: 'https://ui-avatars.com/api/?name=SM&background=FF8906&color=fff' },
     { id: 4, name: 'GreenThumb', level: 8, xp: 7500, quests: 18, earnings: 4500, avatar: 'https://ui-avatars.com/api/?name=GT&background=2CB67D&color=fff' },
     { id: 5, name: 'PixelArtist', level: 20, xp: 19800, quests: 55, earnings: 25000, avatar: 'https://ui-avatars.com/api/?name=PA&background=7F5AF0&color=fff' },
     { id: 6, name: 'SolanaDev', level: 14, xp: 13200, quests: 28, earnings: 15000, avatar: 'https://ui-avatars.com/api/?name=SD&background=6366F1&color=fff' },
@@ -172,7 +143,34 @@ class MockApiService {
         ];
         this.notifications = [];
         this.listeners = [];
-        this.submissions = [];
+        this.winners = [
+            { id: 10, user: 'Yeti Believer', walletAddress: '0x707c...87a7', itemTitle: 'Sui Token Dashboard', rank: 1, prizeAmount: 2500, paidAt: new Date().toISOString() },
+            { id: 11, user: 'CryptoKing', walletAddress: '0x123...bcde', itemTitle: 'Move Language Walkthrough', rank: 2, prizeAmount: 400, paidAt: new Date().toISOString() },
+            { id: 12, user: 'Olaoye roqeeb', walletAddress: '0x987...cba9', itemTitle: 'Twitter Raid: Sui Scalability', rank: 3, prizeAmount: 50, paidAt: new Date().toISOString() },
+        ]; 
+        this.submissions = [
+            {
+                user: 'CryptoKing',
+                walletAddress: '0x1234567890abcdef1234567890abcdef12345678',
+                itemTitle: 'Build a Sui Network Token Dashboard',
+                itemId: 1,
+                type: 'quest',
+                submittedAt: new Date().toISOString(),
+                twitterLink: 'https://twitter.com/cryptoking/status/12345',
+                videoLink: 'https://loom.com/share/video123',
+                assetLink: 'https://github.com/cryptoking/sui-dashboard'
+            },
+            {
+                user: 'Olaoye roqeeb',
+                walletAddress: '0x9876543210fedcba9876543210fedcba98765432',
+                itemTitle: 'Write a Detailed Thread on Sui Scalability',
+                itemId: 6,
+                type: 'quest',
+                submittedAt: new Date().toISOString(),
+                twitterLink: 'https://twitter.com/roqeeb/status/67890',
+                briefTelling: 'I wrote a 10-part thread explaining Sui consensus and parallel execution.'
+            }
+        ];
     }
 
     // Subscribe to updates
@@ -215,6 +213,7 @@ class MockApiService {
             user: this.user,
             leaderboard: this.users,
             recentEarners: this.recentEarners,
+            winners: this.winners,
             // Only return notifications for the current logged in user
             notifications: this.notifications.filter(n => n.recipient === this.user.name)
         };
@@ -331,7 +330,7 @@ class MockApiService {
     }
 
 
-    selectRankedWinner(bountyId, walletAddress, rank) {
+    selectRankedWinner(bountyId, walletAddress, rank, subDetails = {}) {
         const bounty = this.bounties.find(b => b.id === bountyId);
         if (bounty) {
             if (!bounty.winners) bounty.winners = [];
@@ -341,6 +340,17 @@ class MockApiService {
             if (rank === 2) rewardAmount = Math.floor(bounty.reward * 0.5);
             if (rank === 3) rewardAmount = Math.floor(bounty.reward * 0.25);
 
+            const winnerEntry = {
+                id: Date.now(),
+                user: subDetails.user || 'Unknown',
+                walletAddress: walletAddress,
+                itemTitle: bounty.title,
+                rank,
+                prizeAmount: rewardAmount,
+                paidAt: new Date().toISOString()
+            };
+
+            this.winners.unshift(winnerEntry);
             bounty.winners.push({ wallet: walletAddress, rank, amount: rewardAmount });
 
             if (rank === 1) {
@@ -352,7 +362,7 @@ class MockApiService {
             this.notifications.unshift({
                 id: Date.now(),
                 recipient: walletAddress === '0x707c...87a7' ? 'Yeti Believer' : walletAddress,
-                message: `You placed ${rank}${rank === 1 ? 'st' : rank === 2 ? 'nd' : 'rd'} in "${bounty.title}"! +${rewardAmount} LOFI`,
+                message: `You placed ${rank}${rank === 1 ? 'st' : rank === 2 ? 'nd' : 'rd'} in "${bounty.title}"! +${rewardAmount} SUI`,
                 amount: rewardAmount,
                 type: 'payout',
                 read: false,
@@ -361,7 +371,7 @@ class MockApiService {
 
             this.recentEarners.unshift({
                 id: Date.now(),
-                name: walletAddress === '0x707c...87a7' ? 'Yeti Believer' : walletAddress,
+                name: subDetails.user || walletAddress,
                 task: `${bounty.title} (${rank}${rank === 1 ? 'st' : rank === 2 ? 'nd' : 'rd'})`,
                 amount: rewardAmount,
                 category: bounty.category || 'General',

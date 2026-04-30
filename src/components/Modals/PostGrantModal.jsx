@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import GlassCard from '../UI/GlassCard';
-import { X, Send } from 'lucide-react';
+import { X, Send, Banknote, Tag, FileText, Zap, Globe, Shield } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const PostGrantModal = ({ isOpen, onClose, onPost }) => {
     const [formData, setFormData] = useState({
@@ -14,7 +14,7 @@ const PostGrantModal = ({ isOpen, onClose, onPost }) => {
         e.preventDefault();
         const newGrant = {
             ...formData,
-            tags: formData.tags.split(',').map(tag => tag.trim())
+            tags: formData.tags.split(',').map(tag => tag.trim()).filter(t => t)
         };
         onPost(newGrant);
         onClose();
@@ -28,126 +28,227 @@ const PostGrantModal = ({ isOpen, onClose, onPost }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-wrapper">
-                <GlassCard className="modal-content">
-                    <div className="modal-header">
-                        <h3>Post New Grant</h3>
-                        <button className="btn-close" onClick={onClose}><X size={20} /></button>
-                    </div>
-
-                    <form onSubmit={handleSubmit}>
-                        <div className="form-group">
-                            <label>Grant Title</label>
-                            <input
-                                type="text"
-                                name="title"
-                                value={formData.title}
-                                onChange={handleChange}
-                                placeholder="e.g. Community Art Fund"
-                                required
-                            />
+        <AnimatePresence>
+            <div className="wizz-modal-overlay">
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                    className="wizz-modal-card glass-pill-v4"
+                >
+                    <header className="modal-header-v4">
+                        <div className="header-icon-v4 logo-wrap">
+                            <img src="/sui-gig-logo.png?v=sui1" alt="Logo" />
                         </div>
-
-                        <div className="form-group">
-                            <label>Amount (Display Text)</label>
-                            <input
-                                type="text"
-                                name="amount"
-                                value={formData.amount}
-                                onChange={handleChange}
-                                placeholder="e.g. $5,000"
-                                required
-                            />
+                        <div className="header-text-v4">
+                            <h2>Initialize <span>Funding</span></h2>
+                            <p>Configure ecosystem capital allocation and project requirements.</p>
                         </div>
-
-                        <div className="form-group">
-                            <label>Description</label>
-                            <textarea
-                                name="description"
-                                value={formData.description}
-                                onChange={handleChange}
-                                placeholder="Briefly describe the grant..."
-                                required
-                                rows={3}
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Tags (comma separated)</label>
-                            <input
-                                type="text"
-                                name="tags"
-                                value={formData.tags}
-                                onChange={handleChange}
-                                placeholder="Art, Community, Dev"
-                                required
-                            />
-                        </div>
-
-                        <button type="submit" className="btn-primary full-width">
-                            Publish Grant <Send size={16} />
+                        <button className="modal-close-v4" onClick={onClose}>
+                            <X size={20} />
                         </button>
-                    </form>
-                </GlassCard>
-            </div>
+                    </header>
 
-            <style>{`
-        .modal-overlay {
-          position: fixed;
-          inset: 0;
-          background: rgba(0,0,0,0.6);
-          backdrop-filter: blur(4px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1000;
-        }
-        .modal-wrapper {
-          width: 90%;
-          max-width: 500px;
-          animation: slideUp 0.3s ease;
-        }
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .modal-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 24px;
-        }
-        .btn-close {
-          background: none;
-          border: none;
-          color: var(--color-text-secondary);
-          cursor: pointer;
-        }
-        .form-group {
-          margin-bottom: 16px;
-        }
-        .form-group label {
-          display: block;
-          margin-bottom: 8px;
-          color: var(--color-text-secondary);
-          font-size: 0.9rem;
-        }
-        .form-group input, .form-group textarea {
-          width: 100%;
-          padding: 12px;
-          background: rgba(255,255,255,0.05);
-          border: 1px solid var(--color-glass-border);
-          border-radius: var(--radius-md);
-          color: white;
-          outline: none;
-          font-family: inherit;
-        }
-        .form-group input:focus, .form-group textarea:focus {
-          border-color: var(--color-primary);
-        }
-      `}</style>
-        </div>
+                    <form onSubmit={handleSubmit} className="modal-form-v4">
+                        <div className="form-row-v4">
+                            <div className="form-group-v4 full">
+                                <label>Program Title</label>
+                                <div className="input-wrap-v4 with-icon">
+                                    <Globe size={18} />
+                                    <input
+                                        type="text"
+                                        name="title"
+                                        placeholder="E.g. DeFi Innovation Fund Q3"
+                                        value={formData.title}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="form-row-v4">
+                            <div className="form-group-v4 full">
+                                <label>Capital Allocation (SUI / USD)</label>
+                                <div className="input-wrap-v4 with-icon">
+                                    <Zap size={18} />
+                                    <input
+                                        type="text"
+                                        name="amount"
+                                        placeholder="E.g. 50,000 SUI"
+                                        value={formData.amount}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="form-row-v4">
+                            <div className="form-group-v4 full">
+                                <label>Strategic Description</label>
+                                <textarea
+                                    name="description"
+                                    placeholder="Outline the mission, requirements, and evaluation criteria..."
+                                    value={formData.description}
+                                    onChange={handleChange}
+                                    required
+                                    className="wizz-textarea-v4"
+                                    rows={4}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="form-row-v4">
+                            <div className="form-group-v4 full">
+                                <label>Metadata Tags (Comma Separated)</label>
+                                <div className="input-wrap-v4 with-icon">
+                                    <Tag size={18} />
+                                    <input
+                                        type="text"
+                                        name="tags"
+                                        placeholder="Infrastructure, Art, DeFi"
+                                        value={formData.tags}
+                                        onChange={handleChange}
+                                        required
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <footer className="modal-footer-v4">
+                            <button type="button" className="wizz-btn-outline" onClick={onClose}>Discard</button>
+                            <button type="submit" className="wizz-btn-primary">
+                                <Send size={18} /> Deploy Funding
+                            </button>
+                        </footer>
+                    </form>
+                </motion.div>
+
+                <style>{`
+                    .wizz-modal-overlay {
+                        position: fixed;
+                        inset: 0;
+                        background: rgba(15, 23, 42, 0.4);
+                        backdrop-filter: blur(12px);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        z-index: 9999;
+                        padding: 24px;
+                    }
+
+                    .wizz-modal-card {
+                        width: 100%;
+                        max-width: 640px;
+                        padding: 40px !important;
+                        position: relative;
+                        background: white !important;
+                    }
+
+                    .modal-header-v4 {
+                        display: flex;
+                        align-items: flex-start;
+                        gap: 20px;
+                        margin-bottom: 40px;
+                        position: relative;
+                    }
+                    .header-icon-v4 {
+                        width: 80px;
+                        height: 80px;
+                        background: transparent;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-shrink: 0;
+                        padding: 0;
+                        overflow: visible;
+                    }
+                    .header-icon-v4 img { 
+                        width: 100%; 
+                        height: 100%; 
+                        object-fit: contain;
+                        transform: scale(4.0) translate(3%, 3%);
+                        mix-blend-mode: multiply;
+                    }
+                    .header-text-v4 h2 { font-size: 1.75rem; font-weight: 800; color: var(--color-text); line-height: 1.2; margin-bottom: 8px; }
+                    .header-text-v4 h2 span { color: var(--color-primary); }
+                    .header-text-v4 p { font-size: 0.95rem; color: var(--color-text-muted); font-weight: 400; }
+
+                    .modal-close-v4 {
+                        position: absolute;
+                        top: -10px;
+                        right: -10px;
+                        width: 32px;
+                        height: 32px;
+                        border-radius: 50% !important;
+                        background: var(--color-surface);
+                        border: 1px solid var(--color-border);
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        cursor: pointer;
+                        color: var(--color-text-muted);
+                        transition: all 0.2s;
+                    }
+                    .modal-close-v4:hover { background: white; color: var(--color-primary); transform: rotate(90deg); }
+
+                    .modal-form-v4 { display: flex; flex-direction: column; gap: 32px; }
+                    .form-row-v4 { display: flex; gap: 24px; }
+                    .form-group-v4 { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+                    .form-group-v4.full { flex: 0 0 100%; }
+                    .form-group-v4 label { font-size: 0.9rem; font-weight: 700; color: var(--color-text); }
+
+                    .input-wrap-v4 {
+                        background: var(--color-surface);
+                        border: 2px solid var(--color-border);
+                        border-radius: 14px !important;
+                        transition: all 0.2s;
+                    }
+                    .input-wrap-v4:focus-within { border-color: var(--color-primary); background: white; }
+                    .input-wrap-v4 input {
+                        width: 100%;
+                        padding: 14px 18px;
+                        border: none;
+                        background: transparent;
+                        outline: none;
+                        font-size: 0.95rem;
+                        color: var(--color-text);
+                        font-weight: 400;
+                    }
+                    .input-wrap-v4.with-icon { display: flex; align-items: center; padding-left: 18px; }
+                    .input-wrap-v4.with-icon input { padding-left: 10px; }
+                    .input-wrap-v4.with-icon svg { color: var(--color-primary); opacity: 0.6; }
+
+                    .wizz-textarea-v4 {
+                        width: 100%;
+                        padding: 18px;
+                        background: var(--color-surface);
+                        border: 2px solid var(--color-border);
+                        border-radius: 14px !important;
+                        outline: none;
+                        font-size: 0.95rem;
+                        color: var(--color-text);
+                        font-weight: 400;
+                        transition: all 0.2s;
+                    }
+                    .wizz-textarea-v4:focus { border-color: var(--color-primary); background: white; }
+
+                    .modal-footer-v4 {
+                        display: flex;
+                        justify-content: flex-end;
+                        gap: 16px;
+                        margin-top: 16px;
+                        padding-top: 32px;
+                        border-top: 1px solid var(--color-border);
+                    }
+
+                    @media (max-width: 640px) {
+                        .wizz-modal-card { padding: 32px 20px !important; }
+                    }
+                `}</style>
+            </div>
+        </AnimatePresence>
     );
 };
 

@@ -1,73 +1,86 @@
-/* Sharp & Clean Layout Styles (First Dollar Aesthetic) */
-
-.app-container {
-  display: flex;
+/* Wizz-Style Layout Refinements */
+#root {
   min-height: 100vh;
-  background-color: var(--color-bg);
-}
-
-.main-content {
-  flex: 1;
-  padding: 40px;
-  margin-left: 280px; /* Sidebar width */
-  max-width: 1400px;
   width: 100%;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* Transitions */
-.fade-enter {
-  opacity: 0;
-  transform: translateY(10px);
-}
-.fade-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 300ms, transform 300ms;
-}
-
-/* Utility Animations */
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-slide-up {
-  animation: slideUp 0.5s ease-out forwards;
-}
-
-/* Responsiveness */
-@media (max-width: 1024px) {
-  .main-content {
-    margin-left: 0;
-    padding: 24px;
-    padding-top: 80px; /* Adjust for mobile menu toggle */
-  }
-}
-
-/* Global Card Enhancements */
-.card-grid {
+.dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 32px;
+  margin-top: 32px;
+}
+
+.stats-grid-wizz {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
+  margin-bottom: 48px;
 }
 
-.section-header {
-  margin-bottom: 32px;
+/* Page Header Specialization */
+.page-header-wizz {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 32px;
+  margin-bottom: 48px;
+  position: relative;
 }
 
-.section-title {
-  font-size: 1.75rem;
-  font-weight: 700;
+.header-accent-v4 {
+  color: var(--color-primary);
+  font-weight: 800;
+  position: relative;
+}
+
+/* Typography Specialists */
+.data-value-v4 {
+  font-family: var(--font-main);
+  font-size: 2.75rem;
+  font-weight: 800;
   color: var(--color-text);
-  margin-bottom: 8px;
+  letter-spacing: -0.05em;
+  line-height: 1;
 }
 
-.section-subtitle {
-  color: var(--color-text-secondary);
-  font-size: 1rem;
+.data-label-v4 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  letter-spacing: 0.12em;
+}
+
+/* Wizz Badge Styles */
+.badge-wizz {
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  border-radius: var(--radius-full) !important;
+  letter-spacing: 0.05em;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.badge-wizz.active {
+  background: #ECFDF5;
+  color: #10B981;
+  border-color: #A7F3D0;
+}
+
+.badge-wizz.urgent {
+  background: #FEF2F2;
+  color: #EF4444;
+  border-color: #FECACA;
+}
+
+/* Responsive Cleanup */
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
 }

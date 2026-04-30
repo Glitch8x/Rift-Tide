@@ -1,253 +1,325 @@
 import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
-import SharpCard from '../components/UI/GlassCard'; // Now SharpCard
-import { ExternalLink, Wallet, FileText, CheckCircle, Clock, Trophy, ChevronRight, Gift, Layers, Inbox, ArrowUpRight } from 'lucide-react';
+import { PlusCircle, Trophy, Banknote, RefreshCw, Layers, ShieldCheck, UserCheck, Inbox, ArrowRight, CheckCircle2, Clock, Zap, LayoutDashboard, Settings as SettingsIcon, Flag } from 'lucide-react';
+import PostBountyModal from '../components/Modals/PostBountyModal';
+import { motion, AnimatePresence } from 'framer-motion';
 
-/**
- * CreatorDashboard - Redesigned for a professional SUI Project Owner view.
- * Follows the First Dollar style with sharp layouts and clear submission management.
- */
 const CreatorDashboard = () => {
-    const { bounties, submissions, selectWinner } = useData();
-    const [selectedBountyId, setSelectedBountyId] = useState(null);
+    const { bounties, submissions, selectRankedWinner, postBounty } = useData();
+    const [isPostModalOpen, setIsPostModalOpen] = useState(false);
+    const [activeView, setActiveView] = useState('active'); // 'active' or 'queue'
 
-    if (!bounties) return <div className="loading-state">Syncing project data...</div>;
+    const creatorSubmissions = submissions || [];
 
-    // Group submissions by Bounty ID
-    const submissionsByBounty = (submissions || []).reduce((acc, sub) => {
-        if (!acc[sub.itemId]) acc[sub.itemId] = [];
-        acc[sub.itemId].push(sub);
-        return acc;
-    }, {});
-
-    const selectedBounty = bounties.find(b => b.id === selectedBountyId);
-    const selectedSubmissions = selectedBountyId ? (submissionsByBounty[selectedBountyId] || []) : [];
-
-    const handleSelectWinner = (wallet) => {
-        if (!window.confirm("Acknowledge: Selecting this submission as the primary winner will initiate the payout process. Proceed?")) return;
-        selectWinner(selectedBountyId, wallet);
-    };
+    const stats = [
+        { label: 'Active Quests', value: '04', icon: <Flag size={20} />, color: '#6366F1' },
+        { label: 'Pending Reviews', value: '07', icon: <Clock size={20} />, color: '#F59E0B' },
+        { label: 'Trust Rating', value: '99%', icon: <ShieldCheck size={20} />, color: '#10B981' },
+    ];
 
     return (
-        <div className="creator-container animate-fade-in">
-            <header className="page-header">
-                <div className="header-info">
-                    <h1 className="header-title">Creator Console</h1>
-                    <p className="header-subtitle">Review contributions and manage distributions for your SUI projects.</p>
+        <div className="wizz-creator-page animate-fade-in">
+            <div className="bg-blur-blob blob-dash-1"></div>
+            <div className="bg-blur-blob blob-dash-2"></div>
+
+            <header className="dash-header-v4">
+                <div className="header-left-v4">
+                    <div className="dash-badge-v4">
+                        <LayoutDashboard size={14} /> Mission Curator
+                    </div>
+                    <h1 className="dash-title-v4">Mission <span>Control</span></h1>
+                    <p className="dash-subtitle-v4">Manage your active quest pipeline and verify ecosystem contributions.</p>
+                </div>
+                <div className="header-right-v4">
+                    <button className="wizz-btn-primary" onClick={() => setIsPostModalOpen(true)}>
+                        <PlusCircle size={20} /> Initialize New Quest
+                    </button>
                 </div>
             </header>
 
-            <div className="creator-split-layout">
-                {/* Side Navigation: Active and Past Quests */}
-                <aside className="creator-sidebar">
-                    <h3 className="sidebar-h">Your Pipeline</h3>
-                    <div className="sidebar-list">
-                        {bounties.filter(b => b.type === 'bounty' || b.type === 'project').map(bounty => (
-                            <div
-                                key={bounty.id}
-                                className={`sidebar-item ${selectedBountyId === bounty.id ? 'active' : ''}`}
-                                onClick={() => setSelectedBountyId(bounty.id)}
-                            >
-                                <div className="item-txt">
-                                    <h4 className="item-title">{bounty.title}</h4>
-                                    <div className="item-meta-row">
-                                        <span className={`status-pill-small ${bounty.status}`}>
-                                            {bounty.status.toUpperCase()}
-                                        </span>
-                                        <span className="sub-count">{submissionsByBounty[bounty.id]?.length || 0} Submissions</span>
-                                    </div>
-                                </div>
-                                <ChevronRight size={16} className="item-chev" />
-                            </div>
-                        ))}
+            <div className="dash-stats-grid-v4">
+                {stats.map((s, i) => (
+                    <div key={i} className="stat-card-v4 elevated-card">
+                        <div className="stat-icon-v4" style={{ color: s.color, background: `${s.color}15` }}>
+                            {s.icon}
+                        </div>
+                        <div className="stat-info-v4">
+                            <span className="stat-label-v4">{s.label}</span>
+                            <span className="stat-val-v4">{s.value}</span>
+                        </div>
                     </div>
-                </aside>
-
-                {/* Main Action Area: Detail and Submission Review */}
-                <main className="creator-main-view">
-                    {selectedBounty ? (
-                        <div className="bounty-management-view animate-fade-in">
-                            <SharpCard className="management-header-card">
-                                <div className="header-row">
-                                    <h2 className="header-h-text">{selectedBounty.title}</h2>
-                                    <div className="header-reward">{selectedBounty.reward} SUI</div>
-                                </div>
-                                <div className="header-status-msg">
-                                    {selectedBounty.status === 'completed'
-                                        ? <div className="msg-box success"><CheckCircle size={14} /> Winner assigned: {selectedBounty.winner}</div>
-                                        : <div className="msg-box pending"><Clock size={14} /> Reviewing {selectedSubmissions.length} active contributions</div>
-                                    }
-                                </div>
-                            </SharpCard>
-
-                            <div className="submissions-section">
-                                <h3 className="section-h-label">SUBMISSION QUEUE</h3>
-
-                                {selectedSubmissions.length === 0 ? (
-                                    <div className="empty-submissions-box">
-                                        <Inbox size={32} />
-                                        <p>No contributions received for this quest yet.</p>
-                                    </div>
-                                ) : (
-                                    <div className="submissions-grid-sharp">
-                                        {selectedSubmissions.map((sub, idx) => {
-                                            const isWinner = selectedBounty.winner === sub.walletAddress;
-                                            return (
-                                                <SharpCard key={idx} className={`submission-row-card ${isWinner ? 'winner' : ''}`}>
-                                                    <div className="sub-header-row">
-                                                        <div className="sub-identity">
-                                                            <div className="sub-avatar-circle">
-                                                                <Wallet size={16} />
-                                                            </div>
-                                                            <div className="sub-identity-txt">
-                                                                <span className="sub-wallet-addr monospaced">{sub.walletAddress}</span>
-                                                                <span className="sub-date-txt">{new Date(sub.submittedAt).toLocaleDateString()}</span>
-                                                            </div>
-                                                        </div>
-                                                        <div className="sub-action-btn">
-                                                          {isWinner ? (
-                                                              <div className="winner-pill">
-                                                                  <Trophy size={14} /> WINNER
-                                                              </div>
-                                                          ) : (
-                                                              selectedBounty.status !== 'completed' && (
-                                                                  <button
-                                                                      className="btn btn-outline small-btn"
-                                                                      onClick={() => handleSelectWinner(sub.walletAddress)}
-                                                                  >
-                                                                      Select Winner
-                                                                  </button>
-                                                              )
-                                                          )}
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="sub-asset-preview">
-                                                        <a href={sub.submissionLink} target="_blank" rel="noopener noreferrer" className="asset-link-box">
-                                                            <ExternalLink size={16} />
-                                                            <span>View Submitted Assets</span>
-                                                            <ArrowUpRight size={14} className="jump-icon" />
-                                                        </a>
-                                                    </div>
-                                                </SharpCard>
-                                            )
-                                        })}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="empty-dashboard-state">
-                            <Layers size={48} className="empty-icon-main" />
-                            <h3 className="empty-dash-h">Project Overview</h3>
-                            <p className="empty-dash-p">Select an active quest from the left pipeline to manage submissions and verify work.</p>
-                        </div>
-                    )}
-                </main>
+                ))}
             </div>
 
+            <div className="dash-tabs-v4">
+                <button 
+                    className={`dash-tab-v4 ${activeView === 'active' ? 'active' : ''}`} 
+                    onClick={() => setActiveView('active')}
+                >
+                    Active Missions
+                </button>
+                <button 
+                    className={`dash-tab-v4 ${activeView === 'queue' ? 'active' : ''}`} 
+                    onClick={() => setActiveView('queue')}
+                >
+                    Review Queue <span className="tab-count-v4">07</span>
+                </button>
+            </div>
+
+            <div className="dash-content-v4">
+                <AnimatePresence mode="wait">
+                    {activeView === 'active' ? (
+                        <motion.div 
+                            key="active"
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 20 }}
+                            className="active-quests-v4"
+                        >
+                            {bounties.slice(0, 3).map((bounty, idx) => (
+                                <div key={bounty.id} className="glass-pill-v4 quest-item-v4">
+                                    <div className="quest-brand-v4">
+                                        <div className="quest-logo-v4">
+                                            {bounty.title.charAt(0)}
+                                        </div>
+                                        <div className="quest-meta-v4">
+                                            <h4>{bounty.title}</h4>
+                                            <div className="meta-pills-v4">
+                                                <span className="meta-pill-v4"><Zap size={12} /> {bounty.reward} SUI</span>
+                                                <span className="meta-pill-v4"><Inbox size={12} /> {bounty.participants} Participants</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="quest-actions-v4">
+                                        <button className="wizz-btn-outline small">Manage Pipeline</button>
+                                    </div>
+                                </div>
+                            ))}
+                        </motion.div>
+                    ) : (
+                        <motion.div 
+                            key="queue"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                            className="queue-view-v4"
+                        >
+                            <div className="glass-pill-v4 table-container-v4">
+                                <table className="wizz-table-v4">
+                                    <thead>
+                                        <tr>
+                                            <th>Contributor</th>
+                                            <th>Evidence</th>
+                                            <th>Status</th>
+                                            <th className="text-right">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {creatorSubmissions.map((sub, i) => (
+                                            <tr key={i}>
+                                                <td className="user-td-v4">
+                                                    <div className="user-avatar-v4">{sub.user.charAt(0)}</div>
+                                                    <span className="user-name-v4">{sub.user}</span>
+                                                </td>
+                                                <td>
+                                                    <span className="evidence-title-v4">{sub.bountyTitle}</span>
+                                                </td>
+                                                <td>
+                                                    <span className="status-tag-v4 pending">
+                                                        <Clock size={12} /> Pending Review
+                                                    </span>
+                                                </td>
+                                                <td className="text-right">
+                                                    <button className="wizz-btn-primary small">Verify Evidence</button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
+
+            <PostBountyModal isOpen={isPostModalOpen} onClose={() => setIsPostModalOpen(false)} onPost={postBounty} />
+
             <style>{`
-                .creator-container {
-                    max-width: 1200px;
+                .wizz-creator-page {
+                    padding: 80px 24px 120px;
+                    max-width: 1100px;
                     margin: 0 auto;
+                    position: relative;
                 }
 
-                .creator-split-layout {
-                    display: grid;
-                    grid-template-columns: 320px 1fr;
-                    gap: 32px;
-                    height: calc(100vh - 200px);
+                .bg-blur-blob {
+                    position: fixed;
+                    width: 600px;
+                    height: 600px;
+                    border-radius: 50% !important;
+                    filter: blur(100px);
+                    opacity: 0.08;
+                    z-index: -1;
                 }
+                .blob-dash-1 { top: 10%; right: -5%; background: var(--color-primary); }
+                .blob-dash-2 { bottom: 10%; left: -5%; background: var(--color-accent); }
 
-                .creator-sidebar {
-                    background: white;
-                    border: 1px solid var(--color-border);
-                    border-radius: var(--radius-lg);
+                .dash-header-v4 {
                     display: flex;
-                    flex-direction: column;
-                    overflow: hidden;
-                    box-shadow: var(--shadow-sm);
+                    justify-content: space-between;
+                    align-items: flex-end;
+                    margin-bottom: 60px;
                 }
 
-                .sidebar-h {
-                    padding: 20px;
-                    font-size: 0.75rem;
+                .dash-badge-v4 {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 6px 14px;
+                    background: var(--color-primary-soft);
+                    color: var(--color-primary);
+                    border-radius: 9999px;
+                    font-size: 0.8rem;
                     font-weight: 800;
-                    color: var(--color-text-muted);
-                    background: #f8fafc;
-                    border-bottom: 1px solid var(--color-border);
-                    letter-spacing: 0.05em;
+                    margin-bottom: 20px;
+                    text-transform: uppercase;
+                }
+                .dash-title-v4 { font-size: 3.5rem; font-weight: 800; color: var(--color-text); line-height: 1; margin-bottom: 20px; }
+                .dash-title-v4 span { color: var(--color-primary); }
+                .dash-subtitle-v4 { font-size: 1.15rem; color: var(--color-text-muted); font-weight: 400; }
+
+                .dash-stats-grid-v4 {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 24px;
+                    margin-bottom: 60px;
                 }
 
-                .sidebar-list { flex: 1; overflow-y: auto; }
-
-                .sidebar-item {
-                    padding: 20px;
-                    border-bottom: 1px solid #f1f5f9;
-                    cursor: pointer;
+                .stat-card-v4 {
                     display: flex;
                     align-items: center;
-                    justify-content: space-between;
+                    gap: 20px;
+                    padding: 24px !important;
+                }
+                .stat-icon-v4 {
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 14px !important;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                .stat-info-v4 { display: flex; flex-direction: column; }
+                .stat-label-v4 { font-size: 0.85rem; font-weight: 700; color: var(--color-text-muted); }
+                .stat-val-v4 { font-size: 1.5rem; font-weight: 800; color: var(--color-text); }
+
+                .dash-tabs-v4 {
+                    display: flex;
+                    gap: 32px;
+                    border-bottom: 1px solid var(--color-border);
+                    margin-bottom: 40px;
+                }
+                .dash-tab-v4 {
+                    padding: 16px 8px;
+                    background: transparent;
+                    border: none;
+                    font-size: 1rem;
+                    font-weight: 700;
+                    color: var(--color-text-muted);
+                    cursor: pointer;
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
                     transition: all 0.2s;
                 }
+                .dash-tab-v4.active { color: var(--color-primary); }
+                .dash-tab-v4.active::after {
+                    content: "";
+                    position: absolute;
+                    bottom: -1px;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: var(--color-primary);
+                    border-radius: 9999px !important;
+                }
+                .tab-count-v4 {
+                    padding: 2px 8px;
+                    background: var(--color-surface);
+                    color: var(--color-text-muted);
+                    border-radius: 9999px !important;
+                    font-size: 0.75rem;
+                }
+                .dash-tab-v4.active .tab-count-v4 { background: var(--color-primary-soft); color: var(--color-primary); }
 
-                .sidebar-item:hover { background: #f8fafc; }
-                .sidebar-item.active { background: #eff6ff; border-right: 3px solid var(--color-primary); }
+                .active-quests-v4 { display: flex; flex-direction: column; gap: 20px; }
+                .quest-item-v4 {
+                    padding: 24px 32px !important;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+                .quest-brand-v4 { display: flex; align-items: center; gap: 20px; }
+                .quest-logo-v4 {
+                    width: 50px;
+                    height: 50px;
+                    background: var(--color-primary-soft);
+                    color: var(--color-primary);
+                    border-radius: 14px !important;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.5rem;
+                    font-weight: 800;
+                }
+                .quest-meta-v4 h4 { font-size: 1.15rem; font-weight: 800; color: var(--color-text); margin-bottom: 6px; }
+                .meta-pills-v4 { display: flex; gap: 12px; }
+                .meta-pill-v4 {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    font-size: 0.8rem;
+                    font-weight: 700;
+                    color: var(--color-text-muted);
+                }
 
-                .item-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; color: var(--color-text); }
-                .item-meta-row { display: flex; align-items: center; gap: 10px; }
-                .status-pill-small { font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 4px; }
-                .status-pill-small.active { color: #16a34a; background: #f0fdf4; }
-                .status-pill-small.completed { color: #64748b; background: #f1f5f9; }
-                .sub-count { font-size: 0.75rem; color: var(--color-text-secondary); font-weight: 600; }
-                .item-chev { color: #cbd5e1; opacity: 0; }
-                .sidebar-item.active .item-chev { opacity: 1; color: var(--color-primary); }
+                .table-container-v4 { padding: 0 !important; overflow: hidden; }
+                .wizz-table-v4 { width: 100%; border-collapse: collapse; }
+                .wizz-table-v4 th {
+                    text-align: left;
+                    padding: 20px 32px;
+                    background: var(--color-surface);
+                    font-size: 0.85rem;
+                    font-weight: 800;
+                    color: var(--color-text-muted);
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                }
+                .wizz-table-v4 td { padding: 20px 32px; border-bottom: 1px solid var(--color-border); }
+                .user-td-v4 { display: flex; align-items: center; gap: 14px; }
+                .user-avatar-v4 { width: 36px; height: 36px; background: var(--color-primary-soft); color: var(--color-primary); border-radius: 50% !important; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; }
+                .user-name-v4 { font-weight: 700; color: var(--color-text); }
+                .evidence-title-v4 { font-weight: 400; color: var(--color-text-muted); }
+                .status-tag-v4 {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    padding: 6px 12px;
+                    border-radius: 9999px !important;
+                    font-size: 0.8rem;
+                    font-weight: 700;
+                }
+                .status-tag-v4.pending { background: #FFFBEB; color: #D97706; }
 
-                .creator-main-view { flex: 1; overflow-y: auto; padding-right: 4px; }
-
-                .management-header-card { padding: 32px !important; margin-bottom: 32px; }
-                .header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
-                .header-h-text { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
-                .header-reward { font-size: 1.25rem; font-weight: 800; color: var(--color-primary); }
-
-                .msg-box { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; }
-                .msg-box.success { color: #16a34a; }
-                .msg-box.pending { color: var(--color-primary); }
-
-                .section-h-label { font-size: 0.75rem; font-weight: 800; color: var(--color-text-muted); letter-spacing: 0.05em; margin-bottom: 16px; }
-
-                .empty-submissions-box { text-align: center; padding: 60px; background: #f8fafc; border-radius: var(--radius-lg); border: 1px dashed var(--color-border); color: var(--color-text-muted); }
-
-                .submissions-grid-sharp { display: flex; flex-direction: column; gap: 16px; }
-                .submission-row-card { padding: 24px !important; }
-                .submission-row-card.winner { border-color: #bbf7d0 !important; background: #f0fdf4 !important; }
-
-                .sub-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
-                .sub-identity { display: flex; align-items: center; gap: 12px; }
-                .sub-avatar-circle { width: 36px; height: 36px; border-radius: 50%; background: white; border: 1px solid var(--color-border); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); }
-                .sub-identity-txt { display: flex; flex-direction: column; }
-                .sub-wallet-addr { font-size: 0.9rem; font-weight: 700; color: var(--color-text); }
-                .sub-date-txt { font-size: 0.75rem; color: var(--color-text-muted); }
-                .monospaced { font-family: monospace; }
-
-                .winner-pill { display: flex; align-items: center; gap: 6px; background: #16a34a; color: white; padding: 4px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: 800; }
-
-                .asset-link-box { display: flex; align-items: center; gap: 10px; background: white; border: 1px solid var(--color-border); padding: 12px 16px; border-radius: var(--radius-sm); color: var(--color-text); font-weight: 600; font-size: 0.9rem; transition: all 0.2s; }
-                .asset-link-box:hover { border-color: var(--color-primary); color: var(--color-primary); }
-                .jump-icon { margin-left: auto; opacity: 0.5; }
-
-                .empty-dashboard-state { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; border: 1px dashed var(--color-border); border-radius: var(--radius-lg); text-align: center; padding: 40px; }
-                .empty-icon-main { color: var(--color-text-muted); margin-bottom: 24px; }
-                .empty-dash-h { font-size: 1.25rem; font-weight: 700; margin-bottom: 8px; }
-                .empty-dash-p { color: var(--color-text-muted); max-width: 320px; line-height: 1.5; }
-
-                .loading-state { padding: 100px; text-align: center; color: var(--color-text-muted); font-weight: 600; }
-
-                .small-btn { padding: 6px 12px !important; font-size: 0.8rem !important; }
+                .text-right { text-align: right; }
 
                 @media (max-width: 1024px) {
-                    .creator-split-layout { grid-template-columns: 1fr; height: auto; }
-                    .creator-sidebar { max-height: 300px; }
+                    .dash-header-v4 { flex-direction: column; align-items: flex-start; gap: 32px; }
+                    .dash-stats-grid-v4 { grid-template-columns: 1fr; }
+                    .quest-item-v4 { flex-direction: column; align-items: flex-start; gap: 24px; }
+                    .wizz-btn-primary.small { width: 100%; text-align: center; }
+                    .dash-title-v4 { font-size: 2.5rem; }
                 }
             `}</style>
         </div>
