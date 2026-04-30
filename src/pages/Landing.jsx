@@ -24,7 +24,7 @@ const Landing = () => {
                 zIndex: 1000
             }}>
                 <div className="nav-left" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
-                    <BrandLogo size={150} showText={false} />
+                    <BrandLogo size={60} showText={false} />
                 </div>
 
                 <div className="nav-center" style={{ display: 'flex', gap: '40px' }}>
