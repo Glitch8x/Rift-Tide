@@ -155,6 +155,8 @@ const Grants = () => {
                         </motion.div>
                     ))}
                 </div>
+            </div>
+
             <AnimatePresence>
                 {selectedGrant && (
                     <GrantApplyModal 
