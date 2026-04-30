@@ -38,7 +38,7 @@ const Jobs = () => {
         {
             id: 3,
             title: 'Lead Product Designer',
-            company: 'Wizz Network',
+            company: 'Rift Network',
             location: 'Remote (Global)',
             type: 'Full-time',
             salary: '$140k - $200k',

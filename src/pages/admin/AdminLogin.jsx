@@ -56,7 +56,7 @@ const AdminLogin = () => {
                             <div className="status-pill pending">
                                 <Wallet size={16} /> Wallet Not Connected
                             </div>
-                            <button className="wizz-btn-primary full-width" onClick={() => navigate('/login')}>
+                            <button className="rift-btn-primary full-width" onClick={() => navigate('/login')}>
                                 Connect Authorized Wallet
                             </button>
                         </div>
@@ -72,7 +72,7 @@ const AdminLogin = () => {
                             <div className="error-box">
                                 <p>{error}</p>
                             </div>
-                            <button className="wizz-btn-outline full-width" onClick={() => navigate('/dashboard')}>
+                            <button className="rift-btn-outline full-width" onClick={() => navigate('/dashboard')}>
                                 Return to User Dashboard
                             </button>
                         </div>

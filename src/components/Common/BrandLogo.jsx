@@ -16,7 +16,7 @@ const BrandLogo = ({ size = 32, showText = false, light = false, boxed = false }
             }}
         >
             <img 
-                src="/Gemini_Generated_Image_ldq5hsldq5hsldq5__1_-removebg-preview.png" 
+                src="/rift-tide-final.png" 
                 alt="Rift Tide" 
                 style={{ 
                     height: '100%',

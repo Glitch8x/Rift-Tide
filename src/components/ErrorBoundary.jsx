@@ -19,7 +19,7 @@ class ErrorBoundary extends React.Component {
     render() {
         if (this.state.hasError) {
             return (
-                <div className="wizz-error-viewport">
+                <div className="rift-error-viewport">
                     <div className="error-card-v4 glass-pill-v4 animate-scale-up">
                         <div className="error-icon-v4">
                             <AlertCircle size={48} />
@@ -32,17 +32,17 @@ class ErrorBoundary extends React.Component {
                         </div>
 
                         <div className="error-actions-v4">
-                            <button className="wizz-btn-primary" onClick={() => window.location.reload()}>
+                            <button className="rift-btn-primary" onClick={() => window.location.reload()}>
                                 <RotateCcw size={18} /> Restore Engine
                             </button>
-                            <button className="wizz-btn-outline" onClick={() => window.location.href = '/'}>
+                            <button className="rift-btn-outline" onClick={() => window.location.href = '/'}>
                                 <Home size={18} /> Return Home
                             </button>
                         </div>
                     </div>
 
                     <style>{`
-                        .wizz-error-viewport {
+                        .rift-error-viewport {
                             min-height: 100vh;
                             display: flex;
                             align-items: center;

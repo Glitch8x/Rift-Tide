@@ -16,7 +16,7 @@ const BountyCard = ({ bounty }) => {
                 {/* Logo Section */}
                 <div className="rift-logo-section">
                     <div className="rift-org-logo">
-                        <img src={bounty.communityImg || '/sui-gig-logo.png'} alt={bounty.community} />
+                        <img src={bounty.communityImg || '/rift-tide-final.png'} alt={bounty.community} />
                     </div>
                 </div>
 

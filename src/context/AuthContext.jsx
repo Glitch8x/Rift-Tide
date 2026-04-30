@@ -10,11 +10,11 @@ export const AuthProvider = ({ children }) => {
     const { mutate: disconnect } = useDisconnectWallet();
     const [manualAccount, setManualAccount] = useState(() => {
         try {
-            const stored = localStorage.getItem('lofi_manual_wallet');
+            const stored = localStorage.getItem('rift_tide_manual_wallet');
             return stored ? JSON.parse(stored) : null;
         } catch (error) {
             console.error("Failed to parse manual wallet:", error);
-            localStorage.removeItem('lofi_manual_wallet');
+            localStorage.removeItem('rift_tide_manual_wallet');
             return null;
         }
     });
@@ -24,12 +24,12 @@ export const AuthProvider = ({ children }) => {
     const manualLogin = (address) => {
         const acc = { address };
         setManualAccount(acc);
-        localStorage.setItem('lofi_manual_wallet', JSON.stringify(acc));
+        localStorage.setItem('rift_tide_manual_wallet', JSON.stringify(acc));
     };
 
     const manualLogout = () => {
         setManualAccount(null);
-        localStorage.removeItem('lofi_manual_wallet');
+        localStorage.removeItem('rift_tide_manual_wallet');
     };
 
     const login = async ({ email, password }) => {
@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
                     connectionType: 'email'
                 };
                 setUser(mockUser);
-                localStorage.setItem('lofi_user', JSON.stringify(mockUser));
+                localStorage.setItem('rift_tide_user', JSON.stringify(mockUser));
                 setLoading(false);
                 resolve(mockUser);
             }, 1000);
@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
     const logout = () => {
         disconnect();
         manualLogout();
-        localStorage.removeItem('lofi_user');
+        localStorage.removeItem('rift_tide_user');
         setUser(null);
     };
 

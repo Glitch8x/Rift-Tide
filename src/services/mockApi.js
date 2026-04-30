@@ -93,9 +93,9 @@ const initialGrants = [
     },
     {
         id: 2,
-        title: 'Sui-gig Creator Grant',
+        title: 'Rift Tide Creator Grant',
         amount: '$2,000',
-        description: 'Support for artists and developers building on the Sui-gig protocol.',
+        description: 'Support for artists and developers building on the Rift Tide protocol.',
         tags: ['Art', 'Dev'],
         applicants: 89
     },

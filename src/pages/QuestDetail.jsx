@@ -18,12 +18,12 @@ const QuestDetail = () => {
         <div className="empty-detail-v4">
             <Database size={60} />
             <h2>Mission Not Found</h2>
-            <button className="wizz-btn-primary" onClick={() => navigate('/explore')}>Go Back</button>
+            <button className="rift-btn-primary" onClick={() => navigate('/explore')}>Go Back</button>
         </div>
     );
 
     return (
-        <div className="wizz-quest-detail animate-fade-in">
+        <div className="rift-quest-detail animate-fade-in">
             <div className="bg-blur-blob blob-detail-1"></div>
 
             <nav className="detail-nav-v4">
@@ -87,7 +87,7 @@ const QuestDetail = () => {
                             <h3>Rules & Requirements</h3>
                         </div>
                         <div className="rules-content-v4">
-                            <ul className="wizz-bullets">
+                            <ul className="rift-bullets">
                                 <li>One submission per participant.</li>
                                 <li>All contributions must be original and verified.</li>
                                 <li>High-quality assets Only. Plagiarism results in permanent ban.</li>
@@ -118,7 +118,7 @@ const QuestDetail = () => {
                                 </div>
                             </div>
                             <button 
-                                className="wizz-btn-primary full-width"
+                                className="rift-btn-primary full-width"
                                 onClick={() => navigate(`/quest/submit/${quest.id}`)}
                             >
                                 Start Mission <ArrowRight size={18} />
@@ -138,7 +138,7 @@ const QuestDetail = () => {
             </div>
 
             <style>{`
-                .wizz-quest-detail {
+                .rift-quest-detail {
                     padding: 40px 24px 100px;
                     max-width: 1200px;
                     margin: 0 auto;
@@ -209,8 +209,8 @@ const QuestDetail = () => {
                 .deliv-item-v4 { display: flex; gap: 12px; align-items: flex-start; font-size: 1.05rem; font-weight: 500; color: var(--color-text); }
                 .deliv-item-v4 svg { flex-shrink: 0; margin-top: 3px; }
 
-                .wizz-bullets { padding-left: 20px; }
-                .wizz-bullets li { font-size: 1.05rem; color: var(--color-text-muted); margin-bottom: 12px; font-weight: 400; }
+                .rift-bullets { padding-left: 20px; }
+                .rift-bullets li { font-size: 1.05rem; color: var(--color-text-muted); margin-bottom: 12px; font-weight: 400; }
 
                 .sticky-sidebar-v4 {
                     position: sticky;

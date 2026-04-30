@@ -18,7 +18,7 @@ const CreatorDashboard = () => {
     ];
 
     return (
-        <div className="wizz-creator-page animate-fade-in">
+        <div className="rift-creator-page animate-fade-in">
             <div className="bg-blur-blob blob-dash-1"></div>
             <div className="bg-blur-blob blob-dash-2"></div>
 
@@ -31,7 +31,7 @@ const CreatorDashboard = () => {
                     <p className="dash-subtitle-v4">Manage your active quest pipeline and verify ecosystem contributions.</p>
                 </div>
                 <div className="header-right-v4">
-                    <button className="wizz-btn-primary" onClick={() => setIsPostModalOpen(true)}>
+                    <button className="rift-btn-primary" onClick={() => setIsPostModalOpen(true)}>
                         <PlusCircle size={20} /> Initialize New Quest
                     </button>
                 </div>
@@ -91,7 +91,7 @@ const CreatorDashboard = () => {
                                         </div>
                                     </div>
                                     <div className="quest-actions-v4">
-                                        <button className="wizz-btn-outline small">Manage Pipeline</button>
+                                        <button className="rift-btn-outline small">Manage Pipeline</button>
                                     </div>
                                 </div>
                             ))}
@@ -105,7 +105,7 @@ const CreatorDashboard = () => {
                             className="queue-view-v4"
                         >
                             <div className="glass-pill-v4 table-container-v4">
-                                <table className="wizz-table-v4">
+                                <table className="rift-table-v4">
                                     <thead>
                                         <tr>
                                             <th>Contributor</th>
@@ -130,7 +130,7 @@ const CreatorDashboard = () => {
                                                     </span>
                                                 </td>
                                                 <td className="text-right">
-                                                    <button className="wizz-btn-primary small">Verify Evidence</button>
+                                                    <button className="rift-btn-primary small">Verify Evidence</button>
                                                 </td>
                                             </tr>
                                         ))}
@@ -145,7 +145,7 @@ const CreatorDashboard = () => {
             <PostBountyModal isOpen={isPostModalOpen} onClose={() => setIsPostModalOpen(false)} onPost={postBounty} />
 
             <style>{`
-                .wizz-creator-page {
+                .rift-creator-page {
                     padding: 80px 24px 120px;
                     max-width: 1100px;
                     margin: 0 auto;
@@ -285,8 +285,8 @@ const CreatorDashboard = () => {
                 }
 
                 .table-container-v4 { padding: 0 !important; overflow: hidden; }
-                .wizz-table-v4 { width: 100%; border-collapse: collapse; }
-                .wizz-table-v4 th {
+                .rift-table-v4 { width: 100%; border-collapse: collapse; }
+                .rift-table-v4 th {
                     text-align: left;
                     padding: 20px 32px;
                     background: var(--color-surface);
@@ -296,7 +296,7 @@ const CreatorDashboard = () => {
                     text-transform: uppercase;
                     letter-spacing: 0.05em;
                 }
-                .wizz-table-v4 td { padding: 20px 32px; border-bottom: 1px solid var(--color-border); }
+                .rift-table-v4 td { padding: 20px 32px; border-bottom: 1px solid var(--color-border); }
                 .user-td-v4 { display: flex; align-items: center; gap: 14px; }
                 .user-avatar-v4 { width: 36px; height: 36px; background: var(--color-primary-soft); color: var(--color-primary); border-radius: 50% !important; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.9rem; }
                 .user-name-v4 { font-weight: 700; color: var(--color-text); }
@@ -318,7 +318,7 @@ const CreatorDashboard = () => {
                     .dash-header-v4 { flex-direction: column; align-items: flex-start; gap: 32px; }
                     .dash-stats-grid-v4 { grid-template-columns: 1fr; }
                     .quest-item-v4 { flex-direction: column; align-items: flex-start; gap: 24px; }
-                    .wizz-btn-primary.small { width: 100%; text-align: center; }
+                    .rift-btn-primary.small { width: 100%; text-align: center; }
                     .dash-title-v4 { font-size: 2.5rem; }
                 }
             `}</style>

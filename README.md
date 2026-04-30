@@ -1,9 +1,9 @@
-# Sui-gig
+# Rift Tide
 
-Sui-gig is a decentralized bounty and quest platform designed to bridge the gap between Web3 projects and active contributors. It provides a streamlined interface for organizations to post tasks and for users to earn rewards, ensuring transparency and trust through blockchain technology.
+Rift Tide is a decentralized bounty and quest platform designed to bridge the gap between Web3 projects and active contributors. It provides a streamlined interface for organizations to post tasks and for users to earn rewards, ensuring transparency and trust through blockchain technology.
 
 ## Live Demo
-Check out the platform here: [sui-gig.vercel.app](https://sui-gig.vercel.app/)
+Check out the platform here: [rift-tide.vercel.app](https://rift-tide.vercel.app/)
 
 ## Features
 
@@ -17,11 +17,11 @@ Check out the platform here: [sui-gig.vercel.app](https://sui-gig.vercel.app/)
 
 - **Frontend**: [React.js](https://reactjs.org/) + [Vite](https://vitejs.dev/)
 - **Styling**: Vanilla CSS (Premium Custom Design)
-- **Web3**: Support for ecosystems like **Base** and **Sui**.
+- **Web3**: Support for ecosystems like **Sui**.
 - **Deployment**: [Vercel](https://vercel.com/)
 
 ## Getting Started
 
-1. Clone the repository: `git clone https://github.com/Glitch8x/sui-gig.git`
+1. Clone the repository: `git clone https://github.com/Glitch8x/lofi-quests.git`
 2. Install dependencies: `npm install`
 3. Start the development server: `npm run dev`

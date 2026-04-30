@@ -31,12 +31,12 @@ const QuestSubmission = () => {
         <div className="empty-submission-v4">
             <Info size={60} />
             <h2>Mission Not Found</h2>
-            <button className="wizz-btn-primary" onClick={() => navigate('/explore')}>Go to Explore</button>
+            <button className="rift-btn-primary" onClick={() => navigate('/explore')}>Go to Explore</button>
         </div>
     );
 
     return (
-        <div className="wizz-submission-page animate-fade-in">
+        <div className="rift-submission-page animate-fade-in">
             <div className="bg-blur-blob blob-sub-1"></div>
             <div className="bg-blur-blob blob-sub-2"></div>
 
@@ -91,7 +91,7 @@ const QuestSubmission = () => {
                         <div className="sub-grid-v4">
                             <main className="sub-main-v4">
                                 <div className="glass-pill-v4 form-card-v4">
-                                    <form onSubmit={handleSubmit} className="wizz-form-v4">
+                                    <form onSubmit={handleSubmit} className="rift-form-v4">
                                         
                                         <div className="form-group-v4 full-width">
                                             <label>Twitter Link (Optional)</label>
@@ -133,7 +133,7 @@ const QuestSubmission = () => {
                                         </div>
 
                                         <div className="form-footer-v4">
-                                            <button type="submit" className="wizz-btn-primary full-width large" disabled={isSubmitting}>
+                                            <button type="submit" className="rift-btn-primary full-width large" disabled={isSubmitting}>
                                                 {isSubmitting ? "Processing..." : "Submit Mission Evidence"}
                                             </button>
                                             <p className="legal-info-v4">
@@ -168,7 +168,7 @@ const QuestSubmission = () => {
             </AnimatePresence>
 
             <style>{`
-                .wizz-submission-page {
+                .rift-submission-page {
                     padding: 40px 24px 120px;
                     max-width: 1200px;
                     margin: 0 auto;
@@ -231,7 +231,7 @@ const QuestSubmission = () => {
                     border-radius: 24px;
                     box-shadow: 0 4px 24px rgba(0,0,0,0.02);
                 }
-                .wizz-form-v4 { display: flex; flex-direction: column; gap: 28px; }
+                .rift-form-v4 { display: flex; flex-direction: column; gap: 28px; }
 
                 .form-group-v4 { display: flex; flex-direction: column; gap: 8px; }
                 .form-group-v4 label { font-size: 0.85rem; font-weight: 800; color: #0F172A; }

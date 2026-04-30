@@ -29,16 +29,16 @@ const PostGrantModal = ({ isOpen, onClose, onPost }) => {
 
     return (
         <AnimatePresence>
-            <div className="wizz-modal-overlay">
+            <div className="rift-modal-overlay">
                 <motion.div 
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    className="wizz-modal-card glass-pill-v4"
+                    className="rift-modal-card glass-pill-v4"
                 >
                     <header className="modal-header-v4">
                         <div className="header-icon-v4 logo-wrap">
-                            <img src="/sui-gig-logo.png?v=sui1" alt="Logo" />
+                            <img src="/rift-tide-final.png?v=sui1" alt="Logo" />
                         </div>
                         <div className="header-text-v4">
                             <h2>Initialize <span>Funding</span></h2>
@@ -93,7 +93,7 @@ const PostGrantModal = ({ isOpen, onClose, onPost }) => {
                                     value={formData.description}
                                     onChange={handleChange}
                                     required
-                                    className="wizz-textarea-v4"
+                                    className="rift-textarea-v4"
                                     rows={4}
                                 />
                             </div>
@@ -117,8 +117,8 @@ const PostGrantModal = ({ isOpen, onClose, onPost }) => {
                         </div>
 
                         <footer className="modal-footer-v4">
-                            <button type="button" className="wizz-btn-outline" onClick={onClose}>Discard</button>
-                            <button type="submit" className="wizz-btn-primary">
+                            <button type="button" className="rift-btn-outline" onClick={onClose}>Discard</button>
+                            <button type="submit" className="rift-btn-primary">
                                 <Send size={18} /> Deploy Funding
                             </button>
                         </footer>
@@ -126,7 +126,7 @@ const PostGrantModal = ({ isOpen, onClose, onPost }) => {
                 </motion.div>
 
                 <style>{`
-                    .wizz-modal-overlay {
+                    .rift-modal-overlay {
                         position: fixed;
                         inset: 0;
                         background: rgba(15, 23, 42, 0.4);
@@ -138,7 +138,7 @@ const PostGrantModal = ({ isOpen, onClose, onPost }) => {
                         padding: 24px;
                     }
 
-                    .wizz-modal-card {
+                    .rift-modal-card {
                         width: 100%;
                         max-width: 640px;
                         padding: 40px !important;
@@ -220,7 +220,7 @@ const PostGrantModal = ({ isOpen, onClose, onPost }) => {
                     .input-wrap-v4.with-icon input { padding-left: 10px; }
                     .input-wrap-v4.with-icon svg { color: var(--color-primary); opacity: 0.6; }
 
-                    .wizz-textarea-v4 {
+                    .rift-textarea-v4 {
                         width: 100%;
                         padding: 18px;
                         background: var(--color-surface);
@@ -232,7 +232,7 @@ const PostGrantModal = ({ isOpen, onClose, onPost }) => {
                         font-weight: 400;
                         transition: all 0.2s;
                     }
-                    .wizz-textarea-v4:focus { border-color: var(--color-primary); background: white; }
+                    .rift-textarea-v4:focus { border-color: var(--color-primary); background: white; }
 
                     .modal-footer-v4 {
                         display: flex;
@@ -244,7 +244,7 @@ const PostGrantModal = ({ isOpen, onClose, onPost }) => {
                     }
 
                     @media (max-width: 640px) {
-                        .wizz-modal-card { padding: 32px 20px !important; }
+                        .rift-modal-card { padding: 32px 20px !important; }
                     }
                 `}</style>
             </div>

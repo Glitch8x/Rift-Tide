@@ -25,11 +25,11 @@ const Sidebar = () => {
 
     return (
         <React.Fragment>
-            {/* Mobile Header Bar - Modern Wizz Style */}
-            <div className="wizz-mobile-header mobile-only">
+            {/* Mobile Header Bar - Modern Rift Style */}
+            <div className="rift-mobile-header mobile-only">
                 <div className="branding-v4">
                     <div className="branding-icon-v4-wrap">
-                        <img src="/Gemini_Generated_Image_ldq5hsldq5hsldq5__1_-removebg-preview.png" alt="Rift Tide" style={{ width: 'auto', height: '40px' }} />
+                        <img src="/rift-tide-final.png" alt="Rift Tide" style={{ width: 'auto', height: '40px' }} />
                     </div>
                 </div>
                 <button className="menu-toggle-v4" onClick={() => setIsOpen(!isOpen)}>
@@ -39,11 +39,11 @@ const Sidebar = () => {
                 </button>
             </div>
 
-            <aside className={`wizz-sidebar ${isOpen ? 'show' : ''}`}>
+            <aside className={`rift-sidebar ${isOpen ? 'show' : ''}`}>
                 <div className="sidebar-inner-v4">
                     <div className="sidebar-branding-v4">
                         <div className="branding-hex-v4-final">
-                            <img src="/Gemini_Generated_Image_ldq5hsldq5hsldq5__1_-removebg-preview.png" alt="Rift Tide" style={{ width: '100%', height: 'auto' }} />
+                            <img src="/rift-tide-final.png" alt="Rift Tide" style={{ width: '100%', height: 'auto' }} />
                         </div>
                     </div>
 
@@ -85,7 +85,7 @@ const Sidebar = () => {
             </aside>
 
             <style>{`
-                .wizz-sidebar {
+                .rift-sidebar {
                     position: fixed;
                     left: 24px;
                     top: 24px;
@@ -231,9 +231,9 @@ const Sidebar = () => {
                 .logout-btn-v4:hover { background: #FEF2F2; transform: scale(0.98); }
 
                 @media (max-width: 1024px) {
-                    .wizz-sidebar { left: -300px; transform: translateX(0); }
-                    .wizz-sidebar.show { left: 16px; top: 16px; bottom: 16px; width: 260px; }
-                    .wizz-mobile-header {
+                    .rift-sidebar { left: -300px; transform: translateX(0); }
+                    .rift-sidebar.show { left: 16px; top: 16px; bottom: 16px; width: 260px; }
+                    .rift-mobile-header {
                         position: fixed; top: 0; left: 0; right: 0; height: 64px; background: white; border-bottom: 1px solid var(--color-border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; z-index: 999;
                     }
                     .branding-v4 { display: flex; align-items: center; gap: 10px; }

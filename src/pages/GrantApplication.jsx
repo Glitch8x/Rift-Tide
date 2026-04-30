@@ -34,12 +34,12 @@ const GrantApplication = () => {
         <div className="empty-application-v4">
             <Info size={60} />
             <h2>Grant Program Not Found</h2>
-            <button className="wizz-btn-primary" onClick={() => navigate('/grants')}>Go Back</button>
+            <button className="rift-btn-primary" onClick={() => navigate('/grants')}>Go Back</button>
         </div>
     );
 
     return (
-        <div className="wizz-application-page animate-fade-in">
+        <div className="rift-application-page animate-fade-in">
             <div className="bg-blur-blob blob-app-1"></div>
             <div className="bg-blur-blob blob-app-2"></div>
 
@@ -91,7 +91,7 @@ const GrantApplication = () => {
                         <div className="app-grid-v4">
                             <main className="app-main-v4">
                                 <div className="glass-pill-v4 form-card-v4">
-                                    <form onSubmit={handleSubmit} className="wizz-form-v4">
+                                    <form onSubmit={handleSubmit} className="rift-form-v4">
                                         <div className="form-row-v4">
                                             <div className="form-group-v4">
                                                 <label>Project Name</label>
@@ -160,7 +160,7 @@ const GrantApplication = () => {
                                         </div>
 
                                         <div className="form-footer-v4">
-                                            <button type="submit" className="wizz-btn-primary full-width large" disabled={isSubmitting}>
+                                            <button type="submit" className="rift-btn-primary full-width large" disabled={isSubmitting}>
                                                 {isSubmitting ? (
                                                     "Transmitting..."
                                                 ) : (
@@ -205,7 +205,7 @@ const GrantApplication = () => {
             </AnimatePresence>
 
             <style>{`
-                .wizz-application-page {
+                .rift-application-page {
                     padding: 80px 24px 120px;
                     max-width: 1200px;
                     margin: 0 auto;
@@ -262,7 +262,7 @@ const GrantApplication = () => {
                 .app-grid-v4 { display: grid; grid-template-columns: 1fr 340px; gap: 40px; }
                 
                 .form-card-v4 { padding: 48px !important; }
-                .wizz-form-v4 { display: flex; flex-direction: column; gap: 32px; }
+                .rift-form-v4 { display: flex; flex-direction: column; gap: 32px; }
 
                 .form-row-v4 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
                 .form-group-v4 { display: flex; flex-direction: column; gap: 10px; }

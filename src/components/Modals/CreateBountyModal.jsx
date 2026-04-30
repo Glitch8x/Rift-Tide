@@ -47,16 +47,16 @@ const CreateBountyModal = ({ isOpen, onClose }) => {
 
     return (
         <AnimatePresence>
-            <div className="wizz-modal-overlay">
+            <div className="rift-modal-overlay">
                 <motion.div 
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    className="wizz-modal-card glass-pill-v4"
+                    className="rift-modal-card glass-pill-v4"
                 >
                     <header className="modal-header-v4">
                         <div className="header-icon-v4 logo-wrap">
-                            <img src="/sui-gig-logo.png?v=sui1" alt="Logo" />
+                            <img src="/rift-tide-final.png?v=sui1" alt="Logo" />
                         </div>
                         <div className="header-text-v4">
                             <h2>Initialize <span>Opportunity</span></h2>
@@ -160,8 +160,8 @@ const CreateBountyModal = ({ isOpen, onClose }) => {
                         </div>
 
                         <footer className="modal-footer-v4">
-                            <button type="button" className="wizz-btn-outline" onClick={onClose}>Discard</button>
-                            <button type="submit" className="wizz-btn-primary">
+                            <button type="button" className="rift-btn-outline" onClick={onClose}>Discard</button>
+                            <button type="submit" className="rift-btn-primary">
                                 <Flag size={18} /> Publish Opportunity
                             </button>
                         </footer>
@@ -169,7 +169,7 @@ const CreateBountyModal = ({ isOpen, onClose }) => {
                 </motion.div>
 
                 <style>{`
-                    .wizz-modal-overlay {
+                    .rift-modal-overlay {
                         position: fixed;
                         inset: 0;
                         background: rgba(15, 23, 42, 0.4);
@@ -181,7 +181,7 @@ const CreateBountyModal = ({ isOpen, onClose }) => {
                         padding: 24px;
                     }
 
-                    .wizz-modal-card {
+                    .rift-modal-card {
                         width: 100%;
                         max-width: 640px;
                         padding: 40px !important;
@@ -273,7 +273,7 @@ const CreateBountyModal = ({ isOpen, onClose }) => {
                     }
 
                     @media (max-width: 640px) {
-                        .wizz-modal-card { padding: 32px 20px !important; }
+                        .rift-modal-card { padding: 32px 20px !important; }
                     }
                 `}</style>
             </div>
