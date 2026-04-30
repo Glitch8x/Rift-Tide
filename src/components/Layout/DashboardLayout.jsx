@@ -231,7 +231,7 @@ const DashboardLayout = ({ children }) => {
                 .nav-right-actions {
                     display: flex;
                     align-items: center;
-                    gap: 20px;
+                    gap: 16px;
                 }
 
                 .header-search {
@@ -288,13 +288,14 @@ const DashboardLayout = ({ children }) => {
                 .user-pill {
                     display: flex;
                     align-items: center;
-                    gap: 10px;
-                    padding: 6px 14px 6px 6px;
+                    gap: 12px;
+                    padding: 4px 16px 4px 4px;
                     background: white;
                     border: 1px solid #E2E8F0;
                     border-radius: 99px;
                     cursor: pointer;
                     transition: all 0.2s;
+                    height: 44px;
                 }
 
                 .user-pill:hover {
