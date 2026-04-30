@@ -14,10 +14,13 @@ import {
     DollarSign
 } from 'lucide-react';
 import { useData } from '../context/DataContext';
+import GrantApplyModal from '../components/Grants/GrantApplyModal';
+import { AnimatePresence } from 'framer-motion';
 
 const Grants = () => {
     const { grants } = useData();
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedGrant, setSelectedGrant] = useState(null);
 
     const categories = ['Infrastructure', 'DeFi', 'Gaming', 'AI', 'Content'];
     const fundingTiers = ['$0 - $10k', '$10k - $50k', '$50k+'];
@@ -145,14 +148,21 @@ const Grants = () => {
                                 </div>
                             </div>
                             <div className="g-actions">
-                                <button className="apply-btn">
+                                <button className="apply-btn" onClick={() => setSelectedGrant(grant)}>
                                     APPLY NOW <ArrowRight size={16} />
                                 </button>
                             </div>
                         </motion.div>
                     ))}
                 </div>
-            </div>
+            <AnimatePresence>
+                {selectedGrant && (
+                    <GrantApplyModal 
+                        grant={selectedGrant} 
+                        onClose={() => setSelectedGrant(null)} 
+                    />
+                )}
+            </AnimatePresence>
 
             <style>{`
                 .grants-rift {
