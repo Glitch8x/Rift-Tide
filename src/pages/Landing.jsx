@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import BrandLogo from '../components/Common/BrandLogo';
-import { ArrowRight, Compass, Briefcase, Calendar, Zap, Shield, Rocket, CheckCircle2 } from 'lucide-react';
+import { Search, ArrowRight, Compass, Briefcase, Calendar, Zap, Shield, Rocket, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Landing = () => {
