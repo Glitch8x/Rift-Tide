@@ -28,7 +28,7 @@ const Navbar = () => {
             <nav className="navbar-pill">
                 {/* Brand */}
                 <div className="nav-brand" onClick={() => navigate('/')}>
-                    <BrandLogo size={40} showText={false} />
+                    <BrandLogo size={120} showText={false} />
                 </div>
 
                 {/* Navigation Links */}
